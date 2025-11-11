@@ -1,13 +1,14 @@
 {
   "name": "servidor_escuela",
   "version": "1.0.0",
+  "description": "Backend del proyecto Neteaching con Express, MongoDB, y microservicios",
   "main": "server.js",
   "scripts": {
-    "start": "webpack serve --mode development --open",
-    "build": "webpack --mode production",
+    "start": "node server.js",                       
+    "build": "webpack --mode production",            
+    "dev": "nodemon server.js",                      
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "dev": "nodemon server.js"
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.592.0",
@@ -36,12 +37,12 @@
     "nodemailer": "^6.9.14",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "papaparse": "^5.3.0",
+    "socket.io": "^4.7.5",
+    "winston": "^3.17.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "4.0.3",
-    "socket.io": "^4.7.5",
-    "winston": "^3.17.0"
+    "react-scripts": "4.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
@@ -59,3 +60,4 @@
     "webpack-dev-server": "^4.15.1"
   }
 }
+
