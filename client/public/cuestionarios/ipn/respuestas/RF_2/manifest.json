@@ -1,0 +1,18 @@
+{
+  "id": "RF_2",
+  "title": "Retroalimentación · F_2",
+  "layout": "carousel",
+  "slides": [
+    { "src": "Diapositiva1.JPG" },
+    { "src": "Diapositiva2.JPG" },
+    { "src": "Diapositiva3.JPG" }
+  ],
+  "navigation": {
+    "startIndex": 0,
+    "loop": true,
+    "showArrows": true,
+    "showProgress": true
+  },
+  "backLink": "/alumno/acceso/cuestionario/ipn/medico-biologicas",
+  "notes": "Puedes añadir texto libre si lo necesitas."
+}

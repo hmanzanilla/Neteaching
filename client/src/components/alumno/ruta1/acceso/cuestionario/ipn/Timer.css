@@ -1,0 +1,7 @@
+.timer {
+  font-family: 'DS-Digital', sans-serif;
+  color: blue; /* Cambia el color del texto a azul fuerte */
+  font-size: 40px; /* Ajusta el tamaño de la fuente según sea necesario */
+  font-weight: bold;
+  margin-top: 10px;
+}

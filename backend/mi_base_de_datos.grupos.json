@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "67d7792face4bdfebdf09f7e"
+  },
+  "nombre": "Grupo A",
+  "profesorRFC": "RFC123456",
+  "admin_creador": {
+    "$oid": "67b9f3ea56ebe84200b5e709"
+  },
+  "fecha_creacion": {
+    "$date": "2025-03-17T01:21:51.736Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67f34e9956309978de7d803c"
+  },
+  "nombre": "Grupo C",
+  "profesorRFC": "RFC123456",
+  "admin_creador": {
+    "$oid": "67b9f3ea56ebe84200b5e709"
+  },
+  "fecha_creacion": {
+    "$date": "2025-04-07T04:03:37.541Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67f34eab56309978de7d804b"
+  },
+  "nombre": "Grupo A",
+  "profesorRFC": "RFC123456",
+  "admin_creador": {
+    "$oid": "67b9f3ea56ebe84200b5e709"
+  },
+  "fecha_creacion": {
+    "$date": "2025-04-07T04:03:55.487Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67f34f0b56309978de7d8069"
+  },
+  "nombre": "GRupo A",
+  "profesorRFC": "RFC123456",
+  "admin_creador": {
+    "$oid": "67b9f3ea56ebe84200b5e709"
+  },
+  "fecha_creacion": {
+    "$date": "2025-04-07T04:05:31.324Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67f92d8084225e83c1b4256f"
+  },
+  "nombre": "grupo A",
+  "profesorRFC": "RFC123456",
+  "admin_creador": {
+    "$oid": "67b9f3ea56ebe84200b5e709"
+  },
+  "fecha_creacion": {
+    "$date": "2025-04-11T14:56:00.836Z"
+  },
+  "__v": 0
+}]

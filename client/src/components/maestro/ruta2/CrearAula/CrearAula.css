@@ -1,0 +1,154 @@
+/* maestro/ruta2/CrearAula/CrearAula.css */
+/* client/src/components/maestro/ruta2/CrearAula/CrearAula.css */
+
+.crearAula-form {
+  display: grid;
+  gap: 12px;
+  max-width: 980px;
+}
+
+.crearAula-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.crearAula-meta label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.crearAula-meta input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e6e9f2;
+  border-radius: 8px;
+  outline: none;
+}
+
+.crearAula-meta input:focus {
+  border-color: #b8c4ff;
+  box-shadow: 0 0 0 2px #eef2ff;
+}
+
+.crearAula-dias {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.crearAula-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.crearAula-filasControls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crearAula-filasControls input[type="number"] {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1px solid #e6e9f2;
+  border-radius: 8px;
+}
+
+.crearAula-tablaWrapper {
+  overflow-x: auto;
+}
+
+.crearAula-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.crearAula-tabla th {
+  text-align: left;
+  border-bottom: 1px solid #e6e9f2;
+  padding: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.crearAula-tabla td {
+  border-bottom: 1px solid #f0f2f7;
+  padding: 6px;
+  vertical-align: top;
+}
+
+.crearAula-tabla td input[type="time"],
+.crearAula-tabla td input[type="text"],
+.crearAula-tabla td input:not([type]) {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #e6e9f2;
+  border-radius: 6px;
+  outline: none;
+}
+
+.crearAula-tabla td input:focus {
+  border-color: #b8c4ff;
+  box-shadow: 0 0 0 2px #eef2ff;
+}
+
+.crearAula-accionesFila {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.crearAula-tdVacio {
+  padding: 10px;
+  color: #6b7280;
+  text-align: left;
+}
+
+.crearAula-msg {
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.crearAula-msgOk {
+  border: 1px solid #3cab5b;
+  background: #eaf9ef;
+  color: #0a6a2a;
+}
+
+.crearAula-msgErr {
+  border: 1px solid #d33;
+  background: #fdeeee;
+  color: #8a1111;
+}
+
+.crearAula-acciones {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.crearAula-acciones button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+}
+
+.crearAula-acciones button[type="submit"] {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+}
+
+.crearAula-acciones button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

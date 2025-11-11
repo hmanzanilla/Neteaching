@@ -1,0 +1,80 @@
+/* AulaVirtual.css */
+/* client/src/components/alumno/ruta1/acceso/aula_virtual/AulaVirtual.css */
+
+:root{
+  --bg:#0b1220;
+  --card:#111827;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --primary:#60a5fa;
+  --danger:#ef4444;
+  --ring:0 10px 30px rgba(0,0,0,.35);
+}
+
+.av-wrap{
+  min-height:100vh;
+  background: radial-gradient(1200px 600px at 20% -10%, #1f2937 0%, transparent 60%),
+             radial-gradient(900px 500px at 120% 10%, #0ea5e9 0%, transparent 55%),
+             var(--bg);
+  padding:24px;
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+}
+
+.av-card{
+  width:min(1200px, 96vw);
+  height:min(78vh, 820px);
+  color:var(--text);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  box-shadow:var(--ring);
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+
+/* Header */
+.av-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px;
+  background: rgba(17,24,39,.7);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.av-title{ display:flex; align-items:center; gap:10px; font-weight:700; }
+.av-dot{ width:10px; height:10px; border-radius:50%; background:#22c55e; box-shadow:0 0 12px #22c55e; }
+.av-badge{
+  font-size:.85rem; padding:6px 10px; border-radius:999px;
+  background: rgba(148,163,184,.15); color:var(--muted);
+  border:1px solid rgba(148,163,184,.25);
+}
+.av-badge.ok{ color:#22c55e; border-color:#22c55e44; background:#22c55e22; }
+
+/* Escenario */
+.av-stage{ flex:1; position:relative; background:#0a0f1c; }
+.jitsi-embed{ position:absolute; inset:0; }
+
+/* Controles */
+.av-controls{
+  display:flex; gap:12px; justify-content:center; align-items:center;
+  padding:12px; background:rgba(17,24,39,.7);
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.av-btn{
+  background: rgba(96,165,250,.15);
+  border:1px solid rgba(96,165,250,.35);
+  color:var(--text);
+  padding:10px 14px; border-radius:12px;
+  font-weight:600; cursor:pointer;
+  transition: transform .08s ease, background .2s ease, border-color .2s ease;
+}
+.av-btn:hover{ transform: translateY(-1px); background: rgba(96,165,250,.25); }
+.av-btn.danger{ background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.35); }
+.av-btn.danger:hover{ background: rgba(239,68,68,.28); }
+
+/* Pizarrón debajo de la tarjeta */
+.av-board{
+  width:min(1200px, 96vw);
+}
+@media (max-width: 720px){
+  .av-controls{ flex-wrap:wrap; gap:8px; }
+  .av-btn{ width:100%; text-align:center; }
+}

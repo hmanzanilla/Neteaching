@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio: Diagramas de Venn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        h2 {
+            color: red;
+        }
+        .pregunta {
+            color: blue;
+            font-weight: bold;
+        }
+        .diagramas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .diagrama {
+            border: 2px solid red;
+            padding: 10px;
+            width: 230px;
+            text-align: center;
+        }
+        img {
+            width: 200px;
+            height: auto;
+        }
+        ol {
+            margin-left: 30px;
+        }
+        .opciones {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Reactivos de Probabilidad y Estadística (Guía 2023)</h2>
+<p class="pregunta">1. Relacione los siguientes diagramas de Venn con las operaciones indicadas</p>
+
+<div class="diagramas">
+    <div class="diagrama">
+        <strong>a) Diagrama de Venn</strong><br>
+        <img src="AUBUC_CORRECTO.png" alt="A ∪ B ∪ C">
+    </div>
+    <div class="diagrama">
+        <strong>b) Diagrama de Venn</strong><br>
+        <img src="CU_B_CORRECTO.png" alt="C ∪ B">
+    </div>
+    <div class="diagrama">
+        <strong>c) Diagrama de Venn</strong><br>
+        <img src="CU_A_CORRECTO.png" alt="C ∪ A">
+    </div>
+    <div class="diagrama">
+        <strong>d) Diagrama de Venn</strong><br>
+        <img src="AU_B_CORRECTO.png" alt="A ∪ B">
+    </div>
+</div>
+
+<ol>
+    <li>A ∪ B ∪ C</li>
+    <li>C ∪ B</li>
+    <li>C ∪ A</li>
+    <li>A ∪ B</li>
+</ol>
+
+<form class="opciones">
+    <label><input type="radio" name="respuesta" value="a"> a) 1b, 2c, 3d, 4a</label><br>
+    <label><input type="radio" name="respuesta" value="b"> b) 1b, 2c, 3a, 4d</label><br>
+    <label><input type="radio" name="respuesta" value="c"> c) 1a, 2b, 3c, 4d</label><br>
+    <label><input type="radio" name="respuesta" value="d"> d) 1a, 2b, 3d, 4c</label><br><br>
+    <button type="button" onclick="verificarRespuesta()">Verificar respuesta</button>
+</form>
+
+<script>
+function verificarRespuesta() {
+    const opciones = document.getElementsByName("respuesta");
+    let seleccion = null;
+    for (const op of opciones) {
+        if (op.checked) {
+            seleccion = op.value;
+            break;
+        }
+    }
+
+    if (!seleccion) {
+        alert("Por favor, selecciona una opción.");
+        return;
+    }
+
+    if (seleccion === "c") {
+        alert("✅ ¡Correcto!");
+    } else {
+        alert("❌ Incorrecto. Inténtalo de nuevo.");
+    }
+}
+</script>
+
+</body>
+</html>
+

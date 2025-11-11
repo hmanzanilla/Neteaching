@@ -1,0 +1,115 @@
+/* ========= editor_libro.css ========= */
+/* Paleta base */
+/* Fuerza que cualquier elemento con [hidden] NO se renderice */
+[hidden]{
+  display: none !important;
+}
+:root{
+  --bg:#0f172a;
+  --paper:#0a1120;
+  --fg:#e5e7eb;
+  --muted:#94a3b8;
+  --panel:#0b1324;
+  --line:#1a2239;
+  --good:#16a34a;
+  --danger:#ef4444;
+}
+
+/* Layout básico */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+}
+header{
+  display:flex; align-items:center; gap:10px;
+  padding:12px 16px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#0b1324,#0b1324);
+  position:sticky; top:0; z-index:5;
+}
+header h1{font-size:18px; margin:0}
+header .sep{flex:1}
+header button{
+  padding:8px 12px; border-radius:8px;
+  border:1px solid #243047;
+  background:#0b1324; color:var(--fg); cursor:pointer;
+}
+header button[disabled]{opacity:.5; cursor:not-allowed}
+
+.layout{display:grid; grid-template-columns:280px 1fr; gap:16px; padding:16px;}
+
+aside.toc{
+  border:1px solid var(--line); border-radius:12px; padding:12px;
+  background:#0b1324;
+}
+aside.toc h2{margin:6px 0 12px 0; font-size:16px}
+aside.toc .toolbar{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-bottom:10px;}
+aside.toc .toolbar button{
+  border:1px solid var(--line); background:#0b1324; color:var(--fg);
+  padding:6px 8px; border-radius:8px; cursor:pointer;
+}
+
+.pages-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; max-height:70vh; overflow:auto;}
+.page-item{display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:10px; padding:8px 10px; background:#0b1324; cursor:pointer;}
+.page-item.selected{outline:2px solid #3b82f6;}
+.page-title{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--fg);}
+.page-actions{display:flex; gap:6px;}
+.page-actions button{border:1px solid var(--line); padding:4px 8px; border-radius:8px; background:#0b1324; color:var(--fg);}
+.page-actions .danger{border-color:#3b1f2a; color:#fecaca;}
+
+.main{min-width:0;}
+.info{
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+  font-size:14px; color:var(--muted);
+  border:1px dashed var(--line); border-radius:12px; padding:8px 12px; margin-bottom:12px;
+}
+.badge{font-size:12px; background:#0a1120; border:1px solid var(--line); padding:2px 8px; border-radius:999px; color:#e5e7eb}
+
+.panel{border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:16px; background:#0b1324;}
+.controls-row{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:12px}
+.control{display:flex; flex-direction:column; gap:6px; font-size:13px}
+.control input[type="range"]{width:100%}
+
+.output{border:1px solid var(--line); border-radius:12px; padding:12px; min-height:120px; background:#0b1324;}
+.page-proxy{
+  border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:12px;
+  background:var(--paper);
+}
+.paper{
+  border:1px solid var(--line); border-radius:12px; min-height:100px; padding:18px; background:var(--paper);
+}
+
+.panel textarea.codigo{width:100%; min-height:220px; background:#0b1324; color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:10px;}
+
+/* Modal */
+.modal-bg{
+  position:fixed; inset:0; background:rgba(0,0,0,.55);
+  display:flex; align-items:center; justify-content:center; z-index:20;
+}
+.modal{
+  width:min(860px,95vw); background:#0b1324; border:1px solid var(--line); border-radius:12px; padding:14px;
+}
+.modal .row{display:flex; flex-direction:column; gap:8px; margin-bottom:10px}
+.modal .toolbar-line{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.modal input[type="text"], .modal textarea{
+  width:100%; border:1px solid var(--line); border-radius:8px; padding:8px; background:#0a1120; color:var(--fg);
+}
+.modal textarea{min-height:220px}
+.modal .buttons{display:flex; gap:8px; justify-content:flex-end}
+.modal .buttons button{border:1px solid var(--line); background:#0b1324; color:var(--fg); padding:8px 12px; border-radius:8px; cursor:pointer}
+
+/* Menús LaTeX */
+.math-menu{
+  position:fixed; z-index:25; display:none;
+  background:#0a1120; color:var(--fg);
+  border:1px solid var(--line); border-radius:8px; padding:8px; min-width:280px;
+}
+.menu-cat{font-size:12px; color:var(--muted); margin:6px 0 4px 0}
+.math-item{display:inline-block; padding:6px 8px; border:1px solid var(--line); border-radius:8px; margin:4px; cursor:pointer;}
+
+/* Popover “Partes” */
+.popover{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); z-index:18;}
+.popover-inner{background:#0b1324; border:1px solid var(--line); border-radius:12px; padding:14px; width:min(420px,92vw);}
+.popover-inner ul{margin:.25rem 0 .5rem 1.25rem}

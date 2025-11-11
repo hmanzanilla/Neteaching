@@ -1,0 +1,233 @@
+/* ===========================
+   🎯 Variables y base (idénticas al alumno)
+=========================== */
+:root {
+  --button-bg: #e63946;        /* rojo alumno */
+  --button-hover-bg: #d62839;  /* rojo hover */
+  --text-color: #333333;       /* texto principal */
+  --muted: #6b7280;            /* texto secundario */
+  --background-color: #ffffff; /* fondo */
+  --content-width: 80%;
+  --max-content-width: 900px;
+  --card-border: #e5e7eb;      /* bordes sutiles */
+  --radius: 10px;
+}
+
+/* ===========================
+   Contenedor principal
+=========================== */
+.maestro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--background-color);
+  padding-top: 70px; /* igual que alumno: deja libre el header fijo */
+  padding-bottom: 40px;
+  color: var(--text-color);
+}
+
+/* ===========================
+   Header fijo (si lo usas en Maestro)
+   -> usa la misma clase del alumno si compartes layout,
+   pero dejo un alias por si tienes un header distinto
+=========================== */
+.principal-alum-header,
+.maestro-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  color: #e76f51;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+/* ===========================
+   Hero con avatar (alineado al alumno)
+=========================== */
+.maestro-hero {
+  width: min(var(--max-content-width), var(--content-width));
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: none;         /* sin sombra como alumno */
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.maestro-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 3px solid #ffd4b4; /* guiño naranja como en alumno */
+}
+
+.maestro-hero-info h1 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0b1b3a; /* azul título */
+}
+
+.maestro-hero-info p,
+.maestro-tagline {
+  margin: 0;
+  color: #e76f51; /* mismo tono del alumno */
+  font-weight: 600;
+}
+
+/* Botón "Editar foto" del hero */
+.maestro-hero .btn-outline {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: transparent;
+  color: #0b1b3a;
+  border: 1px solid #0b1b3a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color .2s ease;
+}
+.maestro-hero .btn-outline:hover {
+  background: rgba(11,27,58,.06);
+}
+
+/* ===========================
+   Grid de tarjetas
+   (cada tarjeta ES el botón, como en alumno)
+=========================== */
+.maestro-grid {
+  width: min(1060px, 92%);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* La tarjeta/azulejo clicable */
+.tile {
+  background: #ffffff;
+  border: 1px solid var(--card-border); /* borde sutil como alumno */
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;          /* por si es <a> o <Link> */
+  color: #1f2937;                 /* texto gris oscuro alumno */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: border-color .2s ease, transform .06s ease;
+  box-shadow: none;               /* sin sombra */
+  min-height: 120px;
+}
+
+.tile:hover {
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+}
+.tile:active { transform: translateY(0); }
+
+/* Icono y título como alumno */
+.tile-icon {
+  font-size: 26px;                /* o <img> de 28–32px */
+  line-height: 1;
+}
+.tile-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+/* Descripción secundaria (opcional) */
+.tile-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Quita cualquier botón interno heredado si quedara alguno */
+.maestro-grid .btn,
+.maestro-grid .btn-primary,
+.maestro-grid .btn-secondary,
+.maestro-grid .btn-accent,
+.maestro-grid .btn-sub {
+  display: none !important;
+}
+
+/* Accesibilidad: focus visible */
+.tile:focus {
+  outline: 3px solid #2563eb44;
+  outline-offset: 2px;
+  border-color: #2563eb;
+}
+
+/* ===========================
+   Sección de contenido (subrutas)
+=========================== */
+.maestro-content,
+.placeholder {
+  width: min(920px, 94%);
+  margin-top: 20px;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: none; /* sin sombra para empatar con alumno */
+  color: var(--muted);
+  text-align: center;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ocultar tarjetas cuando se entra a subrutas */
+.maestro-container.sin-botones .maestro-grid { display: none; }
+
+/* ===========================
+   Tipografía y encabezados internos (como alumno)
+=========================== */
+.maestro-content h1,
+.maestro-content h2 {
+  font-size: 30px;
+  font-weight: bold;
+  color: blue;
+  text-align: center;
+  margin-top: 0;
+}
+.maestro-content strong {
+  font-weight: normal;
+  color: rgb(3, 3, 252);
+}
+
+/* ===========================
+   Responsivo
+=========================== */
+@media (max-width: 1024px) {
+  .maestro-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .maestro-hero {
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .maestro-hero .btn-outline { grid-column: 1 / -1; }
+  .maestro-grid { grid-template-columns: 1fr; }
+}

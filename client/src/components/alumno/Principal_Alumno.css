@@ -1,0 +1,117 @@
+/* Definición de variables globales */
+/* ✅ Definición de variables globales */
+
+:root {
+  --button-bg: #e63946; /* 🔴 Rojo fuerte */
+  --button-hover-bg: #d62839; /* 🔴 Rojo más oscuro al pasar el mouse */
+  --text-color: #333;
+  --content-width: 80%;
+  --max-content-width: 900px;
+  --background-color: #ffffff;
+}
+
+/* ✅ Header fijo en la parte superior */
+.principal-alum-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  color: #e76f51;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/* ✅ Contenedor principal sin sidebar */
+.principal-alum-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: var(--background-color);
+  padding-top: 70px; /* Ajuste para evitar que el header tape el contenido */
+  padding-bottom: 40px;
+}
+
+/* ✅ Contenido principal centrado */
+.principal-alum-content {
+  width: var(--content-width);
+  max-width: var(--max-content-width);
+  font-size: 22px;
+  line-height: 1.8;
+  text-align: justify;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: none; /* ❌ Eliminamos la sombra */
+  margin-top: 20px;
+}
+
+/* ✅ Encabezados */
+.principal-alum-content h1, 
+.principal-alum-content h2 {
+  font-size: 30px;
+  font-weight: bold;
+  color: blue;
+  text-align: center;
+}
+
+/* ✅ Listas */
+.principal-alum-content ul {
+  margin-bottom: 20px;
+}
+
+.principal-alum-content li {
+  margin-bottom: 10px;
+}
+
+/* ✅ Botón centrado al final */
+.principal-alum-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+/* 🔴 Botón en rojo */
+.principal-alum-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--button-bg);
+  color: white;
+  font-size: 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  text-align: center;
+  width: fit-content;
+  box-shadow: none; /* ❌ Sin sombras */
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* ✅ Cambio de color al pasar el mouse */
+.principal-alum-button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+/* ✅ Ajuste responsivo */
+@media (max-width: 768px) {
+  .principal-alum-content {
+    width: 90%;
+    font-size: 16px;
+    padding: 20px;
+  }
+
+  .principal-alum-button {
+    font-size: 16px;
+    padding: 10px 18px;
+  }
+}
+
+/* ✅ Negritas en azul */
+.principal-alum-content strong {
+  font-weight: normal;
+  color: rgb(3, 3, 252);
+}

@@ -1,0 +1,70 @@
+/* C:\Users\znava\Desktop\SERVIDOR\servidor_bcryptjs_1\client\src\components\alumno\ruta1\acceso\simulador\simuladorMatematicas\simuladorMatematicas.css */
+
+/* Contenedor general */
+.simulador-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+/* Título */
+.simulador-titulo {
+  color: #002366; /* Azul oscuro */
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Descripción */
+.simulador-descripcion {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Contenedor de los botones */
+.simulador-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* Espacio entre los botones */
+}
+
+/* Botones individuales */
+.simulador-boton {
+  width: 250px;
+  text-align: center;
+  padding: 12px 18px;
+  background-color: #d6d6d6; /* Gris claro */
+  color: black;
+  font-size: 16px;
+  font-weight: normal;
+  border-radius: 6px;
+  border: 1px solid #a1a1a1;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Hover sobre los botones */
+.simulador-boton:hover {
+  background-color: #bcbcbc; /* Gris más oscuro */
+  transform: translateY(-2px);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .simulador-grid {
+    width: 100%;
+  }
+
+  .simulador-boton {
+    width: 80%;
+  }
+}
+

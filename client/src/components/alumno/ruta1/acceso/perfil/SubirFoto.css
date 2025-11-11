@@ -1,0 +1,81 @@
+/* 📁 Neteaching/client/src/components/alumno/ruta1/acceso/perfil/SubirFoto.css */
+/* Estilo principal del contenedor de foto */
+/* 📁 Neteaching/client/src/components/alumno/ruta1/acceso/perfil/SubirFoto.css */
+
+/* Contenedor */
+.contenedor-foto-perfil {
+  max-width: 520px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+/* Imagen actual */
+.foto-perfil-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb; /* gris claro */
+}
+
+/* Botones */
+.boton-cambiar-foto,
+.boton-recortar-foto {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #0066cc;
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.05s ease;
+  position: relative;
+  z-index: 2000; /* por encima del cropper */
+  border: none;
+}
+
+.boton-cambiar-foto:hover,
+.boton-recortar-foto:hover {
+  background-color: #005bb5;
+}
+
+.boton-cambiar-foto:disabled,
+.boton-recortar-foto:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Área de recorte */
+.cropper-container {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  margin: 18px auto 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+/* Input archivo */
+input[type="file"] {
+  margin-top: 12px;
+}
+
+/* Asegura el contenedor interno del Cropper */
+.reactEasyCrop_Container {
+  position: absolute !important;
+  inset: 0 !important; /* top/right/bottom/left: 0 */
+  z-index: 1000;
+}
+
+/* Placeholder opcional */
+.placeholder {
+  border: 2px dashed #d1d5db;
+  padding: 40px;
+  color: #6b7280;
+  border-radius: 12px;
+}

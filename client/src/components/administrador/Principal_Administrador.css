@@ -1,0 +1,69 @@
+/* components/administrador/Principal_Administrador.css*/
+/* Contenedor principal: fondo blanco, centrado */
+/* Aislado del módulo Maestro: todas las clases usan prefijo .administrador- */
+
+/* Contenedor principal */
+.administrador-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 20px;
+}
+
+/* Título */
+.administrador-container h1 {
+  color: #0b1b3a;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 12px 0 18px;
+  text-align: center;
+}
+
+/* Botonera */
+.administrador-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.administrador-buttons button {
+  width: 260px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid #cfd6e4;
+  background: #e9eefb;
+  color: #0b1b3a;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color .2s ease, transform .08s ease, box-shadow .2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,.06);
+}
+.administrador-buttons button:hover {
+  background: #dbe6ff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.09);
+}
+.administrador-buttons button:active { transform: translateY(0); }
+
+/* Contenido de subrutas; úsala si deseas un contenedor común */
+.administrador-content {
+  width: min(920px, 94%);
+  margin-top: 28px;
+  background: #ffffff;
+  border: 1px solid #e6e9f2;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* Oculta botones cuando estás en subrutas */
+.administrador-container.sin-botones .administrador-buttons { display: none; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .administrador-buttons button { width: 100%; }
+  .administrador-content { width: 100%; }
+}

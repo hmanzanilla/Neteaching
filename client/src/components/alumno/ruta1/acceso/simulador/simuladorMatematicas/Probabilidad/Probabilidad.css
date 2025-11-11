@@ -1,0 +1,31 @@
+/* C:\Users\znava\Desktop\SERVIDOR\servidor_bcryptjs_1\client\src\components\alumno\ruta1\acceso\simulador\simuladorMatematicas\Probabilidad\Probabilidad.css */
+
+/* Contenedor general */
+/*Probabilidad.css */
+.probabilidad-boton {
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 1.1rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.probabilidad-opciones {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.probabilidad-subboton {
+  padding: 8px 16px;
+  font-size: 1rem;
+  background-color: #009688;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -1,0 +1,103 @@
+/* 🔹 horarioGrupos.css */
+/* 🔹 Contenedor principal */
+.horario-grupos-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+/* 🔹 Título principal */
+.horario-grupos-container h1 {
+  color: #333; /* Negro suave */
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+/* 🔹 Sección de botones */
+.botones-grupos {
+  display: flex;
+  gap: 15px; /* Espaciado entre botones */
+  margin-top: 20px;
+}
+
+/* 🔹 Estilos para los botones (Minimalista) */
+.botones-grupos button {
+  width: 220px;
+  text-align: center;
+  padding: 12px 18px;
+  background-color: #d3d3d3; /* Gris claro */
+  color: #333; /* Texto negro */
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  border: 1px solid #999; /* Borde sutil */
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+  font-family: 'Arial', sans-serif;
+}
+
+.botones-grupos button:hover {
+  background-color: #bfbfbf; /* Gris más oscuro */
+  transform: translateY(-2px);
+}
+
+/* 🔹 Sección donde se mostrarán los grupos */
+.horario-contenido {
+  width: 90%;
+  max-width: 800px;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* 🔹 Estilos para la tabla */
+.horario-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.horario-table th,
+.horario-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.horario-table th {
+  background-color: #d3d3d3;
+  color: #333;
+  font-weight: bold;
+}
+
+.horario-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* 🔹 Botón de regreso */
+.back-button {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background-color: #d3d3d3;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  border: 1px solid #999;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.back-button:hover {
+  background-color: #bfbfbf;
+}

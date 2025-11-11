@@ -1,0 +1,60 @@
+@"
+# =============================================
+#   DOCKERIGNORE PARA BACKEND NETEACHING
+#   Evita enviar archivos innecesarios al build
+# =============================================
+
+# Dependencias locales
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Builds temporales
+build
+dist
+.cache
+
+# Archivos de entorno
+.env
+.env.*
+env.prod
+
+# Logs
+*.log
+logs
+*.out
+*.err
+
+# Datos y recursos pesados
+uploads
+imagenes
+data
+public
+Documentos_flujo.docx
+*.pptx
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+
+# Configuración de sistema
+.DS_Store
+Thumbs.db
+
+# Control de versiones
+.git
+.gitignore
+
+# Archivos personales o de análisis
+estructura_servidor.txt
+*.docx
+*.pdf
+*.xls
+*.xlsx
+
+# Otras carpetas no necesarias para el build
+config/local
+middlewares/__tests__
+"@ | Out-File -Encoding utf8 .dockerignore
+

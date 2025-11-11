@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Cultura General</title>
+</head>
+<body>
+    <h1>Cuestionario de Cultura General</h1>
+    <form id="quizForm">
+        <!-- Pregunta 1 -->
+        <div>
+            <p>1. ¿Cuál es la capital de Francia?</p>
+            <label><input type="radio" name="q1" value="a"> Londres</label><br>
+            <label><input type="radio" name="q1" value="b"> Berlín</label><br>
+            <label><input type="radio" name="q1" value="c"> Madrid</label><br>
+            <label><input type="radio" name="q1" value="d"> París</label>
+        </div>
+        <!-- Pregunta 2 -->
+        <div>
+            <p>2. ¿Cuál es el planeta más cercano al sol?</p>
+            <label><input type="radio" name="q2" value="a"> Tierra</label><br>
+            <label><input type="radio" name="q2" value="b"> Marte</label><br>
+            <label><input type="radio" name="q2" value="c"> Mercurio</label><br>
+            <label><input type="radio" name="q2" value="d"> Venus</label>
+        </div>
+        <!-- Pregunta 3 -->
+        <div>
+            <p>3. ¿En qué año empezó la Segunda Guerra Mundial?</p>
+            <label><input type="radio" name="q3" value="a"> 1939</label><br>
+            <label><input type="radio" name="q3" value="b"> 1945</label><br>
+            <label><input type="radio" name="q3" value="c"> 1914</label><br>
+            <label><input type="radio" name="q3" value="d"> 1929</label>
+        </div>
+        <!-- Pregunta 4 -->
+        <div>
+            <p>4. ¿Quién escribió 'Don Quijote de la Mancha'?</p>
+            <label><input type="radio" name="q4" value="a"> Miguel de Cervantes</label><br>
+            <label><input type="radio" name="q4" value="b"> William Shakespeare</label><br>
+            <label><input type="radio" name="q4" value="c"> Garcilaso de la Vega</label><br>
+            <label><input type="radio" name="q4" value="d"> Lope de Vega</label>
+        </div>
+        <!-- Pregunta 5 -->
+        <div>
+            <p>5. ¿Cuál es el símbolo químico del agua?</p>
+            <label><input type="radio" name="q5" value="a"> O2</label><br>
+            <label><input type="radio" name="q5" value="b"> H2O</label><br>
+            <label><input type="radio" name="q5" value="c"> CO2</label><br>
+            <label><input type="radio" name="q5" value="d"> N2O</label>
+        </div>
+        <!-- Pregunta 6 -->
+        <div>
+            <p>6. ¿En qué continente está Egipto?</p>
+            <label><input type="radio" name="q6" value="a"> Asia</label><br>
+            <label><input type="radio" name="q6" value="b"> América</label><br>
+            <label><input type="radio" name="q6" value="c"> Europa</label><br>
+            <label><input type="radio" name="q6" value="d"> África</label>
+        </div>
+        <!-- Pregunta 7 -->
+        <div>
+            <p>7. ¿Cuántos lados tiene un hexágono?</p>
+            <label><input type="radio" name="q7" value="a"> 4</label><br>
+            <label><input type="radio" name="q7" value="b"> 5</label><br>
+            <label><input type="radio" name="q7" value="c"> 6</label><br>
+            <label><input type="radio" name="q7" value="d"> 7</label>
+        </div>
+        <!-- Pregunta 8 -->
+        <div>
+            <p>8. ¿Quién pintó la Mona Lisa?</p>
+            <label><input type="radio" name="q8" value="a"> Vincent van Gogh</label><br>
+            <label><input type="radio" name="q8" value="b"> Pablo Picasso</label><br>
+            <label><input type="radio" name="q8" value="c"> Leonardo da Vinci</label><br>
+            <label><input type="radio" name="q8" value="d"> Claude Monet</label>
+        </div>
+        <!-- Pregunta 9 -->
+        <div>
+            <p>9. ¿Cuál es el animal terrestre más rápido?</p>
+            <label><input type="radio" name="q9" value="a"> Elefante</label><br>
+            <label><input type="radio" name="q9" value="b"> Caballo</label><br>
+            <label><input type="radio" name="q9" value="c"> Guepardo</label><br>
+            <label><input type="radio" name="q9" value="d"> León</label>
+        </div>
+        <!-- Pregunta 10 -->
+        <div>
+            <p>10. ¿Quién fue el primer hombre en la luna?</p>
+            <label><input type="radio" name="q10" value="a"> Yuri Gagarin</label><br>
+            <label><input type="radio" name="q10" value="b"> Neil Armstrong</label><br>
+            <label><input type="radio" name="q10" value="c"> Buzz Aldrin</label><br>
+            <label><input type="radio" name="q10" value="d"> Michael Collins</label>
+        </div>
+
+        <button type="button" onclick="submitQuiz()">Enviar</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        const correctAnswers = {
+            q1: 'd',
+            q2: 'c',
+            q3: 'a',
+            q4: 'a',
+            q5: 'b',
+            q6: 'd',
+            q7: 'c',
+            q8: 'c',
+            q9: 'c',
+            q10: 'b',
+        };
+
+        function submitQuiz() {
+            let score = 0;
+            const form = document.forms['quizForm'];
+            for (const question in correctAnswers) {
+                if (form[question].value === correctAnswers[question]) {
+                    score++;
+                }
+            }
+            document.getElementById('result').innerText = `Tu calificación es: ${score}/10`;
+        }
+    </script>
+</body>
+</html>

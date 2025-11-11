@@ -1,0 +1,53 @@
+/* C:\Users\znava\Desktop\SERVIDOR\servidor_bcryptjs_1\client\src\components\alumno\ruta1\acceso\simulador\simuladorMatematicas\TrigonometriaGeometria\TrigonometriaGeometria.css */
+/*TrigonomeriaGeometria.css */
+/* TrigonometriaGeometria.css */
+
+.TrigonometriaGeometria-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.TrigonometriaGeometria-titulo {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #003366;
+}
+
+.TrigonometriaGeometria-descripcion {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.TrigonometriaGeometria-boton {
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 1.1rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.TrigonometriaGeometria-opciones {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.TrigonometriaGeometria-subboton {
+  padding: 8px 16px;
+  font-size: 1rem;
+  background-color: #009688;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.TrigonometriaGeometria-subboton:hover,
+.TrigonometriaGeometria-boton:hover {
+  background-color: #004c99;
+}

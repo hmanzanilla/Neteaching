@@ -1,0 +1,263 @@
+<!-- client/public/simuladores/algebra/parabola-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Graficar Varias Funciones y Eliminar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #canvasFuncion {
+      border: 1px solid black;
+      background-color: #ffffff;
+      margin-top: 20px;
+      cursor: crosshair;
+    }
+    .funcion-input {
+      margin-bottom: 10px;
+    }
+    .funcion-input button {
+      margin-left: 10px;
+    }
+    /* Menú flotante para eliminar */
+    #menuEliminar {
+      position: absolute;
+      background: white;
+      border: 1px solid black;
+      padding: 5px 10px;
+      display: none;
+      cursor: pointer;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <h2>Graficar funciones individualmente</h2>
+
+  <div class="funcion-input">
+    <label for="funcion1">f₁(x) = </label>
+    <input type="text" id="funcion1" placeholder="Ej: x*x">
+    <button onclick="graficarFuncion(1)">Graficar f₁(x)</button>
+  </div>
+
+  <div class="funcion-input">
+    <label for="funcion2">f₂(x) = </label>
+    <input type="text" id="funcion2" placeholder="Ej: 2*x+3">
+    <button onclick="graficarFuncion(2)">Graficar f₂(x)</button>
+  </div>
+
+  <div class="funcion-input">
+    <label for="funcion3">f₃(x) = </label>
+    <input type="text" id="funcion3" placeholder="Ej: Math.sin(x)">
+    <button onclick="graficarFuncion(3)">Graficar f₃(x)</button>
+  </div>
+
+  <div class="funcion-input">
+    <label for="funcion4">f₄(x) = </label>
+    <input type="text" id="funcion4" placeholder="Ej: Math.cos(x)">
+    <button onclick="graficarFuncion(4)">Graficar f₄(x)</button>
+  </div>
+
+  <div class="funcion-input">
+    <label for="funcion5">f₅(x) = </label>
+    <input type="text" id="funcion5" placeholder="Ej: Math.exp(-x*x)">
+    <button onclick="graficarFuncion(5)">Graficar f₅(x)</button>
+  </div>
+
+  <button onclick="limpiar()">Limpiar Todo</button>
+
+  <canvas id="canvasFuncion" width="800" height="500"></canvas>
+
+  <!-- Menú contextual -->
+  <div id="menuEliminar" onclick="eliminarFuncionSeleccionada()">Eliminar función</div>
+<script>
+  /* ================================
+   * 🔹 Tracking genérico
+   * ================================ */
+  const SIM_KEY = "algebra_parabola"; // Cambia el identificador si quieres
+  let __simStartAt = 0;
+  let __sentTrack = false;
+
+  function __startTracking() {
+    __simStartAt = Date.now();
+  }
+
+  async function __sendTrackOnce() {
+    if (__sentTrack) return;
+    __sentTrack = true;
+    const durationMs = Math.max(0, Date.now() - __simStartAt);
+
+    try {
+      await fetch("http://localhost:3001/api/simuladores/track", {
+        method: "POST",
+        credentials: "include", // usa cookie http-only "token"
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ simulator: SIM_KEY, durationMs })
+      });
+      console.log("✅ Track enviado:", SIM_KEY, durationMs, "ms");
+    } catch (e) {
+      console.error("❌ Error enviando track:", e);
+    }
+  }
+
+  // Enviar al cerrar/recargar
+  window.addEventListener("beforeunload", __sendTrackOnce);
+
+  /* ================================
+   * 🔹 Tu simulador
+   * ================================ */
+  const canvas = document.getElementById('canvasFuncion');
+  const ctx = canvas.getContext('2d');
+  const escala = 20; // 20 px = 1 unidad
+  const colores = ['red', 'blue', 'green', 'orange', 'purple'];
+
+  const funcionesGraficadas = []; // funciones activas
+  let funcionSeleccionada = null; // para eliminar
+
+  const menuEliminar = document.getElementById('menuEliminar');
+
+  function dibujarCuadricula() {
+    ctx.beginPath();
+    ctx.strokeStyle = '#cccccc';
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= canvas.width; x += escala) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+    }
+    for (let y = 0; y <= canvas.height; y += escala) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+    }
+    ctx.stroke();
+  }
+
+  function dibujarEjes() {
+    ctx.beginPath();
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    // Eje X
+    ctx.moveTo(0, canvas.height / 2);
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    // Eje Y
+    ctx.moveTo(canvas.width / 2, 0);
+    ctx.lineTo(canvas.width / 2, canvas.height);
+    ctx.stroke();
+  }
+
+  function limpiar() {
+    funcionesGraficadas.length = 0;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    dibujarCuadricula();
+    dibujarEjes();
+  }
+
+  function graficarFuncion(indice) {
+    const expresion = document.getElementById('funcion' + indice).value.trim();
+    if (!expresion) {
+      alert("Por favor ingresa la función f" + indice + "(x)");
+      return;
+    }
+
+    funcionesGraficadas.push({
+      expresion: expresion,
+      color: colores[indice - 1],
+      activa: true
+    });
+
+    redibujarTodo();
+  }
+
+  function redibujarTodo() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    dibujarCuadricula();
+    dibujarEjes();
+
+    funcionesGraficadas.forEach(func => {
+      if (!func.activa) return;
+
+      ctx.beginPath();
+      ctx.strokeStyle = func.color;
+      ctx.lineWidth = 2;
+
+      try {
+        for (let pixelX = 0; pixelX <= canvas.width; pixelX++) {
+          let x = (pixelX - canvas.width / 2) / escala;
+          // ⚠ eval asume que 'x' está en scope
+          let y = eval(func.expresion);
+          let pixelY = canvas.height / 2 - y * escala;
+
+          if (pixelX === 0) {
+            ctx.moveTo(pixelX, pixelY);
+          } else {
+            ctx.lineTo(pixelX, pixelY);
+          }
+        }
+        ctx.stroke();
+      } catch (error) {
+        console.error("Error en función:", func.expresion, error);
+      }
+    });
+  }
+
+  canvas.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Encontrar la función más cercana al click
+    let encontrada = false;
+    funcionesGraficadas.forEach((func, index) => {
+      if (!func.activa) return;
+
+      for (let pixelX = 0; pixelX <= canvas.width; pixelX++) {
+        let x = (pixelX - canvas.width / 2) / escala;
+        let y;
+        try {
+          y = eval(func.expresion);
+        } catch {
+          continue;
+        }
+        let pixelY = canvas.height / 2 - y * escala;
+
+        if (Math.abs(pixelX - mouseX) < 5 && Math.abs(pixelY - mouseY) < 5) {
+          funcionSeleccionada = index;
+          menuEliminar.style.top = e.clientY + 'px';
+          menuEliminar.style.left = e.clientX + 'px';
+          menuEliminar.style.display = 'block';
+          encontrada = true;
+          break;
+        }
+      }
+    });
+
+    if (!encontrada) {
+      menuEliminar.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.button !== 2) { // Ocultar menú si haces click normal
+      menuEliminar.style.display = 'none';
+    }
+  });
+
+  function eliminarFuncionSeleccionada() {
+    if (funcionSeleccionada !== null) {
+      funcionesGraficadas[funcionSeleccionada].activa = false;
+      funcionSeleccionada = null;
+      menuEliminar.style.display = 'none';
+      redibujarTodo();
+    }
+  }
+
+  // Inicializar
+  limpiar();
+  __startTracking(); // ⏱ inicia conteo de tiempo
+
+  // (Opcional) Si algún día agregas un botón "Cerrar simulador", llama:
+  // await __sendTrackOnce(); window.close();
+</script>
+</body>
+</html>

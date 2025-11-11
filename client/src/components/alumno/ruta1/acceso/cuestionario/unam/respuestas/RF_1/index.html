@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retroalimentación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .diapositiva {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .carousel {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .carousel img {
+            width: 1000px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Retroalimentación</h1>
+    <div class="carousel">
+        <div class="diapositiva active">
+            <img src="Diapositiva1.JPG" alt="Diapositiva 1">
+        </div>
+        <div class="diapositiva">
+            <img src="Diapositiva2.JPG" alt="Diapositiva 2">
+        </div>
+        <!-- Agrega más diapositivas según sea necesario -->
+    </div>
+    <div class="buttons">
+        <button onclick="anterior()">Anterior</button>
+        <button onclick="siguiente()">Siguiente</button>
+    </div>
+    <script>
+        let indiceDiapositiva = 0;
+
+        function mostrarDiapositiva(n) {
+            const diapositivas = document.getElementsByClassName("diapositiva");
+            for (let i = 0; i < diapositivas.length; i++) {
+                diapositivas[i].classList.remove("active");
+            }
+            diapositivas[n].classList.add("active");
+        }
+
+        function siguiente() {
+            const diapositivas = document.getElementsByClassName("diapositiva");
+            indiceDiapositiva = (indiceDiapositiva + 1) % diapositivas.length;
+            mostrarDiapositiva(indiceDiapositiva);
+        }
+
+        function anterior() {
+            const diapositivas = document.getElementsByClassName("diapositiva");
+            indiceDiapositiva = (indiceDiapositiva - 1 + diapositivas.length) % diapositivas.length;
+            mostrarDiapositiva(indiceDiapositiva);
+        }
+    </script>
+</body>
+</html>

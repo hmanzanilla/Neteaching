@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        #cuestionario {
+            color: blue;
+            font-size: 24px;
+        }
+        #titulo {
+            color: red;
+            font-size: 30px;
+            font-weight: bold;
+        }
+        .correcto {
+            color: green;
+        }
+        .incorrecto {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="inputCsv" onchange="handleFile()" />
+    <div id="titulo"></div>
+    <div id="cuestionario"></div>
+
+    <script>
+        function handleFile() {
+            const fileInput = document.getElementById('inputCsv');
+            const file = fileInput.files[0];
+            parseCsv(file);
+        }
+
+        function parseCsv(file) {
+            Papa.parse(file, {
+                complete: function (results) {
+                    const titulo = results.data[0][0];
+                    document.getElementById('titulo').innerText = titulo;
+
+                    datos = results.data.slice(2).map(row => ({
+                        pregunta: row[0],
+                        a: row[1],
+                        b: row[2],
+                        c: row[3],
+                        d: row[4],
+                        respuestaCorrecta: row[5],
+                        retroalimentacionCorrecta: row[6],
+                        retroalimentacionIncorrecta: row[7],
+                        carpetaRetroalimentacion: row[8]
+                    }));
+                    buildQuiz(datos);
+                }
+            });
+        }
+
+        function buildQuiz(datos) {
+            const contenedorCuestionario = document.getElementById("cuestionario");
+
+            datos.forEach((dato, index) => {
+                if (dato.pregunta && dato.a && dato.b && dato.c && dato.d) {
+                    const preguntaDiv = document.createElement("div");
+                    const partesPregunta = dato.pregunta.split(": ");
+                    const textoEnunciado = partesPregunta[0];
+                    const imagenEnunciado = partesPregunta[1];
+
+                    preguntaDiv.innerHTML = `
+                        <h3>${index + 1}. ${textoEnunciado}</h3>
+                        <img src="./imagenes/${imagenEnunciado.trim()}" alt="Enunciado" width="900">
+                        <div class="fila">
+                            <label><input type="radio" name="pregunta${index}" value="a"> <img src="./imagenes/${dato.a}" alt="${dato.a}" width="150"></label>
+                            <label><input type="radio" name="pregunta${index}" value="b"> <img src="./imagenes/${dato.b}" alt="${dato.b}" width="150"></label>
+                        </div>
+                        <div class="fila">
+                            <label><input type="radio" name="pregunta${index}" value="c"> <img src="./imagenes/${dato.c}" alt="${dato.c}" width="150"></label>
+                            <label><input type="radio" name="pregunta${index}" value="d"> <img src="./imagenes/${dato.d}" alt="${dato.d}" width="150"></label>
+                        </div>
+                        <button onclick="verificarRespuesta(${index}, '${dato.respuestaCorrecta}', '${dato.carpetaRetroalimentacion}')">Verificar</button>
+                        <p id="retroalimentacion${index}"></p>
+                    `;
+                    contenedorCuestionario.appendChild(preguntaDiv);
+                }
+            });
+        }
+
+        function verificarRespuesta(index, respuestaCorrecta, carpetaRetroalimentacion) {
+            const opcionSeleccionada = document.querySelector(`input[name="pregunta${index}"]:checked`);
+            const retroalimentacion = document.getElementById(`retroalimentacion${index}`);
+
+            retroalimentacion.classList.remove('correcto', 'incorrecto');
+
+            if (!opcionSeleccionada) {
+                retroalimentacion.textContent = "Por favor, selecciona una respuesta.";
+                return;
+            }
+
+            const respuestaElegida = opcionSeleccionada.value;
+            respuestaCorrecta = respuestaCorrecta.replace('.jpg', '').replace(')', '');
+
+            if (respuestaElegida === respuestaCorrecta) {
+                retroalimentacion.textContent = datos[index].retroalimentacionCorrecta;
+                retroalimentacion.classList.add('correcto');
+            } else {
+                retroalimentacion.textContent = datos[index].retroalimentacionIncorrecta;
+                retroalimentacion.classList.add('incorrecto');
+                setTimeout(() => {
+                    window.location.href = `./respuestas/${carpetaRetroalimentacion}/index.html`;
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

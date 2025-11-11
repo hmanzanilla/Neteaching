@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Intersección de Tres Conjuntos</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/venn.js@0.2.20/venn.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #fff;
+    }
+
+    h2 {
+      margin-top: 20px;
+    }
+
+    .contenedor {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .diagrama {
+      border: 2px solid red;
+      padding: 10px;
+    }
+
+    .igual {
+      font-size: 40px;
+      font-weight: bold;
+    }
+
+    .venn-area path {
+      stroke: none;
+    }
+
+    #venn1 .venn-area path {
+      fill-opacity: 0.2;
+    }
+
+    #venn1 text {
+      font-weight: bold;
+    }
+
+    #venn2 .venn-area path {
+      fill-opacity: 0.06;
+    }
+
+    #venn2 .venn-area.triple path {
+      fill: green !important;
+      fill-opacity: 0.8 !important;
+    }
+
+    #venn2 text {
+      font-weight: bold;
+    }
+
+    #tiempo, #operaciones {
+      color: green;
+      font-weight: bold;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      min-width: 220px;
+    }
+
+    #btnCerrar {
+      background-color: red;
+      color: white;
+    }
+
+    #btnCerrar:hover {
+      background-color: darkred;
+    }
+
+    #btnEjercicio {
+      background-color: blue;
+      color: white;
+    }
+
+    #btnEjercicio:hover {
+      background-color: darkblue;
+    }
+
+    #btnSolucion {
+      background-color: orange;
+      color: white;
+    }
+
+    #btnSolucion:hover {
+      background-color: darkorange;
+    }
+
+    #instruccion, #resultado {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>La intersección de tres conjuntos (A ∩ B ∩ C)</h2>
+  <div id="tiempo">Tiempo usando el simulador: 0 min 0 seg</div>
+  <div id="operaciones">Número de operaciones realizadas: 0</div>
+
+  <div class="contenedor">
+    <div class="diagrama"><div id="venn1"></div></div>
+    <div class="igual">=</div>
+    <div class="diagrama"><div id="venn2"></div></div>
+  </div>
+
+  <div id="ejercicioContainer">
+    <button id="btnEjercicio" class="btn" onclick="generarEjercicio()">Realizar un nuevo ejercicio</button>
+    <div id="instruccion"></div>
+    <button id="btnSolucion" class="btn" onclick="mostrarSolucion()" style="display:none;">Ver la solución</button>
+    <div id="resultado"></div>
+  </div>
+
+  <button id="btnCerrar" class="btn" onclick="cerrarSimulador()">Cerrar simulador</button>
+
+  <script>
+    let operaciones = 0;
+    let segundos = 0;
+    let A = [], B = [], C = [];
+
+    function actualizarTiempo() {
+      segundos++;
+      const min = Math.floor(segundos / 60);
+      const seg = segundos % 60;
+      document.getElementById('tiempo').innerText = `Tiempo usando el simulador: ${min} min ${seg} seg`;
+    }
+
+    const intervalo = setInterval(actualizarTiempo, 1000);
+
+    async function cerrarSimulador() {
+      clearInterval(intervalo);
+      await sendTrackOnce();
+      alert("Simulador cerrado.");
+      window.close();
+    }
+
+    const sets = [
+      { sets: ['A'], size: 12, label: 'A' },
+      { sets: ['B'], size: 12, label: 'B' },
+      { sets: ['C'], size: 12, label: 'C' },
+      { sets: ['A', 'B'], size: 5 },
+      { sets: ['A', 'C'], size: 5 },
+      { sets: ['B', 'C'], size: 5 },
+      { sets: ['A', 'B', 'C'], size: 3 }
+    ];
+
+    const chart1 = venn.VennDiagram();
+    const div1 = d3.select("#venn1");
+    div1.datum(sets).call(chart1);
+    div1.selectAll("text").style("fill", d => {
+      if (d.label === 'A') return "blue";
+      if (d.label === 'B') return "orange";
+      if (d.label === 'C') return "green";
+      return "black";
+    });
+
+    const chart2 = venn.VennDiagram();
+    const div2 = d3.select("#venn2");
+    div2.datum(sets).call(chart2);
+    div2.selectAll(".venn-area").attr("class", function(d) {
+      return d.sets.length === 3 ? "venn-area triple" : "venn-area";
+    });
+    div2.selectAll("text").style("fill", d => {
+      if (d.label === 'A') return "blue";
+      if (d.label === 'B') return "orange";
+      if (d.label === 'C') return "green";
+      return "black";
+    });
+
+    operaciones++;
+    document.getElementById("operaciones").innerText = `Número de operaciones realizadas: ${operaciones}`;
+
+    function generarNumeros(cantidad) {
+      const arr = [];
+      while (arr.length < cantidad) {
+        const n = Math.floor(Math.random() * 10);
+        if (!arr.includes(n)) arr.push(n);
+      }
+      return arr;
+    }
+
+    function generarEjercicio() {
+      A = generarNumeros(5);
+      B = generarNumeros(4);
+      C = generarNumeros(3);
+
+      document.getElementById("instruccion").innerText = 
+        `Resuelva para A = {${A.join(", ")}}, B = {${B.join(", ")}}, C = {${C.join(", ")}} la operación: A ∩ B ∩ C`;
+
+      document.getElementById("resultado").innerText = "";
+      document.getElementById("btnSolucion").style.display = "inline-block";
+
+      operaciones++;
+      document.getElementById("operaciones").innerText = `Número de operaciones realizadas: ${operaciones}`;
+    }
+
+    function mostrarSolucion() {
+      const interseccion = A.filter(n => B.includes(n) && C.includes(n));
+      document.getElementById("resultado").innerText = `A ∩ B ∩ C = {${interseccion.join(", ") || "∅"}}`;
+    }
+  </script>
+  <script>
+    // 🔹 Identificador único de este simulador
+    const SIM_KEY = "conjuntos_interseccion_tres";
+
+    let simStartAt = Date.now();
+    let sentTrack = false;
+
+    async function sendTrackOnce() {
+      if (sentTrack) return;
+      sentTrack = true;
+
+      // usa tu contador de segundos si prefieres:
+      // const durationMs = (segundos || 0) * 1000;
+      const durationMs = Math.max(0, Date.now() - simStartAt);
+
+      try {
+        await fetch("http://localhost:3001/api/simuladores/track", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            simulator: SIM_KEY,
+            durationMs,
+            operaciones
+          })
+        });
+        console.log("✅ Uso registrado:", SIM_KEY, durationMs, "ms", "ops:", operaciones);
+      } catch (err) {
+        console.error("❌ Error registrando uso:", err);
+      }
+    }
+
+    // Enviar también si el usuario cierra/recarga
+    window.addEventListener("beforeunload", sendTrackOnce);
+  </script>
+</body>
+</html>
+

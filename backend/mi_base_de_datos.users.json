@@ -1,0 +1,262 @@
+[{
+  "_id": {
+    "$oid": "6709f2c94c216ec731d25602"
+  },
+  "email": "brielca@hotmail.com",
+  "password": "$2a$10$/WLhQCQj1X8jAjIkv3n4GugXy8g1g.RKtJZYJEb259I5H5A21Lyiu",
+  "username": "Gabo",
+  "firstName": "Jsime Gabriel",
+  "lastName": "Cabrera moscosa",
+  "curp": "GACM761010",
+  "phoneNumber": "5554657610",
+  "sex": "Masculino",
+  "role": "alumno",
+  "status": "active",
+  "tokens": [
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzA5ZjJjOTRjMjE2ZWM3MzFkMjU2MDIiLCJyb2xlIjoiYWx1bW5vIiwiaWF0IjoxNzI4NzA1MjYyLCJleHAiOjE3Mjg3MDg4NjJ9.6a4v9ujCdFiBFFgMUU82w8p1oyRUKv7r8pcvR11318s",
+      "_id": {
+        "$oid": "6709f2eeaaf5e6bf3df0b45f"
+      }
+    },
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzA5ZjJjOTRjMjE2ZWM3MzFkMjU2MDIiLCJyb2xlIjoiYWx1bW5vIiwiaWF0IjoxNzI4OTIzMTk1LCJleHAiOjE3Mjg5MjY3OTV9.ln8uP2726ups_ZrxVDZ5kTB-cK2GF6ZQD_sSj-zVpRQ",
+      "_id": {
+        "$oid": "670d463b9b33bc80d735e0ae"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2024-10-12T03:53:45.379Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-07T03:35:43.155Z"
+  },
+  "__v": 2
+},
+{
+  "_id": {
+    "$oid": "67313e375cfe0b51bcfb1da5"
+  },
+  "email": "gomezgabriel09@gmail.com",
+  "password": "$2a$10$YJPI7mGyqLMzJ/GkVzIOs.NeIvKTXfypcb0.BOR/xthJ/0L3izYYa",
+  "username": "gabo",
+  "firstName": "Gabriel",
+  "lastName": "Gómez Tellez",
+  "curp": "741210GOGAB",
+  "phoneNumber": "5512340910",
+  "sex": "Masculino",
+  "role": "alumno",
+  "status": "active",
+  "tokens": [
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzMxM2UzNzVjZmUwYjUxYmNmYjFkYTUiLCJyb2xlIjoiYWx1bW5vIiwiaWF0IjoxNzMxMjgwNDk4LCJleHAiOjE3MzEyODQwOTh9.r4U0qoHJXBYAS3tOHXZBoRJnyyJmR3a4fdBx-1zx_aI",
+      "_id": {
+        "$oid": "67313e72143768d95dc6edab"
+      }
+    },
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzMxM2UzNzVjZmUwYjUxYmNmYjFkYTUiLCJyb2xlIjoiYWx1bW5vIiwiaWF0IjoxNzMxMjgwNjYyLCJleHAiOjE3MzEyODQyNjJ9.MBlxOrcFbhxRKQ0YgnmYlGCzTTRWtDp-Qbe5C5E_hi0",
+      "_id": {
+        "$oid": "67313f16143768d95dc6edcd"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2024-11-10T23:13:59.900Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-07T03:35:43.751Z"
+  },
+  "__v": 2,
+  "haRealizadoPrueba": false
+},
+{
+  "_id": {
+    "$oid": "67a415c7ff2ded9dea230631"
+  },
+  "email": "hector271073@yahoo.com",
+  "password": "$2a$10$O7Dgz7KLJoJJGKoGK7gpheNqauuzfsKOfpcVuRp2wx9tt6rbRoScu",
+  "username": "hec",
+  "firstName": "Henna",
+  "lastName": "Manzi Granel",
+  "curp": "MAGH951022HYNNRC06",
+  "phoneNumber": "5534679012",
+  "sex": "Femenino",
+  "role": "administrador",
+  "status": "active",
+  "tokens": [
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2E0MTVjN2ZmMmRlZDlkZWEyMzA2MzEiLCJyb2xlIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc0MDI0MDQ1MSwiZXhwIjoxNzQwMjQ0MDUxfQ.CMPvsMdRi_WWLd5-kXLw2ZmDIXWEfCIsFGSGhYuOQvI",
+      "_id": {
+        "$oid": "67b9f6438f919acb2ee9cb75"
+      }
+    },
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2E0MTVjN2ZmMmRlZDlkZWEyMzA2MzEiLCJyb2xlIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc0MDM2ODg2MSwiZXhwIjoxNzQwMzcyNDYxfQ.ZgFj45p8w7JzwCylvnKaN5sOKdK2GEApDntO2lrUfaY",
+      "_id": {
+        "$oid": "67bbebdda122269ee866a891"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-02-06T01:52:07.634Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-07T03:35:44.343Z"
+  },
+  "__v": 2
+},
+{
+  "_id": {
+    "$oid": "67a58ec712824f2b6117db28"
+  },
+  "email": "morales.gonzalez.pedroantonio@gmail.com",
+  "password": "$2a$10$TMy9mEsCQ4wOG81rltM.GuuuDTYtDdO0aQXxNJay1EIyvyf0QXPcu",
+  "username": "Pedro",
+  "firstName": "Pedro",
+  "lastName": "Morales Gonzalez",
+  "curp": "MOGS000513HMCRMMA5",
+  "phoneNumber": "5623818658",
+  "sex": "Masculino",
+  "role": "maestro",
+  "status": "active",
+  "haRealizadoPrueba": false,
+  "tokens": [
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2E1OGVjNzEyODI0ZjJiNjExN2RiMjgiLCJyb2xlIjoibWFlc3RybyIsImlhdCI6MTc0MDI0MDY2MywiZXhwIjoxNzQwMjQ0MjYzfQ.dFyceyAgscgzligOWN20-eViobkctBYudRZhC8BY0io",
+      "_id": {
+        "$oid": "67b9f7178f919acb2ee9cb78"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-02-07T04:40:39.991Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-07T03:35:44.846Z"
+  },
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "67b9f34556ebe84200b5e706"
+  },
+  "email": "ilsecastro76@gmail.com",
+  "password": "$2a$10$0i1TxVsoSVZacygSwVHeTup7aX/TWEsTs28Ejc3HiO89Pkzce00wC",
+  "username": "Yaz",
+  "firstName": "Ilse",
+  "lastName": "Castro Paez",
+  "curp": "CAPI001027HYNNRC08",
+  "phoneNumber": "5526959034",
+  "sex": "Femenino",
+  "role": "alumno",
+  "status": "active",
+  "tokens": [
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2I5ZjM0NTU2ZWJlODQyMDBiNWU3MDYiLCJyb2xlIjoiYWx1bW5vIiwiaWF0IjoxNzQwMjQwMjE5LCJleHAiOjE3NDAyNDM4MTl9.fog6Es8VkbSg4xkTstX-jSJy9r7466Bao48F7HJsQKQ",
+      "_id": {
+        "$oid": "67b9f55b8f919acb2ee9cb71"
+      }
+    },
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2I5ZjM0NTU2ZWJlODQyMDBiNWU3MDYiLCJyb2xlIjoiYWx1bW5vIiwiaWF0IjoxNzQwMzY4NzA0LCJleHAiOjE3NDAzNzIzMDR9.DgkRUvNeO5yak0OtT6-R0uIqgpeCX1S_QRGYZPPbe8s",
+      "_id": {
+        "$oid": "67bbeb40a122269ee866a87e"
+      }
+    },
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2I5ZjM0NTU2ZWJlODQyMDBiNWU3MDYiLCJyb2xlIjoiYWx1bW5vIiwiaWF0IjoxNzQwMzY4NzU2LCJleHAiOjE3NDAzNzIzNTZ9.uK05RkmOhs_wpJUDRoxJdeA_8D3grojT3txStZ8IROk",
+      "_id": {
+        "$oid": "67bbeb74a122269ee866a884"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-02-22T15:54:45.506Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-11T14:47:40.364Z"
+  },
+  "__v": 5
+},
+{
+  "_id": {
+    "$oid": "67b9f3ea56ebe84200b5e709"
+  },
+  "email": "manuzagr@gmail.com",
+  "password": "$2a$10$5xGM6BBG1fjxnKFzwUl7F.6hP7SxAMuTqsC/HpL7e1h.ygj..b85e",
+  "username": "Yuca",
+  "firstName": "Héctor",
+  "lastName": "Manzanilla Granados",
+  "curp": "MAGH731027HYNNRC09",
+  "phoneNumber": "5518388491",
+  "sex": "Masculino",
+  "role": "admin_principal",
+  "status": "active",
+  "tokens": [
+    {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2I5ZjNlYTU2ZWJlODQyMDBiNWU3MDkiLCJyb2xlIjoiYWRtaW5fcHJpbmNpcGFsIiwiaWF0IjoxNzQ0MzgzMzMxLCJleHAiOjE3NDQzOTA1MzF9.iqgAkMgescN25NcxhkRa8oi3M62kEUHjeGvs3aJtyEQ",
+      "_id": {
+        "$oid": "67f92d6384225e83c1b42557"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-02-22T15:57:30.847Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-11T14:55:31.195Z"
+  },
+  "__v": 398
+},
+{
+  "_id": {
+    "$oid": "67d72d05152e344b3d731acd"
+  },
+  "email": "hmanzanilla@ipn.mx",
+  "password": "$2a$10$xqvQ03m9TFJGDS8t2Ly/U.LWy.Df6DK86TOoEyYVlgrbZofc2iexa",
+  "username": "hmanza",
+  "firstName": "Héctor",
+  "lastName": "Meléndez Pérez",
+  "curp": "MEPHHYNNRC03",
+  "phoneNumber": "5518388491",
+  "sex": "Masculino",
+  "role": "maestro",
+  "status": "active",
+  "haRealizadoPrueba": false,
+  "activeTokens": [],
+  "createdAt": {
+    "$date": "2025-03-16T19:56:53.876Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-07T03:35:46.126Z"
+  },
+  "__v": 1,
+  "tokens": []
+},
+{
+  "_id": {
+    "$oid": "67f69349819fd3abb5157f8f"
+  },
+  "email": "michelle_ramirez_vazquez@outlook.com",
+  "password": "$2a$10$VjHQYJKdmJJqNq.jUp7B/.OfzSEZ3p1oyvzSvO/AFUnMqULpraoXK",
+  "username": "Mich",
+  "firstName": "Michelle",
+  "lastName": "Remirez Vazquez",
+  "curp": "MAGH731027HYNNRC08",
+  "phoneNumber": "5615929980",
+  "sex": "Femenino",
+  "role": "alumno",
+  "status": "active",
+  "haRealizadoPrueba": false,
+  "activeTokens": [],
+  "createdAt": {
+    "$date": "2025-04-09T15:33:29.078Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-11T05:32:00.104Z"
+  },
+  "__v": 1,
+  "tokens": []
+}]

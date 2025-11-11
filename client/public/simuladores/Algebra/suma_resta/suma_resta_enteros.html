@@ -1,0 +1,1289 @@
+<!-- client/public/simuladores/algebra/suma_resta/suma_resta_enteros.html-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suma y Resta en Recta Numérica</title>
+  <link rel="stylesheet" href="recta_suma_resta.css">
+</head>
+<body>
+<div id="cronometro" style="font-size:20px;color:green;margin:10px auto;text-align:center">Tiempo usando el simulador: 0 min 0 seg</div>
+<div id="contador-operaciones" style="font-size:20px;color:green;margin:10px auto;text-align:center">Número de operaciones realizadas: 0</div>
+
+<!-- 📌 Librería Plotly -->
+<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+
+
+  <!-- Carga de MathJax para renderizar LaTeX -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['\\(','\\)']],
+      displayMath: [['\\[','\\]']]
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script id="MathJax-script" async 
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->  
+
+<!--  Comienza texto  -->
+<div class="rsr-container">
+  <h1>Aritmética</h1>
+
+<div style="background-color:#f9f9f9; border-left:5px solid #004080; padding:1rem; margin:1rem 0; border-radius:6px;">
+  <p style="text-align: justify; margin:0;">
+    La <strong>aritmética</strong> es la rama de la matemática que estudia los números y las operaciones 
+    fundamentales que pueden realizarse con ellos: la <em>suma</em>, la <em>resta</em>, la 
+    <em>multiplicación</em> y la <em>división</em>. 
+    Su objetivo es analizar las propiedades y relaciones de los números naturales, enteros, racionales, reales 
+    y otros conjuntos numéricos, estableciendo reglas y principios que permiten efectuar cálculos de manera 
+    precisa y coherente.  
+  </p>
+  <p style="text-align: justify; margin-top:0.5rem;">
+    Desde un enfoque formal, la aritmética se apoya en principios lógicos y leyes como la propiedad 
+    <em>conmutativa</em>, <em>asociativa</em>, <em>distributiva</em>, la existencia del 
+    <strong>elemento neutro</strong> y del <strong>inverso</strong>, 
+    constituyendo la base para el desarrollo de otras ramas de las matemáticas y aplicaciones en la vida cotidiana.
+  </p>
+</div>
+
+
+
+
+
+<h2>Números Reales: Definición</h2>
+<p style="text-align: justify;">
+  Los <strong>números reales</strong> son todos aquellos números que podemos ubicar o representar 
+  sobre una línea recta llamada <em>recta numérica</em>. 
+  Podemos imaginar esta recta como una línea horizontal continua que contiene al 
+  <strong>cero</strong> en su punto central o intermedio.
+</p>
+
+<p style="text-align: justify;">
+  En esta recta, todos los números posibles que podamos imaginar tienen un lugar: 
+  los <strong>números negativos</strong>, ubicados a la izquierda del cero, y los 
+  <strong>números positivos</strong>, ubicados a la derecha del cero.
+</p>
+
+<p style="text-align: justify;">
+  Denotaremos al conjunto de los números reales con la letra: \(   \mathbb{R} \). Véase la figura 1. Los números negativos
+  los representamos con un símbolo \( - \), y los positivos, no reuqieren de ningún signo para referirse a ellos. 
+</p>
+
+
+
+
+
+<!-- ======================
+     FIGURA 1: Recta Numérica (Versión Profesional con racional e irracional)
+====================== -->
+<div class="figure-container">
+  <div id="figura1Plot" style="width:100%;max-width:800px;height:120px;"></div>
+  <div class="figure-caption">
+    <strong>Figura 1.</strong> Recta numérica con enteros, un racional y un irracional.
+  </div>
+</div>
+
+<script>
+(function(){
+  const minX = -7;
+  const maxX = 7;
+  const valoresX = Array.from({length: maxX - minX + 1}, (_, i) => i + minX);
+
+  // Línea principal
+  const linea = {
+    x: [minX, maxX],
+    y: [0, 0],
+    mode: 'lines',
+    line: {color: 'black', width: 3},
+    hoverinfo: 'skip',
+    showlegend: false
+  };
+
+  // Etiquetas enteros (cero en rojo)
+  const etiquetasEnteros = {
+    x: valoresX,
+    y: valoresX.map(() => -0.07),
+    mode: 'text',
+    text: valoresX.map(String),
+    textfont: {
+      size: 14,
+      color: valoresX.map(v => v === 0 ? 'red' : 'black'),
+      family: 'Arial Black'
+    },
+    hoverinfo: 'skip',
+    showlegend: false
+  };
+
+  // Ticks enteros
+  const ticksEnteros = valoresX.map(valor => ({
+    type: 'line',
+    x0: valor,
+    y0: -0.025,
+    x1: valor,
+    y1: 0.025,
+    line: {color: 'black', width: 2}
+  }));
+
+  // --- Puntos especiales ---
+  // Irracional (-pi aprox -3.14)
+  const irracionalX = -Math.PI;
+  const racionalX = 2/7;
+
+  const puntosEspeciales = {
+    x: [irracionalX, racionalX],
+    y: [0, 0],
+    mode: 'markers+text',
+    marker: {color: 'blue', size: 8},
+    text: ['-π', '2/7'],
+    textposition: 'bottom center',
+    textfont: {
+      size: 12,
+      color: 'blue',
+      family: 'Arial Black'
+    },
+    showlegend: false,
+    hoverinfo: 'skip',
+    type: 'scatter'
+  };
+
+  // Layout
+  const layout = {
+    margin: {l: 5, r: 5, t: 5, b: 5},
+    xaxis: {
+      range: [minX - 1, maxX + 1],
+      showgrid: false,
+      zeroline: false,
+      visible: false
+    },
+    yaxis: {
+      range: [-0.1, 0.1],
+      visible: false
+    },
+    shapes: ticksEnteros
+  };
+
+  Plotly.newPlot('figura1Plot', [linea, etiquetasEnteros, puntosEspeciales], layout, {displayModeBar: false});
+})();
+</script>
+
+
+
+
+
+
+
+<p style="text-align: justify;">
+  Comencemos con el número cero, el cual se ubica en el centro de la recta numérica y posee 
+  una propiedad fundamental en relación con la operación de la suma.  
+  Sea \( x \in \mathbb{R} \), donde el símbolo \( \in \) significa "pertenece a" 
+  y \( \mathbb{R} \) representa el conjunto de los números reales.  
+  La propiedad establece que al sumar el cero a cualquier número real \( x \), 
+  el resultado es el mismo número:  
+  \[
+    x + 0 = x
+  \]
+  Esto significa que el cero es el <em>elemento neutro</em> de la suma: no altera el valor 
+  del número con el que se combina.
+</p>
+
+
+
+<p style="text-align: justify;">
+  Para iniciar el estudio de la aritmética, es fundamental conocer las 
+  <em>operaciones aritméticas fundamentales</em>, que constituyen la base de todos los cálculos matemáticos. 
+  Estas operaciones son cuatro:
+  <strong>la suma</strong> (\( + \)), 
+  <strong>la resta</strong> (\( - \)), 
+  <strong>la multiplicación</strong> (\( \times \) o \( \cdot \)) 
+  y <strong>la división</strong> (\( \div \) o \( / \)).
+</p>
+
+<p style="text-align: justify;">
+  Si consideramos dos números reales cualesquiera \( x_{1}, x_{2} \in \mathbb{R} \), 
+  entonces se cumple que:
+</p>
+
+<p style="text-align: center;">
+  \[
+  \begin{aligned}
+  &x_{1} + x_{2} = x_{3}, \quad x_{3} \in \mathbb{R} \quad &\text{(suma)}\\[2pt]
+  &x_{1} - x_{2} = x_{3}, \quad x_{3} \in \mathbb{R} \quad &\text{(resta)}\\[2pt]
+  &x_{1} \cdot x_{2} = x_{3}, \quad x_{3} \in \mathbb{R} \quad &\text{(multiplicación)}\\[2pt]
+  &x_{1} \div x_{2} = x_{3}, \quad x_{3} \in \mathbb{R}, \, x_{2} \neq 0 \quad &\text{(división)}
+  \end{aligned}
+  \]
+</p>
+
+<p style="text-align: justify;">
+  Como podemos observar, bajo las cuatro operaciones básicas o 
+  <em>operaciones aritméticas fundamentales</em> —la suma, la resta, 
+  el producto y la división (exceptuando la división entre cero)— 
+  el resultado siempre será un nuevo número real que pertenece 
+  al mismo conjunto de los números reales. 
+  A esta propiedad se le conoce como 
+  <strong>propiedad de cerradura de los números reales</strong> 
+  bajo las operaciones aritméticas fundamentales. 
+  Si bien esta observación es fundamental, notemos que aún no hemos explicado 
+  cómo se realizan estas operaciones. Para abordarlas de manera clara, 
+  comenzaremos trabajando con los números enteros.
+</p>
+
+
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->  
+
+
+
+<h2> Los números enteros y sus operaciones aritméticas básicas</h2>
+<h3> Graficación</h3>
+
+
+<div style="background-color:#f9f9f9; border-left:5px solid #004080; padding:1rem; margin:1rem 0; border-radius:6px;">
+  <p style="text-align: justify; margin:0;">
+    Para quienes no están familiarizados con los <strong>números enteros</strong>, podemos definirlos como el 
+    conjunto de todos los números que se representan con la letra \( \mathbb{Z} \). Este conjunto incluye 
+    a los números negativos, el cero y los números positivos, de la siguiente manera:
+  </p>
+
+  <p style="text-align: center; margin:0.5rem 0;">
+    \[
+    \mathbb{Z} = \{ -\infty , \dots, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, \dots, +\infty \}
+    \]
+  </p>
+
+  <p style="text-align: justify; margin:0;">
+    Un <em>conjunto</em> es una colección de elementos —en este caso, números enteros—  representado por un par de llaves 
+    \( \{ \} \). En esta definición, los puntos suspensivos (\( \dots \)) indican que los números enteros negativos 
+    se extienden indefinidamente hacia la izquierda de la recta numérica (Figura 2), alcanzando valores sin límite que se representan de manera abstracta como <strong>menos infinito</strong> (\( -\infty \)).
+  </p>
+
+  <p style="text-align: justify; margin:0;">
+    De forma análoga, los números enteros positivos comienzan en \( 1 \) y se extienden indefinidamente hacia la derecha, 
+    hasta alcanzar valores sin límite que se representan como <strong>infinito positivo</strong> (\( +\infty \)).
+  </p>
+</div>
+
+
+
+<!-- ======================
+     FIGURA: Recta Numérica con Extremos ±∞
+====================== -->
+
+<div class="figure-container">
+  <div id="figuraEnterosPlot" style="width:100%;max-width:850px;height:150px;"></div>
+  <div class="figure-caption">
+    <strong>Figura 2.</strong> Recta numérica de enteros extendida hacia la izquierda \( -\infty \) y hacia la derecha \( +\infty \).
+  </div>
+</div>
+
+<script>
+(function(){
+  const minX = -3;
+  const maxX = 3;
+  const valoresX = Array.from({length: maxX - minX + 1}, (_, i) => i + minX);
+
+  // Línea principal
+  const linea = {
+    x: [minX, maxX],
+    y: [0, 0],
+    mode: 'lines',
+    line: {color: 'black', width: 3},
+    hoverinfo: 'skip',
+    showlegend: false
+  };
+
+  // Etiquetas enteros (cero en rojo)
+  const etiquetasEnteros = {
+    x: valoresX,
+    y: valoresX.map(() => -0.08),
+    mode: 'text',
+    text: valoresX.map(String),
+    textfont: {
+      size: 14,
+      color: valoresX.map(v => v === 0 ? 'red' : 'black'),
+      family: 'Arial Black'
+    },
+    hoverinfo: 'skip',
+    showlegend: false
+  };
+
+  // Ticks enteros
+  const ticksEnteros = valoresX.map(valor => ({
+    type: 'line',
+    x0: valor,
+    y0: -0.025,
+    x1: valor,
+    y1: 0.025,
+    line: {color: 'black', width: 2}
+  }));
+
+  // Flechas a la altura de ±∞
+  const flechas = [
+    { // Flecha izquierda
+      type: 'line',
+      x0: -2.5, y0: 0.05,
+      x1: minX - 0.5, y1: 0.05,
+      line: {color: 'blue', width: 2},
+      arrowhead: 10
+    },
+    { // Flecha derecha
+      type: 'line',
+      x0: 2.5, y0: 0.05,
+      x1: maxX + 0.5, y1: 0.05,
+      line: {color: 'blue', width: 2},
+      arrowhead: 10
+    }
+  ];
+
+  // Etiquetas ±∞ alineadas con flechas
+  const etiquetasInfinito = {
+    x: [minX - 0.5, maxX + 0.5],
+    y: [0.05, 0.05],
+    mode: 'text',
+    text: ['−∞', '+∞'],
+    textfont: {
+      size: 30,
+      color: 'red',
+      family: 'Arial Black'
+    },
+    hoverinfo: 'skip',
+    showlegend: false
+  };
+
+  // Layout
+  const layout = {
+    margin: {l: 5, r: 5, t: 5, b: 5},
+    xaxis: {
+      range: [minX - 1, maxX + 1],
+      showgrid: false,
+      zeroline: false,
+      visible: false
+    },
+    yaxis: {
+      range: [-0.12, 0.15],
+      visible: false
+    },
+    shapes: [...ticksEnteros, ...flechas]
+  };
+
+  Plotly.newPlot('figuraEnterosPlot', [linea, etiquetasEnteros, etiquetasInfinito], layout, {displayModeBar: false});
+})();
+</script>
+
+
+<p style="text-align: justify;">
+  Entonces para comprender mejor esto, hagamos algunos ejercicios con el graficador de números enteros, para ello presione
+  el siguiente botón : Mostrar Graficador.
+</p>
+
+
+
+<!--    TERMINA =================================-->
+
+<!-- ======================
+     GRAFICADOR DE NÚMEROS ENTEROS (MISMO ESTILO)
+====================== -->
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->  
+
+
+<!-- Botón Toggle con estilo -->
+<button id="toggleGraficador" class="btn-sim" onclick="toggleGraficador()">
+  Mostrar graficador
+</button>
+
+<div id="graficadorEnteros" style="display:none; margin-top:10px;">
+
+  <h2>Graficador de números enteros</h2>
+
+  <p style="text-align: justify;">
+    En este simulador indique cualquier número entero tal que 
+    \( n \in [-20,20] \) y observe lo que sucede. 
+    Después de realizar la gráfica responda las siguientes preguntas:
+  </p>
+
+  <ul style="text-align:left; margin-left: 1.5rem;">
+    <li>Elija un número negativo: ¿de qué color es la curva que representa los enteros negativos?</li>
+    <li>Elija un número positivo: ¿de qué color es la curva que representa los números positivos?</li>
+    <li>¿En qué dirección, con respecto al cero, avanzan los números negativos?</li>
+    <li>¿En qué dirección, con respecto al cero, avanzan los números positivos?</li>
+    <li>¿Puede contabilizar el número de “brincos” que da la figura y verificar si coincide con el valor del número entero elegido?</li>
+    <li>
+      ¿Cuántos “brincos” hacia la izquierda observa para los siguientes números negativos: 
+      <span id="negativos" style="color:red;">(por generar)</span>?
+    </li>
+    <li>
+      ¿Cuántos “brincos” hacia la derecha observa para los siguientes números positivos: 
+      <span id="positivos" style="color:red;">(por generar)</span>?
+    </li>
+    <li>Conforme se avanza más hacia la izquierda, ¿el número es más positivo o más negativo?</li>
+<li>
+  <span style="color:green; font-weight:bold;">Ejercicio:</span>  
+  Cuando termine presione el botón superior rojo (Ocultar graficador) y presione de nuevo el botón:
+  Mostrar graficador, sólo que en esta ocasión realice la nueva lista presentada en su cuaderno.
+</li>
+
+  </ul>
+
+
+  
+<label style="display:block; text-align:left; color:rgb(255, 115, 0); font-weight:bold;">
+  Ingrese un número entero entre -20 y 20:
+  <input type="number" id="numEntero" min="-20" max="20" value="0">
+</label>
+
+
+
+
+  <!-- Botón Graficar con estilo -->
+  <button class="btn-sim" onclick="dibujarEntero()">Graficar</button>
+
+  <!-- Contenedor del graficador -->
+  <div id="contenedorGraficador" class="rsr-contenedor" style="margin-top:10px;">
+    <canvas id="canvasEntero" height="100"></canvas>
+    <div class="rsr-recta" id="rectaEntero"></div>
+  </div>
+
+</div>
+
+<script>
+// Función para generar enteros aleatorios únicos en un rango
+function generarEnterosAleatorios(cantidad, min, max, positivos=true) {
+  const numeros = [];
+  while (numeros.length < cantidad) {
+    let num = Math.floor(Math.random() * (max - min + 1)) + min;
+    if (positivos && num > 0 && !numeros.includes(num)) {
+      numeros.push(num);
+    }
+    if (!positivos && num < 0 && !numeros.includes(num)) {
+      numeros.push(num);
+    }
+  }
+  return numeros;
+}
+
+// Función para actualizar listas de números
+function actualizarListas() {
+  const negativos = generarEnterosAleatorios(5, -20, 20, false);
+  const positivos = generarEnterosAleatorios(5, -20, 20, true);
+
+  document.getElementById("negativos").textContent = negativos.join(", ");
+  document.getElementById("positivos").textContent = positivos.join(", ");
+}
+
+// Función Toggle graficador con cambio de color en botón
+
+// Función Toggle graficador con cambio de color en botón
+
+
+function toggleGraficador() {
+  const div = document.getElementById("graficadorEnteros");
+  const btn = document.getElementById("toggleGraficador");
+
+  if (div.style.display === "none") {
+    div.style.display = "block";
+    btn.textContent = "Ocultar graficador";
+    btn.classList.replace("btn-sim", "btn-sim-rojo"); // 🔹 Cambia azul → rojo
+    actualizarListas();
+  } else {
+    div.style.display = "none";
+    btn.textContent = "Mostrar graficador";
+    btn.classList.replace("btn-sim-rojo", "btn-sim"); // 🔹 Cambia rojo → azul
+  }
+}
+
+
+
+
+
+
+
+// Función para dibujar entero en el canvas
+function dibujarEntero(){
+  let num = parseInt(document.getElementById("numEntero").value);
+  if(num < -20 || num > 20){
+    alert("El número debe estar entre -20 y 20");
+    return;
+  }
+
+  let inicio = Math.min(0,num) - 1;
+  let fin = Math.max(0,num) + 1;
+
+  let contenedor = document.getElementById("contenedorGraficador");
+  let canvas = document.getElementById("canvasEntero");
+  let ctx = canvas.getContext("2d");
+  let recta = document.getElementById("rectaEntero");
+
+  // Ajustar dimensiones igual que suma/resta
+  let { paso, altura } = ajustarCanvasYRecta(contenedor,canvas,recta,inicio,fin);
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  dibujaRecta(inicio,fin,recta,canvas.width);
+
+  // Punto de inicio en 0 (azul)
+  let xCero = (0 - inicio) * paso;
+  ctx.beginPath();
+  ctx.fillStyle = "blue";
+  ctx.arc(xCero, altura, 6, 0, 2 * Math.PI);
+  ctx.fill(); ctx.stroke();
+
+  // Dibujar arcos según signo
+  if(num > 0){
+    dibujarArco(ctx,xCero,Math.abs(num),'blue',paso,altura,'derecha');
+  } else if(num < 0){
+    dibujarArco(ctx,xCero,Math.abs(num),'red',paso,altura,'izquierda');
+  }
+
+  // Triángulo al final
+  let xFin = (num - inicio) * paso;
+  ctx.beginPath();
+  ctx.moveTo(xFin, altura + 12);
+  ctx.lineTo(xFin - 8, altura - 8);
+  ctx.lineTo(xFin + 8, altura - 8);
+  ctx.closePath();
+  ctx.fillStyle = num >= 0 ? "blue" : "red";
+  ctx.fill(); ctx.stroke();
+}
+</script>
+
+
+
+
+
+
+<!--   TERMINA  GRAFICADOR DE NÚMEROS ENTEROS=============  -->
+
+
+
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->
+<!--  ++++++++++++++++++++++++++++++  -->  
+
+
+
+  <!-- ======================
+       BLOQUE SUMA
+       ====================== -->
+  <h2>La suma o adición </h2>
+   <h3>La suma con la recta numérica </h3>
+
+
+<!-- Bloque en gris claro para definición de la suma -->
+<div style="background-color:#f9f9f9; border-left:5px solid #004080; padding:1rem; margin:1rem 0; border-radius:6px;">
+  <p style="text-align: justify; margin:0;">
+    La <strong>adición</strong> o <strong>suma</strong> es una de las operaciones más fundamentales de la aritmética y de las matemáticas en general. 
+    Intuitivamente, la suma representa el proceso de <em>combinar cantidades</em> o <em>agregar elementos</em> a un conjunto. 
+    Por ejemplo, si tenemos <strong>3 manzanas</strong> y luego añadimos <strong>2 más</strong>, el total es <strong>5 manzanas</strong>: 
+    hemos aplicado la operación de suma para obtener un resultado.
+  </p>
+
+  <p style="text-align: justify; margin:0.8rem 0 0 0;">
+    De manera más formal, la suma se define como una <strong>operación binaria</strong>:
+    \[
+    +: \mathbb{R} \times \mathbb{R} \to \mathbb{R}
+    \]
+    Esto significa lo siguiente:
+  </p>
+
+  <ul style="text-align:left; margin:0.5rem 0 0.5rem 1.5rem;">
+    <li>El símbolo  \( + \) representa la <strong>operación de suma</strong>.</li>
+    <li>\(\mathbb{R} \times \mathbb{R}\) significa que tomamos <strong>dos números reales</strong> 
+      (uno de un primer conjunto y otro de un segundo conjunto).</li>
+    <li>La flecha \(\to\) indica que, al aplicar la suma, obtenemos un <strong>nuevo número real</strong> como resultado.
+    A esta propiedad de los números reales se le conoce mo cerradura bajo de la operación de la suma.   </li>
+    <li>El símbolo  \( + \) representa la <strong>operación de suma</strong>.</li>
+    <li>\(\mathbb{R} \times \mathbb{R}\) significa que tomamos <strong>dos números reales</strong> 
+      (uno de un primer conjunto y otro de un segundo conjunto).</li>
+    <li> finalmente como los números enteros están contenidos dentro de los reales, o otras palabras son
+      una parte de los números reales, matemáticamente se dice que los números enteros ( \( \mathbb{Z} \) ) son un subconjunto 
+      \(  \subset \) de los números número reales (\( \mathbb{R} \)), lo cual se denota como : \( \mathbb{Z} \subset \mathbb{R} \),
+      y por lo tanto, las propiedades de los relaes, \( \mathbb{R} \), son heredadas a los enteros, por lo tanto todo
+      lo que hemos dicho hasta el momento de los reales será igualmente válido para el conjunto de los 
+       \(  \mathbb{Z} \).   </li>    
+  </ul>
+</div>
+
+<!-- Parte fuera del recuadro gris -->
+<p style="text-align: justify; margin-top:1rem;">
+  Por ejemplo, si \(a\) y \(b\) son dos números reales, al sumarlos se obtiene un número real \(c\), lo cual se escribe como:
+  \[
+  a + b = c
+  \]
+  Aquí:
+</p>
+
+<ul style="text-align:left; margin:0.5rem 0 0.5rem 1.5rem;">
+  <li><strong>\(a\)</strong> es el <em>primer número</em> (<strong>sumando</strong>).</li>
+  <li><strong>\(b\)</strong> es el <em>segundo número</em> (<strong>sumando</strong>).</li>
+  <li>El signo \( + \) indica que vamos a sumarlos.</li>
+  <li><strong>\(c\)</strong> es el <em>resultado</em> de esa suma (también llamado <strong>suma</strong> o <strong>total</strong>).</li>
+</ul>
+
+<p style="text-align: justify; margin-top:1rem;">
+  <strong>En resumen</strong>:
+</p>
+<ul style="text-align:left; margin:0.5rem 0 0.5rem 1.5rem;">
+  <li><strong>Definición formal</strong>: La suma es una operación binaria que, dados dos números reales \(a, b \in \mathbb{R}\), produce un tercer número real \(c \in \mathbb{R}\), tal que:
+    \[
+    a + b = c
+    \]
+  </li>
+  <li><strong>Notación </strong>: Se utiliza el símbolo, \( + \), para representar esta operación.</li>
+</ul>
+
+
+<!--  =================================                     -->
+
+
+<h3>Suma de números enteros positivos y negativos</h3>
+
+<p style="text-align: justify; margin-top:1rem;">
+  Ya sabemos que los números enteros se dividen en positivos y negativos. 
+  Para las personas que no estén familiarizadas con los números negativos, 
+  es importante comprender que estos se suman de manera similar a los positivos. 
+  Veamos algunos ejemplos:
+
+
+
+
+
+<p style="margin-top:1rem;">
+  <strong>Ejemplo 1:</strong> \(0 + 1 = 1\)  (recuerde que el cero es el neutro de la suma, 
+  cualquier número real sumado más cero da como resultado el mismo número) <br>
+  <strong>Ejemplo 2:</strong> \(0 + (-1) = -1\) <br>
+  <em>Nota:</em> Observe que cuando escribimos \(0 + (-1)\) no lo expresamos como \(0 + -1\). 
+  Sin embargo, si escribimos \(-1 + 0\), no hay problema.  
+  Por costumbre, siempre que un signo \(+\) antecede a un número con signo \(-\), 
+  se utilizan paréntesis para encerrar el número negativo. Observe los siguientes ejemplos: <br>
+  <strong>Ejemplo 3:</strong> \(-1 + 0 = -1\) <br>
+  <strong>Ejemplo 4:</strong> \(1 + 1 = 2\) <br>
+  <strong>Ejemplo 5:</strong> \(-1 + (-1) = -2\) <br>
+  <strong>Ejemplo 6:</strong> \(5 + 7 = 12\) <br>
+  <strong>Ejemplo 7:</strong> \(-5 + (-7) = -12\) <br>
+  <strong>Ejemplo 8:</strong> \(13 + 12 = 25\) <br>
+  <strong>Ejemplo 9:</strong> \(-13 + (-12) = -25\) <br>
+  <strong>Ejemplo 10:</strong> \(1500 + 2500 = 4000\) <br>
+  <strong>Ejemplo 11:</strong> \(-1500 + (-2500) = -4000\)
+</p>
+
+
+<!-- Botón Toggle Ejercicios -->
+
+
+
+
+
+
+
+<button id="toggleEjercicios" class="btn-sim">
+  Ejercicios de suma de enteros positivos y enteros negativos
+</button>
+
+<div id="contenedorEjercicios" style="display:none; margin-top:10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+  <h4>Resuelva los siguientes ejercicios, colocando su respuesta en el espacio en blanco:</h4>
+  <div id="listaEjercicios"></div>
+  <button onclick="verificarRespuestas()" 
+          style="background-color: green; color: white; margin-top:10px;">
+    Verificar respuestas
+  </button>
+  <p id="resultadoVerificacion" style="margin-top:10px; font-weight:bold;"></p>
+
+  <!-- Simulador al final -->
+  <p style="text-align: justify; margin-top:1rem;">
+    Ahora que ha finalizado con estos ejercicios, apunte en su cuaderno los ejercicios 
+    de esta lista, y grafíquelos presionando el siguiente botón (Simulador de suma de números enteros).
+  </p>
+
+  <div style="margin-top:20px; padding-top:15px; border-top:1px dashed #aaa;">
+    <button id="toggleSuma1" class="btn-sim" onclick="toggleSuma(1)">
+      Simulador de la suma de dos números enteros
+    </button>
+
+    <div id="simuladorSuma1" style="display:none; margin-top:10px;">
+      <h2>Simulador de Suma</h2>
+      <label style="color: blue; font-weight: bold;">
+        Primer número: 
+        <input type="number" id="num1Suma1" value="5">
+      </label>
+      <label style="color: red; font-weight: bold; margin-left: 10px;">
+        Segundo número: 
+        <input type="number" id="num2Suma1" value="2">
+      </label>
+      <button onclick="dibujarSuma(1)">Sumar</button>
+      <h2 id="resultadoSuma1" style="color:green; font-weight:bold;"></h2>
+      <div id="contenedorSuma1" class="rsr-contenedor">
+        <canvas id="canvasSuma1" height="100"></canvas>
+        <div class="rsr-recta" id="rectaSuma1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Función genérica para toggles
+  function crearToggle(idBoton, idContenido, textoMostrar, textoOcultar) {
+    const boton = document.getElementById(idBoton);
+    const contenido = document.getElementById(idContenido);
+
+    boton.addEventListener("click", () => {
+      const abierto = contenido.style.display === "block";
+      contenido.style.display = abierto ? "none" : "block";
+      boton.textContent = abierto ? textoMostrar : textoOcultar;
+      boton.classList.toggle("btn-sim-rojo", !abierto);
+      boton.classList.toggle("btn-sim", abierto);
+
+      if (!abierto && idBoton === "toggleEjercicios") {
+        generarEjercicios();
+      }
+    });
+  }
+
+  // Inicializar toggle de ejercicios
+  crearToggle("toggleEjercicios", "contenedorEjercicios", 
+              "Ejercicios de suma de enteros positivos y enteros negativos", 
+              "Ocultar ejercicios de suma de enteros");
+
+  // Función para decidir si un número debe llevar paréntesis
+  function formatoNumero(n, esSegundo) {
+    return (esSegundo && n < 0) ? `(${n})` : n;
+  }
+
+  function generarEjercicios() {
+    const lista = document.getElementById('listaEjercicios');
+    lista.innerHTML = "";
+    for (let i = 1; i <= 10; i++) {
+      let tipo = Math.random() < 0.5 ? "positivo" : "negativo";
+      let a = tipo === "positivo" ? Math.floor(Math.random() * 11) : -Math.floor(Math.random() * 11);
+      let b = tipo === "positivo" ? Math.floor(Math.random() * 11) : -Math.floor(Math.random() * 11);
+      lista.innerHTML += `
+        <div style="margin-bottom:5px;" data-a="${a}" data-b="${b}">
+          ${i}. Calcule la suma de: ${formatoNumero(a, false)} + ${formatoNumero(b, true)} = 
+          <input type="number" id="resp${i}" style="width:60px;">
+          <span id="feedback${i}" style="margin-left:10px;"></span>
+        </div>
+      `;
+    }
+  }
+
+  function verificarRespuestas() {
+    let correctas = 0;
+    const ejercicios = document.querySelectorAll('#listaEjercicios > div');
+    ejercicios.forEach((ej, i) => {
+      let a = parseInt(ej.dataset.a);
+      let b = parseInt(ej.dataset.b);
+      let correcta = a + b;
+      let respuestaInput = document.getElementById(`resp${i + 1}`);
+      let feedback = document.getElementById(`feedback${i + 1}`);
+      let respuestaTexto = respuestaInput.value.trim();
+      if (respuestaTexto === "") {
+        feedback.textContent = "";
+        feedback.style.color = "";
+        return;
+      }
+      let respuesta = parseInt(respuestaTexto);
+      if (respuesta === correcta) {
+        feedback.textContent = "✔ Correcto";
+        feedback.style.color = "green";
+        correctas++;
+      } else {
+        feedback.textContent = "✘ Incorrecto, repita el ejercicio";
+        feedback.style.color = "red";
+      }
+    });
+    document.getElementById('resultadoVerificacion').textContent = 
+      `Obtuvo ${correctas} correctas de los 10 ejercicios.`;
+  }
+</script>
+
+<!-- ============================
+     SEGUNDO BOTÓN Y SIMULADOR
+=============================== -->
+
+<h3>Propiedad conmutativa</h3>
+
+
+
+
+<p style="text-align: justify; margin-top:1rem;">
+  La <strong>propiedad conmutativa</strong> es una de las propiedades fundamentales de la suma. 
+  Establece que el orden de los sumandos no altera el resultado de la suma.
+</p>
+
+
+<!-- Bloque en gris claro para definición de la propiedad conmutativa -->
+<div style="background-color:#f9f9f9; border-left:5px solid #004080; padding:1rem; margin:1rem 0; border-radius:6px;">
+  <p style="text-align: justify; margin:0;">
+    Para todo \( a, b \in \mathbb{R} \), se cumple que:
+  </p>
+  
+  <p style="text-align: center; margin:0.5rem 0;">
+    \[
+      a + b = b + a
+    \]
+  </p>
+  
+  <p style="text-align: justify; margin:0;">
+    Es decir, al intercambiar el orden de los sumandos, la suma permanece invariante.
+  </p>
+</div>
+ 
+
+
+
+
+<p style="margin-top:1rem;">
+  Veamos algunos ejemplos:  
+  <strong>Ejemplo 1:</strong> \(0 + 1 = 1 + 0 = 1\). <br>
+  <strong>Ejemplo 2:</strong> \(0 + (-1) = -1 + 0 = -1\). <br>
+  <strong>Ejemplo 3:</strong> \(1 + 1 = 1 + 1 = 2\). <br>
+  <strong>Ejemplo 4:</strong> \(-1 + (-1) = -1 + (-1) = -2\). <br>
+  <strong>Ejemplo 5:</strong> \(5 + 7 = 7 + 5 = 12\). <br>
+  <strong>Ejemplo 6:</strong> \(-5 + (-7) = -7 + (-5) = -12\). <br>
+  <strong>Ejemplo 7:</strong> \(13 + 12 = 12 + 13 = 25\). <br>
+  <strong>Ejemplo 8:</strong> \(-13 + (-12) = -12 + (-13) = -25\). <br>
+  <strong>Ejemplo 9:</strong> \(1500 + 2500 = 2500 + 1500 = 4000\). <br>
+  <strong>Ejemplo 10:</strong> \(-1500 + (-2500) = -2500 + (-1500) = -4000\).
+</p>
+
+<p style="margin-top:1rem;">
+  <strong>Ejercicio:</strong> considere los ejemplos del párrafo anterior y, en su cuaderno, 
+  grafique las operaciones que se muestran tal como hemos hecho con los graficadores. 
+  Verifique que siempre se cumple que:
+</p>
+
+<p style="text-align:center; font-weight:bold; margin:1rem 0;">
+  \[
+    (a + b) = (b + a)
+  \]
+</p>
+
+<p style="text-align: justify; margin-top:1rem;">
+  Como veremos más adelante, esta propiedad no es únicamente para la suma de números enteros; 
+  en realidad es válida para todos los números reales, es decir, para todos aquellos que existen sobre la recta numérica.
+  Cuando haya terminado con su tarea, compare sus resultados con los resultados que le dé el  
+   simulador de suma de dos números enteros, para ello presione el botón correspondiente que se encuentra unas líneas abajo.
+</p>
+
+
+<!-- TERMINA PROPIEDAD ASOCIATIVA-->
+
+
+<!--    COMIENZA SIMULADOR SUMA DE DOS NÚMEROS ENTEROS -->
+
+
+<button id="toggleSuma2" class="btn-sim" onclick="toggleSuma(2)">
+  Simulador de la suma de dos números enteros
+</button>
+
+<div id="simuladorSuma2" style="display:none; margin-top:10px;">
+  <h2>Simulador de Suma</h2>
+  <label style="color: blue; font-weight: bold;">
+    Primer número: 
+    <input type="number" id="num1Suma2" value="5">
+  </label>
+  <label style="color: red; font-weight: bold; margin-left: 10px;">
+    Segundo número: 
+    <input type="number" id="num2Suma2" value="2">
+  </label>
+  <button onclick="dibujarSuma(2)">Sumar</button>
+  <h2 id="resultadoSuma2" style="color:green; font-weight:bold;"></h2>
+  <div id="contenedorSuma2" class="rsr-contenedor">
+    <canvas id="canvasSuma2" height="100"></canvas>
+    <div class="rsr-recta" id="rectaSuma2"></div>
+  </div>
+</div>
+
+<script>
+function toggleSuma(num) {
+  const div = document.getElementById(`simuladorSuma${num}`);
+  const btn = document.getElementById(`toggleSuma${num}`);
+  if (div.style.display === "none") {
+    div.style.display = "block";
+    btn.textContent = "Ocultar simulador de suma";
+    btn.classList.replace("btn-sim", "btn-sim-rojo");
+    dibujarSuma(num);
+  } else {
+    div.style.display = "none";
+    btn.textContent = "Simulador de la suma de dos números enteros";
+    btn.classList.replace("btn-sim-rojo", "btn-sim");
+  }
+}
+
+function dibujarSuma(num){
+  let num1=parseInt(document.getElementById(`num1Suma${num}`).value);
+  let num2=parseInt(document.getElementById(`num2Suma${num}`).value);
+  let resultado=num1+num2;
+  document.getElementById(`resultadoSuma${num}`).textContent=
+    `${num1} ${num2>=0?"+":" + ("}${num2}${num2<0?")":""} = ${resultado}`;
+
+  let inicio=Math.min(0,num1,resultado)-1;
+  let fin=Math.max(0,num1,resultado)+1;
+  let contenedor=document.getElementById(`contenedorSuma${num}`);
+  let canvas=document.getElementById(`canvasSuma${num}`);
+  let ctx=canvas.getContext("2d");
+  let recta=document.getElementById(`rectaSuma${num}`);
+
+  let { paso, altura } = ajustarCanvasYRecta(contenedor,canvas,recta,inicio,fin);
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  dibujaRecta(inicio,fin,recta,canvas.width);
+  let startX=(-inicio)*paso;
+
+  ctx.beginPath();
+  ctx.fillStyle = "blue";
+  ctx.arc(startX, altura, 6, 0, 2 * Math.PI);
+  ctx.fill(); ctx.stroke();
+
+  dibujarArco(ctx,startX,Math.abs(num1),'blue',paso,altura,num1>=0?'derecha':'izquierda');
+
+  let xAzul = (num1 - inicio) * paso;
+  ctx.beginPath();
+  ctx.moveTo(xAzul, altura + 12);
+  ctx.lineTo(xAzul - 8, altura - 8);
+  ctx.lineTo(xAzul + 8, altura - 8);
+  ctx.closePath();
+  ctx.fillStyle = "blue"; ctx.fill(); ctx.stroke();
+
+  let xRojoInicio = startX + num1 * paso;
+  ctx.beginPath();
+  ctx.fillStyle = "red";
+  ctx.arc(xRojoInicio, altura, 6, 0, 2 * Math.PI);
+  ctx.fill(); ctx.stroke();
+
+  dibujarArco(ctx,startX+num1*paso,Math.abs(num2),'red',paso,altura,num2>=0?'derecha':'izquierda');
+
+  let xResultado = (resultado - inicio) * paso;
+  ctx.beginPath();
+  ctx.moveTo(xResultado, altura + 12);
+  ctx.lineTo(xResultado - 8, altura - 8);
+  ctx.lineTo(xResultado + 8, altura - 8);
+  ctx.closePath();
+  ctx.fillStyle = "red"; ctx.fill(); ctx.stroke();
+}
+</script>
+
+
+<!-- TERMINA SIMULADOR DE SUMA NÚMEROS ENTEROS-->
+
+
+
+<!-- COMIENZA INVERSO ADITIVO-->
+
+<h3>Inverso aditivo</h3>
+<p style="text-align: justify; margin-top:1rem;">
+  Ahora que ya se ha definido la suma, es necesario explicar cómo funciona y cómo opera. 
+  Para ello, introduciremos la <strong>propiedad del inverso aditivo</strong>. 
+  El inverso aditivo se define como:
+</p>
+
+<!-- Bloque en gris claro para definición de inverso aditivo -->
+<div style="background-color:#f9f9f9; border-left:5px solid #004080; padding:1rem; margin:1rem 0; border-radius:6px;">
+  <p style="text-align: justify; margin:0;">
+    Sea \( a \in \mathbb{R} \). El <strong>inverso aditivo</strong> de \( a \) es el número \(-a\) tal que:
+  </p>
+  
+  <p style="text-align: center; margin:0.5rem 0;">
+    \[
+      a + (-a) = 0 \quad \text{y} \quad (-a) + a = 0
+    \]
+  </p>
+  
+  <p style="text-align: justify; margin:0;">
+    Es decir, para todo número real \( a \), existe otro número real \(-a\) que al sumarse con \( a \) da como 
+    resultado el <strong>elemento neutro aditivo</strong> (cero).
+  </p>
+</div>
+
+<!-- TERMINA INVERSO ADITIVO-->
+
+
+
+
+
+
+<!-- ======================
+     BLOQUE RESTA
+====================== -->
+<h2>Resta en Recta Numérica</h2>
+
+<!-- Botón Toggle para simulador de Resta -->
+<button id="toggleResta" class="btn-sim" onclick="toggleResta()">
+  Simulador de la resta de dos números enteros
+</button>
+
+<div id="simuladorResta" style="display:none; margin-top:10px;">
+  <h2>Simulador de Resta</h2>
+
+<div>
+  <label style="color: blue; font-weight: bold;">
+    Primer número: 
+    <input type="number" id="num1Resta" value="5">
+  </label>
+  
+  <label style="color: red; font-weight: bold; margin-left: 10px;">
+    Segundo número: 
+    <input type="number" id="num2Resta" value="2">
+  </label>
+  
+  <button onclick="dibujarResta()">Restar</button>
+  
+  <h2 id="resultadoResta" style="color:green; font-weight:bold;"></h2>
+</div>
+
+  <div id="contenedorResta" class="rsr-contenedor">
+    <canvas id="canvasResta" height="100"></canvas>
+    <div class="rsr-recta" id="rectaResta"></div>
+  </div>
+</div>
+
+<script> // TOGGLE RESTA
+ function toggleResta() {
+   const div = document.getElementById("simuladorResta");
+   const btn = document.getElementById("toggleResta");
+
+   if (div.style.display === "none") {
+     div.style.display = "block";
+     btn.textContent = "Ocultar simulador de resta";
+     btn.classList.replace("btn-sim", "btn-sim-rojo");
+     dibujarResta();
+    } else {
+     div.style.display = "none";
+     btn.textContent = "Simulador de la resta de dos números enteros";
+     btn.classList.replace("btn-sim-rojo", "btn-sim");
+    }
+  }
+
+  /* =========================
+   FUNCIONES COMUNES
+  ========================= */
+  function ajustarCanvasYRecta(contenedor, canvas, recta, inicio, fin) {
+    canvas.width = contenedor.clientWidth;
+    let paso = canvas.width / (fin - inicio);
+    let altura = Math.max(50, paso);
+
+    canvas.height = altura + 20;
+    recta.style.top = altura + "px";
+    recta.style.width = canvas.width + "px";
+    contenedor.style.height = (altura + 40) + "px";
+
+    return { paso, altura };
+  }
+
+  function dibujaRecta(inicio, fin, recta, anchoRecta){
+    recta.innerHTML = '';
+    for(let i = inicio; i <= fin; i++){
+      let pos = ((i-inicio)/(fin-inicio))*anchoRecta;
+      let marca = document.createElement("div");
+      marca.className = "rsr-marca";
+      marca.style.left = pos + "px";
+      recta.appendChild(marca);
+
+      let numero = document.createElement("div");
+      numero.className = "rsr-numero";
+      numero.style.left = pos + "px";
+      numero.textContent = i;
+      recta.appendChild(numero);
+    }
+  }
+
+  function dibujarArco(ctx, xInicio, pasos, color, paso, altura, tipo) {
+    let dir = tipo === 'derecha' ? 1 : -1;
+    let x = xInicio;
+
+    for (let i = 0; i < pasos; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+
+      if (color === 'blue') {
+        ctx.arc(
+          x + dir * (paso / 2),
+          altura,
+          paso / 2,
+          Math.PI,
+          0,
+          false
+        );
+      } else {
+        ctx.moveTo(x, altura);
+        ctx.quadraticCurveTo(
+          x + dir * (paso / 2),
+          altura - altura * 0.75,
+          x + dir * paso,
+          altura
+        );
+      } 
+
+      ctx.stroke();
+      x += dir * paso;
+    }
+  }
+
+  /* =========================
+     BLOQUE RESTA
+  ========================= */
+  function dibujarResta(){
+    let num1=parseInt(document.getElementById("num1Resta").value);
+    let num2=parseInt(document.getElementById("num2Resta").value);
+    let resultado=num1-num2;
+    if(resultado<-15||resultado>15){
+      alert("Resultado fuera de rango (-15 a 15)");
+      return;
+    }
+    document.getElementById("resultadoResta").textContent=
+      `${num1} ${num2>=0?"-":" - ("}${num2}${num2<0?")":""} = ${resultado}`;
+
+    let inicio=Math.min(0,num1,resultado)-1;
+    let fin=Math.max(0,num1,resultado)+1;
+    let contenedor=document.getElementById("contenedorResta");
+    let canvas=document.getElementById("canvasResta");
+    let ctx=canvas.getContext("2d");
+    let recta=document.getElementById("rectaResta");
+
+    let { paso, altura } = ajustarCanvasYRecta(contenedor,canvas,recta,inicio,fin);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    dibujaRecta(inicio,fin,recta,canvas.width);
+    let startX=(-inicio)*paso;
+
+    ctx.beginPath();
+    ctx.fillStyle = "blue";
+    ctx.arc(startX, altura, 6, 0, 2 * Math.PI);
+    ctx.fill(); ctx.stroke();
+
+    dibujarArco(ctx,startX,Math.abs(num1),'blue',paso,altura,num1>=0?'derecha':'izquierda');
+
+    let xAzul = (num1 - inicio) * paso;
+    ctx.beginPath();
+    ctx.moveTo(xAzul, altura + 12);
+    ctx.lineTo(xAzul - 8, altura - 8);
+    ctx.lineTo(xAzul + 8, altura - 8);
+    ctx.closePath();
+    ctx.fillStyle = "blue"; ctx.fill(); ctx.stroke();
+
+    let xRojoInicio = startX + num1 * paso;
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.arc(xRojoInicio, altura, 6, 0, 2 * Math.PI);
+    ctx.fill(); ctx.stroke();
+
+    dibujarArco(ctx,startX+num1*paso,Math.abs(num2),'red',paso,altura,num2>=0?'izquierda':'derecha');
+
+    let xResultado = (resultado - inicio) * paso;
+    ctx.beginPath();
+    ctx.moveTo(xResultado, altura + 12);
+    ctx.lineTo(xResultado - 8, altura - 8);
+    ctx.lineTo(xResultado + 8, altura - 8);
+    ctx.closePath();
+    ctx.fillStyle = "red"; ctx.fill(); ctx.stroke();
+  }
+
+  /* =========================
+     AUTOEJECUCIÓN INICIAL
+  ========================= */
+  window.onload=function(){
+    dibujarSuma(1);
+    dibujarSuma(2);
+    dibujarResta();
+  }
+</script>
+<script>
+  // ====== TRACKING + CRONÓMETRO + CONTADOR ======
+  // Clave única para identificar este simulador (igual que antes)
+  const SIM_KEY = "algebra_suma_resta_enteros";
+
+  let simStartAt = 0;
+  let sentTrack = false;
+  let cronId = null;
+  let operaciones = 0;
+
+  function actualizarContador() {
+    const el = document.getElementById('contador-operaciones');
+    if (el) el.textContent = `Número de operaciones realizadas: ${operaciones}`;
+  }
+
+  // Envuelve funciones existentes para contar intentos SIN tocar su código
+  function wrapAndCount(fnName) {
+    const original = window[fnName];
+    if (typeof original !== 'function') return;
+    window[fnName] = function(...args) {
+      operaciones++;
+      actualizarContador();
+      return original.apply(this, args);
+    };
+  }
+
+  function iniciarCronometro() {
+    simStartAt = Date.now();
+    cronId = setInterval(() => {
+      const total = Math.floor((Date.now() - simStartAt) / 1000);
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      const el = document.getElementById('cronometro');
+      if (el) el.textContent = `Tiempo usando el simulador: ${m} min ${s} seg`;
+    }, 1000);
+  }
+
+  function detenerCronometro() {
+    if (cronId) clearInterval(cronId);
+  }
+
+  async function enviarTrack() {
+    if (sentTrack) return;
+    sentTrack = true;
+    detenerCronometro();
+
+    const totalSeg = Math.max(0, Math.floor((Date.now() - simStartAt) / 1000));
+
+    try {
+      await fetch("http://localhost:3001/api/simuladores/track", {
+        method: "POST",
+        credentials: "include", // envía la cookie de sesión
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          // 🔹 Campos en español como el backend actualizado:
+          simulador: SIM_KEY,
+          duracionSegundos: totalSeg
+          // Si algún día quieres guardar intentos por sesión, puedes agregar: intentos: operaciones
+        })
+      });
+      console.log("✅ Track enviado:", SIM_KEY, totalSeg, "seg");
+    } catch (err) {
+      console.error("❌ Error enviando track:", err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Inicia cronómetro
+    iniciarCronometro();
+    actualizarContador();
+
+    // Envuelve funciones para contar (no cambia tu lógica)
+    wrapAndCount('dibujarEntero');
+    wrapAndCount('dibujarSuma');
+    wrapAndCount('dibujarResta');
+  });
+
+  // Envía tracking cuando se cierre/recargue la pestaña
+  window.addEventListener("beforeunload", enviarTrack);
+  // Salida manual del simulador
+  document.getElementById("btn-salir")?.addEventListener("click", async () => {
+   await enviarTrack();  // guarda en BD
+   window.close();       // intenta cerrar la ventana
+  });
+</script>
+<br> <button id="btn-salir" class="btn-sim-rojo" style="margin-top:20px;">Salir del simulador</button>
+</body>
+</html>

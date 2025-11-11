@@ -1,0 +1,14 @@
+/*Registro_Principal.css*/
+.timer {
+  font-size: 16px;
+  font-weight: bold;
+  color: black !important; /* Fuerza el color negro */
+  background: transparent; /* Sin fondo */
+  padding: 5px 10px;
+  border-radius: 5px;
+  position: absolute;
+  left: 10px; /* Mueve el reloj a la izquierda */
+  top: 50%; /* Centrado en el header */
+  transform: translateY(-50%); /* Ajuste vertical */
+  z-index: 101; /* Asegura que el reloj esté sobre otros elementos */
+}

@@ -1,0 +1,140 @@
+[{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c13"
+  },
+  "pregunta": "¿Cuál es el planeta más cercano al sol?",
+  "opciones": [
+    "Tierra",
+    "Marte",
+    "Mercurio",
+    "Venus"
+  ],
+  "respuestaCorrecta": "c",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c12"
+  },
+  "pregunta": "¿Cuál es la capital de Francia?",
+  "opciones": [
+    "Londres",
+    "Berlín",
+    "Madrid",
+    "París"
+  ],
+  "respuestaCorrecta": "d",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c16"
+  },
+  "pregunta": "¿Cuál es el símbolo químico del agua?",
+  "opciones": [
+    "O2",
+    "H2O",
+    "CO2",
+    "N2O"
+  ],
+  "respuestaCorrecta": "b",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c17"
+  },
+  "pregunta": "¿En qué continente está Egipto?",
+  "opciones": [
+    "Asia",
+    "América",
+    "Europa",
+    "África"
+  ],
+  "respuestaCorrecta": "d",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c18"
+  },
+  "pregunta": "¿Cuántos lados tiene un hexágono?",
+  "opciones": [
+    "4",
+    "5",
+    "6",
+    "7"
+  ],
+  "respuestaCorrecta": "c",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c19"
+  },
+  "pregunta": "¿Quién pintó la Mona Lisa?",
+  "opciones": [
+    "Vincent van Gogh",
+    "Pablo Picasso",
+    "Leonardo da Vinci",
+    "Claude Monet"
+  ],
+  "respuestaCorrecta": "c",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c1a"
+  },
+  "pregunta": "¿Cuál es el animal terrestre más rápido?",
+  "opciones": [
+    "Elefante",
+    "Caballo",
+    "Guepardo",
+    "León"
+  ],
+  "respuestaCorrecta": "c",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c1b"
+  },
+  "pregunta": "¿Quién fue el primer hombre en la luna?",
+  "opciones": [
+    "Yuri Gagarin",
+    "Neil Armstrong",
+    "Buzz Aldrin",
+    "Michael Collins"
+  ],
+  "respuestaCorrecta": "b",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c14"
+  },
+  "pregunta": "¿En qué año empezó la Segunda Guerra Mundial?",
+  "opciones": [
+    "1939",
+    "1945",
+    "1914",
+    "1929"
+  ],
+  "respuestaCorrecta": "a",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c248f7a8ffb40feb1e9c15"
+  },
+  "pregunta": "¿Quién escribió 'Don Quijote de la Mancha'?",
+  "opciones": [
+    "Miguel de Cervantes",
+    "William Shakespeare",
+    "Garcilaso de la Vega",
+    "Lope de Vega"
+  ],
+  "respuestaCorrecta": "a",
+  "__v": 0
+}]

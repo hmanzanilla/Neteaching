@@ -1,0 +1,29 @@
+/* C:\Users\znava\Desktop\SERVIDOR\servidor_bcryptjs_1\client\src\components\alumno\ruta1\acceso\Principal_Acceso.css */
+/* 🔹 Principal_Acceso.css */
+.foto-perfil-hover {
+  position: relative;
+  display: inline-block;
+}
+
+.foto-perfil-img {
+  width: 200px;
+  border-radius: 10px;
+}
+
+.foto-perfil-cambiar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.foto-perfil-hover:hover .foto-perfil-cambiar {
+  display: flex;
+}

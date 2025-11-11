@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editor de Libro — Combinado</title>
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="editor_libro.css">
+
+  <!-- MathJax para LaTeX -->
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Lógica principal -->
+  <script src="editor_libro.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Generador de Libro</h1>
+    <div class="sep"></div>
+    <!-- ✔ Botones conservados del archivo editor_de_libro -->
+    <button id="btnPartes" title="Ver partes disponibles" type="button">Libro (partes)</button>
+    <button id="btnDeshacer" disabled type="button">Deshacer</button>
+    <button id="btnDescargar" title="Descargar HTML de solo lectura" type="button">Descargar HTML</button>
+  </header>
+
+  <div class="layout">
+    <!-- PANEL IZQUIERDO: ÍNDICE + gestión páginas -->
+    <aside class="toc">
+      <h2>Índice</h2>
+      <!-- ✔ Botonera de plantillas (del editor_de_libro) -->
+      <div class="toolbar">
+        <button id="btnAddPortada">Portada</button>
+        <button id="btnAddPrefacio">Prefacio</button>
+        <button id="btnAddCapitulo">Capítulo</button>
+        <button id="btnAddSeccion">Sección</button>
+        <button id="btnAddSubseccion">Subsección</button>
+      </div>
+
+      <!-- Lista de páginas (con acciones de edición) -->
+      <ul id="pagesList" class="pages-list"></ul>
+    </aside>
+
+    <!-- PANEL DERECHO -->
+    <main class="main">
+      <div class="info">
+        Haz clic en una página del índice para <b>editarla</b>. Usa la barra de ajustes para que <b>quepa más contenido</b> por página.
+        <span class="badge">LaTeX</span>
+        <span class="badge">Imágenes</span>
+        <span class="badge">Simuladores [SIM:id]</span>
+      </div>
+
+      <div class="panel">
+        <h3>Ajustes de composición</h3>
+        <div class="controls-row">
+          <div class="control">
+            <label for="fontSize">Tamaño de letra (px)</label>
+            <input id="fontSize" type="range" min="12" max="22" value="16">
+          </div>
+          <div class="control">
+            <label for="lineHeight">Interlineado</label>
+            <input id="lineHeight" type="range" min="1.15" max="1.80" step="0.05" value="1.35">
+          </div>
+          <div class="control">
+            <label for="margins">Márgenes (px)</label>
+            <input id="margins" type="range" min="16" max="48" value="28">
+          </div>
+          <div class="control">
+            <label for="columns">Columnas</label>
+            <input id="columns" type="range" min="1" max="2" step="1" value="1">
+          </div>
+          <div class="control">
+            <label for="bgColor">Fondo</label>
+            <input id="bgColor" type="color" value="#0f172a">
+          </div>
+          <div class="control">
+            <label for="textColor">Texto</label>
+            <input id="textColor" type="color" value="#e5e7eb">
+          </div>
+          <div class="control">
+            <label for="paperColor">Página</label>
+            <input id="paperColor" type="color" value="#0a1120">
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS dinámico de composición (vista previa y export) -->
+      <style id="liveTypeset"></style>
+
+      <div class="panel">
+        <h3>Vista previa</h3>
+        <div id="vistaPrevia" class="output"></div>
+      </div>
+
+      <div class="panel">
+        <h3>HTML exportable (solo lectura)</h3>
+        <textarea id="htmlGenerado" class="codigo" readonly></textarea>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL DE EDICIÓN (potenciado con menús LaTeX e imagen) -->
+  <div id="modalEditorBg" class="modal-bg" hidden aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+      <h2 id="modalTitulo">Editar página</h2>
+
+      <div class="row">
+        <label for="inpTitulo"><b>Título:</b></label>
+        <input type="text" id="inpTitulo" placeholder="Título de la página" />
+      </div>
+
+      <div class="row">
+        <div class="toolbar-line">
+          <span class="badge">Contenido (usa LaTeX con \( ... \) o \[ ... \])</span>
+          <button id="btnMathSimbolos" type="button">Símbolos ▼</button>
+          <button id="btnMathEqs" type="button">Estructuras ▼</button>
+          <button id="btnImagen" type="button">Imagen (JPG/PNG)</button>
+          <input id="inpImagen" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" style="display:none">
+          <div id="menuSimbolos" class="math-menu"></div>
+          <div id="menuEqs" class="math-menu" style="left:140px;"></div>
+        </div>
+
+        <textarea id="inpContenido" placeholder="Escribe aquí. Puedes usar HTML sencillo, LaTeX, imágenes y tokens [SIM:id]."></textarea>
+        <small>Tip: para <b>Portada</b> agrega título, autor, edición, editorial e imagen.</small>
+      </div>
+
+      <div class="buttons">
+        <button id="btnCancelar" type="button">Cancelar</button>
+        <button id="btnGuardar" type="button">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popover simple para “Libro (partes)” -->
+  <div id="partesPopover" class="popover" hidden>
+    <div class="popover-inner">
+      <b>Partes disponibles</b>
+      <ul>
+        <li>Portada</li>
+        <li>Prefacio</li>
+        <li>Capítulo</li>
+        <li>Sección</li>
+        <li>Subsección</li>
+      </ul>
+      <p>Usa los botones del índice para añadirlas.</p>
+      <button id="btnCerrarPartes">Cerrar</button>
+    </div>
+  </div>
+</body>
+</html>

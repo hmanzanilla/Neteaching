@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Unión de Conjuntos A ∪ B ∪ C</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: white;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-top: 30px;
+    }
+    svg {
+      border: 2px solid red;
+    }
+    .equal-sign {
+      font-size: 80px;
+      font-weight: bold;
+      color: black;
+    }
+    .cronometro, .contador-operaciones {
+      font-size: 20px;
+      color: green;
+      margin-top: 10px;
+    }
+    .cerrar-btn {
+      margin-top: 30px;
+      background-color: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+  <script>
+    const SIM_KEY = "union_3_conjuntos"; // 🔹 Identificador único del simulador
+    let segundos = 0;
+    let minutos = 0;
+    let operaciones = 1;
+    let intervalo;
+    let yaRegistrado = false;
+
+    function iniciarCronometro() {
+      intervalo = setInterval(() => {
+        segundos++;
+        if (segundos === 60) {
+          minutos++;
+          segundos = 0;
+        }
+        document.getElementById('cronometro').textContent = 
+          `Tiempo usando el simulador: ${minutos} min ${segundos} seg`;
+      }, 1000);
+    }
+
+    function detenerCronometro() {
+      clearInterval(intervalo);
+    }
+
+    async function cerrarSimulador() {
+      if (yaRegistrado) return;
+      detenerCronometro();
+      yaRegistrado = true;
+
+      const tiempoTotal = minutos * 60 + segundos;
+
+      try {
+        await fetch("http://localhost:3001/api/simuladores/track", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            simulator: SIM_KEY,
+            durationMs: tiempoTotal * 1000,
+            operaciones
+          })
+        });
+        console.log("✅ Registro guardado en simuladores.");
+      } catch (err) {
+        console.error("❌ Error al guardar:", err);
+      } finally {
+        window.close();
+      }
+    }
+
+    window.addEventListener("beforeunload", cerrarSimulador);
+
+    window.onload = () => {
+      iniciarCronometro();
+    };
+  </script>
+</head>
+<body>
+
+<h2>La unión de tres conjuntos (A, B y C): A ∪ B ∪ C</h2>
+<div id="cronometro" class="cronometro">Tiempo usando el simulador: 0 min 0 seg</div>
+<div id="contador-operaciones" class="contador-operaciones">Número de operaciones realizadas: 1</div>
+
+<div class="container">
+  <svg width="300" height="300">
+    <circle cx="100" cy="150" r="80" fill="rgba(0, 0, 255, 0.4)" />
+    <circle cx="200" cy="150" r="80" fill="rgba(255, 165, 0, 0.4)" />
+    <circle cx="150" cy="220" r="80" fill="rgba(255, 0, 0, 0.4)" />
+    <text x="65" y="150" font-size="16" fill="blue" font-weight="bold">A</text>
+    <text x="215" y="150" font-size="16" fill="orange" font-weight="bold">B</text>
+    <text x="140" y="300" font-size="16" fill="red" font-weight="bold">C</text>
+  </svg>
+
+  <div class="equal-sign">=</div>
+
+  <svg width="300" height="300">
+    <circle cx="100" cy="150" r="80" fill="rgba(124, 252, 0, 0.5)" />
+    <circle cx="200" cy="150" r="80" fill="rgba(124, 252, 0, 0.5)" />
+    <circle cx="150" cy="220" r="80" fill="rgba(124, 252, 0, 0.5)" />
+    <text x="65" y="150" font-size="16" fill="green" font-weight="bold">A</text>
+    <text x="215" y="150" font-size="16" fill="green" font-weight="bold">B</text>
+    <text x="140" y="300" font-size="16" fill="green" font-weight="bold">C</text>
+  </svg>
+</div>
+
+<button class="cerrar-btn" onclick="cerrarSimulador()">Cerrar simulador</button>
+
+</body>
+</html>

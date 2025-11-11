@@ -1,0 +1,94 @@
+/* C:\Users\znava\Desktop\SERVIDOR\servidor_bcryptjs_1\client\src\components\alumno\ruta1\conocenos\Principal_Conocenos.css */
+/* Estilos generales para el contenedor principal */
+/* 📌 Suscribete.css */
+/* 📌 Suscribete.css - Corrección para no afectar botones globales */
+
+/* Aplicamos estilos solo dentro de .suscribete-container */
+.suscribete-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.suscribete-container h1 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Sección de paquetes */
+.paquetes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Botones dentro de Suscribete */
+.suscribete-container .paquetes button {
+  padding: 12px;
+  border: none;
+  background-color: #007bff; /* Azul original */
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.suscribete-container .paquetes button.seleccionado {
+  background-color: #28a745;
+  font-weight: bold;
+}
+
+.suscribete-container .paquetes button:hover {
+  background-color: #0056b3;
+}
+
+/* Selector de método de pago */
+.suscribete-container select {
+  margin-top: 15px;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+/* Botón de confirmación de suscripción */
+.suscribete-container .confirmar-btn {
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.suscribete-container .confirmar-btn:hover {
+  background-color: #c82333;
+}
+
+/* Botón de regreso */
+.suscribete-container .regresar-btn {
+  margin-top: 15px;
+  background-color: #6c757d;
+}
+
+.suscribete-container .regresar-btn:hover {
+  background-color: #545b62;
+}
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+  .suscribete-container {
+    max-width: 90%;
+  }
+}

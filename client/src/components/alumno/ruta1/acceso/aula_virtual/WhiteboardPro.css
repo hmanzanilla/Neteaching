@@ -1,0 +1,605 @@
+/* ==========================================================
+   WHITEBOARD PRO – TEMA CLARO ESTILO PPT
+   Compatible con WhiteboardPro.jsx (última versión enviada)
+   - Mantiene todas las clases usadas en el JSX
+   - Enfoque: accesible, limpio y moderno (look tipo PowerPoint)
+   ========================================================== */
+
+/* ----------------------------
+   BASE / RESETEO SUAVE
+   ---------------------------- */
+.wbp-page,
+.wbpro-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #f9fafb;                 /* fondo suave */
+  color: #111827;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+  overflow: visible;
+  
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Permite que el stage ocupe toda la ventana (estilo app) */
+html, body, #root {
+  height: 100%;
+  background: #f3f4f6;
+}
+
+/* ----------------------------
+   HEADER / TOPBAR
+   ---------------------------- */
+.wbp-topbar.wbpro-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.85);    /* translúcido, estilo ribbon */
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-left: none;
+  border-right: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.03),
+    0 8px 20px rgba(0, 0, 0, 0.04);
+  flex-wrap: wrap;
+}
+
+.wbpro-left,
+.wbpro-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wbpro-logo {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: .2px;
+  color: #111827;
+}
+
+/* ----------------------------
+   BOTONERAS Y CONTROLES
+   ---------------------------- */
+.wbp-tools.wbpro-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wbp-btn,
+.wbpro-tools button,
+.wbpro-right button {
+  appearance: none;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 12px;
+  min-height: 36px;
+  min-width: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+  user-select: none;
+}
+
+.wbp-btn:hover,
+.wbpro-tools button:hover,
+.wbpro-right button:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.06);
+}
+
+.wbp-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.wbp-btn.is-active,
+.wbpro-tools button.is-active,
+.wbpro-tools button.on {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, .15), 0 10px 22px rgba(37,99,235,.25);
+}
+
+/* Foco accesible */
+.wbp-btn:focus-visible,
+.wbpro-select:focus-visible,
+input[type="color"]:focus-visible,
+input[type="number"]:focus-visible,
+input[type="range"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.35);
+  border-color: #2563eb;
+}
+
+/* Etiquetas pequeñas */
+.wbp-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  opacity: .95;
+}
+
+/* Chip valor */
+.wbp-chip {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #3730a3;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 3px 7px;
+  border-radius: 999px;
+}
+
+/* Selects */
+.wbpro-select {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  min-width: 110px;
+}
+
+/* Paletas */
+.wbp-palette,
+.wbp-weight {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Swatches */
+.wbpro-color {
+  color: #374151;
+}
+
+.wbpro-swatches {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.wbpro-swatches button {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.wbpro-swatches button:hover {
+  transform: scale(1.12);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* Input color */
+.wbpro-color input[type="color"] {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  padding: 2px;
+  cursor: pointer;
+}
+
+/* Range (grosor) */
+.wbpro-range input[type="range"],
+.wbp-slider {
+  width: 140px;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(#e5e7eb, #e5e7eb);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.wbpro-range input[type="range"]::-webkit-slider-thumb,
+.wbp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  background: #2563eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  cursor: pointer;
+}
+
+.wbp-slider { accent-color: #2563eb; }
+
+/* Checkbox básico */
+label input[type="checkbox"] {
+  accent-color: #2563eb;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Inputs numéricos */
+input[type="number"] {
+  width: 64px;
+  height: 34px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0 8px;
+  font-size: 13px;
+  color: #111827;
+}
+
+/* ----------------------------
+   STAGE / CANVAS
+   ---------------------------- */
+.wbp-stage {
+  position: fixed;
+  inset: 0;
+  padding-top: 62px;
+  /* deja espacio visual bajo la topbar */
+  padding-top: 62px; /* altura aproximada del header + sombra */
+  background: #f9fafb;
+}
+
+.wbp-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Capas canvas */
+.wbp-canvas,
+.wbp-ovr-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.wbp-bg-canvas { z-index: 1; }    /* Fondo + gradilla */
+.wbp-main-canvas { z-index: 2; cursor: crosshair; } /* Dibujo */
+.wbp-erase-canvas { z-index: 3; pointer-events: none; } /* anillo borrador */
+.wbp-ghost-canvas { z-index: 4; pointer-events: none; } /* preview figuras/líneas */
+
+/* ----------------------------
+   OVERLAYS DOM (Textos, Imágenes, Simuladores)
+   ---------------------------- */
+.wbp-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none; /* los hijos reactivan pointer-events */
+}
+
+/* SELECCIÓN / MARCO tipo PPT */
+.wbp-imgbox,
+.wbp-simbox,
+.wbp-textbox {
+  position: absolute;
+  pointer-events: auto;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  transition: border-color .15s ease, box-shadow .15s ease;
+  background: transparent;
+}
+
+.wbp-imgbox.is-active,
+.wbp-simbox.is-active,
+.wbp-textbox.is-active {
+  border-color: #2563eb;
+  box-shadow:
+    0 0 0 2px rgba(37,99,235,.20),
+    0 10px 26px rgba(0,0,0,.18);
+}
+
+/* Resizers (círculos estilo Office) */
+.wbp-resizer,
+.wbp-img-resizer,
+.wbp-sim-resizer {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  cursor: se-resize;
+  z-index: 11;
+}
+
+.wbp-resizer:hover,
+.wbp-img-resizer:hover,
+.wbp-sim-resizer:hover {
+  background: #1d4ed8;
+}
+
+/* TEXTOS */
+.wbp-textarea {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  background: rgba(255, 255, 255, .98);
+  color: #111827;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+  font-size: inherit;
+  line-height: 1.4;
+  resize: none;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+}
+
+.wbp-textarea:focus {
+  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.06), 0 0 0 3px rgba(37,99,235,.2);
+}
+
+/* IMÁGENES */
+.wbp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  border-radius: 6px;
+  background: #fff;
+}
+
+/* SIMULADORES (iframe) */
+.wbp-simbox {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+}
+
+.wbp-sim-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 6px;
+  background: #fff;
+}
+
+/* ----------------------------
+   MODAL SIMULADORES
+   ---------------------------- */
+.wbp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, .45);
+  backdrop-filter: blur(6px);
+}
+
+.wbp-modal__panel {
+  width: 92%;
+  max-width: 520px;
+  max-height: 80vh;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 22px 60px rgba(0,0,0,.25);
+}
+
+.wbp-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 700;
+}
+
+.wbp-modal__body {
+  padding: 14px 16px;
+  max-height: 62vh;
+  overflow-y: auto;
+}
+
+.wbp-simrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.wbp-simrow:last-child {
+  border-bottom: none;
+}
+
+.wbp-simrow__name {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Scrollbars suaves (solo en modal y textarea) */
+.wbp-modal__body::-webkit-scrollbar,
+.wbp-textarea::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.wbp-modal__body::-webkit-scrollbar-thumb,
+.wbp-textarea::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+.wbp-modal__body::-webkit-scrollbar-thumb:hover,
+.wbp-textarea::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ----------------------------
+   POPOVERS (Figuras / Líneas / Más)
+   ---------------------------- */
+
+/* Contenedor base del popover */
+.wbp-popover {
+  position: relative;
+  overflow: visible !important; /* asegura que el menú no se recorte */
+}
+
+/* Menú desplegable principal */
+.wbp-popover-menu {
+  position: absolute;
+  top: 100%; /* un poco más abajo del botón */
+  left: 0;
+  z-index: 9999; /* muy por encima de topbar y canvas */
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 6px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: wbpFadeIn 0.15s ease-out;
+}
+
+/* Transición de aparición */
+@keyframes wbpFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Botones internos */
+.wbp-popover-menu button {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.wbp-popover-menu button:hover {
+  background: #f3f4f6;
+  color: #2563eb;
+  transform: translateX(2px);
+}
+
+/* Separador */
+.wbp-popover-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 6px 0;
+}
+
+/* Filas internas: opciones con label + input */
+.wbp-popover-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 6px 4px;
+  color: #374151;
+}
+
+/* Popover “Más” alineado a la derecha */
+.wbp-more-popover {
+  position: absolute;
+  right: 0;
+  top: 115%;
+  z-index: 9999;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+
+
+
+
+
+
+
+/* ----------------------------
+   CURSORES (coherentes con estados)
+   ---------------------------- */
+.wbp-textbox.is-active,
+.wbp-imgbox.is-active,
+.wbp-simbox.is-active {
+  cursor: move;              /* arrastrar selección */
+}
+
+.wbp-resizer:hover,
+.wbp-img-resizer:hover,
+.wbp-sim-resizer:hover {
+  cursor: nwse-resize;
+}
+
+/* ----------------------------
+   RESPONSIVE
+   ---------------------------- */
+@media (max-width: 1024px) {
+  .wbp-topbar.wbpro-header {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .wbp-topbar.wbpro-header {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: 10px;
+  }
+  .wbp-tools.wbpro-tools,
+  .wbpro-right {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .wbpro-logo { font-size: 15px; }
+  .wbp-btn { padding: 9px 10px; font-size: 13px; }
+  .wbp-modal__panel { width: 95%; }
+}

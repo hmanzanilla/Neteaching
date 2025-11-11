@@ -1,0 +1,140 @@
+/* 🔹 Principal_AdminPrincipal.css */
+/* 🔹 Contenedor principal */
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+/* 🔹 Título principal */
+.admin-container h1 {
+  color: #002366; /* Azul oscuro */
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* 🔹 Estilos para la sección de botones */
+.admin-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* Espaciado entre los botones */
+  margin-top: 20px;
+}
+
+/* 🔹 Estilos para los botones de navegación */
+.admin-buttons button {
+  width: 250px;
+  text-align: center;
+  padding: 12px 18px;
+  background-color: #d6d6d6; /* Gris claro */
+  color: black;
+  font-size: 16px;
+  font-weight: normal;
+  border-radius: 6px;
+  border: 1px solid #a1a1a1;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.admin-buttons button:hover {
+  background-color: #bcbcbc; /* Gris más oscuro */
+  transform: translateY(-2px);
+}
+
+/* 🔹 Sección donde se renderiza la tabla o contenido dinámico */
+.admin-content {
+  width: 90%;
+  max-width: 900px;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+/* 🔹 Estilos para la tabla dentro de Control de Usuarios */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.admin-table th {
+  background-color: #bcbcbc; /* Gris medio */
+  color: black;
+  font-weight: bold;
+}
+
+.admin-table tr:hover {
+  background-color: #e0e0e0;
+}
+
+/* 🔹 Estilos para los botones dentro de la tabla */
+.admin-table .btn-action {
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: normal;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid #a1a1a1;
+  background-color: #d6d6d6; /* Gris claro */
+  color: black;
+}
+
+.btn-active:hover,
+.btn-delete:hover {
+  background-color: #bcbcbc;
+}
+
+/* 🔹 Mensajes de error o carga */
+.message {
+  font-size: 18px;
+  color: #ff0000;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* 🔹 Mensaje de carga */
+.loading {
+  font-size: 20px;
+  color: black;
+  font-weight: bold;
+}
+
+/* 🔹 Botón de regresar */
+.back-button {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background-color: #d6d6d6;
+  color: black;
+  font-size: 16px;
+  font-weight: normal;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid #a1a1a1;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.back-button:hover {
+  background-color: #bcbcbc;
+}
+
+/* Ocultar los botones cuando la ruta es control-usuarios */
+.admin-container.control-usuarios .admin-buttons {
+  display: none;
+}
+

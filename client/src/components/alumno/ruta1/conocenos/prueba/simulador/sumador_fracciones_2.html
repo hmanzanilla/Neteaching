@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumador de Fracciones</title>
+    <style>
+        body {
+            background-color: white; /* Fondo blanco para el cuerpo de la página */
+            color: black; /* Texto negro para mejor visibilidad */
+        }
+        .fraccion,.caja{
+            border: 2px solid blue; /* Bordes sólidos azules para las fracciones */
+            color: blue;
+            display: inline-block;
+            margin: 5px;
+            padding: 6px;
+            text-align: center;
+        }
+        .linea {
+            border-bottom: 2px solid red; /* Línea roja para el divisor de fracciones */
+            display: block;
+        }
+        input {
+            border: none;
+            /*border-bottom: 2px solid red; /* Línea roja para el fondo de los inputs */
+            color: blue; /* Color azul para el texto de los inputs */
+            font-size: 24px;
+            text-align: center;
+            width: 50px;
+        }
+        button {
+            background-color: blue; /* Fondo azul para el botón */
+            color: white; /* Texto blanco para el botón */
+            border: none;
+            padding: 10px 20px; /* Relleno para el botón */
+            margin-top: 10px;
+        }
+        .procedimiento, .resultado {
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        .operador {
+            border: 2px solid blue; /* Bordes azules para el botón de operador */
+            color: blue;
+            padding: 5px 10px;
+            cursor: pointer; /* Cursor en forma de mano al pasar sobre el botón de operador */
+        }
+        .operador:hover {
+            background-color: blue; /* Fondo azul para el botón de operador al pasar el cursor */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Calculadora de Fracciones</h1>
+<div id="calculadoraFracciones">
+    <div class="fraccion">
+        <input type="number" id="numerador1"> <br>
+        <span class="linea"></span>
+        <input type="number" id="denominador1">
+    </div>
+    <button id="operador" class="operador" onclick="cambiarOperador()">+</button>
+    <div class="fraccion">
+        <input type="number" id="numerador2"> <br>
+        <span class="linea"></span>
+        <input type="number" id="denominador2">
+    </div>
+    <button onclick="calcular()">Calcular</button>
+</div>
+
+<div id="resultado"></div>
+
+<script>
+let operador = '+';
+
+function cambiarOperador() {
+    operador = operador === '+' ? '-' : '+';
+    document.getElementById('operador').innerText = operador;
+}
+
+function calcular() {
+    let num1 = parseInt(document.getElementById('numerador1').value);
+    let den1 = parseInt(document.getElementById('denominador1').value);
+    let num2 = parseInt(document.getElementById('numerador2').value);
+    let den2 = parseInt(document.getElementById('denominador2').value);
+
+    if(isNaN(num1) || isNaN(den1) || isNaN(num2) || isNaN(den2)) {
+        document.getElementById('resultado').innerHTML = '<span style="color: red;">Por favor ingresa números válidos.</span>';
+        return;
+    }
+    let nuevoNum1 = num1 * den2;
+    let nuevoNum2 = num2 * den1;
+
+    let nuevoNum;
+    if(operador === '+') {
+        nuevoNum = num1 * den2 + num2 * den1;
+    } else {
+        nuevoNum = num1 * den2 - num2 * den1;
+    }
+    let nuevoDen = den1 * den2;
+
+    let procedimiento = `
+        <div class="procedimiento">Procedimiento:</div>
+        <div class="caja">
+        <div>
+            <span class="intermedio">${num1} &times; ${den2}</span>
+            <span class="suma">${operador}</span>
+            <span class="intermedio">${num2} &times; ${den1}</span>
+        </div>
+        <div class="linea"></div>
+        <div>
+            <span class="intermedio">${den1} &times; ${den2}</span>
+        </div>
+        </div>
+            <span class="igual">=</span>
+        <div class="caja">
+        <div>
+            <span class= "resultado1">${nuevoNum1}</span>
+            <span class="suma">${operador}</span>
+            <span class= "resultado1">${nuevoNum2}</span>
+        </div>
+        <div class="linea"></div>
+        <div>
+            <span class="resultado3">${nuevoDen}</span>
+        </div>
+        </div>
+        <br>
+        <div class="resultado">Resultado:</div>
+        <div class="caja">
+        <div class="final">${nuevoNum}</div>
+        <div class="linea"></div>
+        <div class="final">${nuevoDen}</div>
+        </div>
+    `;
+    document.getElementById('resultado').innerHTML = procedimiento;
+}
+</script>
+</body>
+</html>

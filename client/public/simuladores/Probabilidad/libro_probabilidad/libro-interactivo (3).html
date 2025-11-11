@@ -1,0 +1,76 @@
+
+      <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>TECNICAS DE CONTEO </title>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="https://unpkg.com/mathjs@latest/lib/browser/math.js"></script>
+      <style>
+      :root { --primary-color: #004080; --primary-gradient: linear-gradient(135deg, #0059b3, #003366); --secondary-gradient: linear-gradient(135deg, #e60000, #900000); }
+      body { background-color: #f4f4f4; color: #333333; font-family: "Segoe UI", Arial, sans-serif; padding: 1em; margin: 0; font-size: 17px; line-height: 1.5; }
+      .page { background-color: #ffffff; padding: 2em; margin: 1em auto; max-width: 900px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+      .page h2 { color: var(--primary-color); border-bottom: 2px solid #ddd; padding-bottom: 0.3rem; }
+      .btn-sim { background: var(--primary-gradient); color: white; font-family: "Segoe UI", Arial, sans-serif; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; padding: 10px 18px; cursor: pointer; box-shadow: 0 3px 8px rgba(0,0,0,0.15); transition: background 0.3s ease, transform 0.2s ease; }
+      .btn-sim:hover { background: #003366; transform: scale(1.02); }
+      .btn-sim-rojo { background: var(--secondary-gradient) !important; }
+      .btn-sim-rojo:hover { background: #900000 !important; }
+      .simulador-box { background: #f9f9f9; border-left: 5px solid var(--primary-color); padding: 1rem; margin: 1.2rem 0; border-radius: 6px; color: #333; }
+    </style></head><body><div class="page"><h2>TECNICAS DE CONTEO </h2></div><div class="page"><h2>Factorial</h2><p>Se llama factorial de un número, al producto consecutivo de todos los números enteros desde el uno hasta el número dado, inclusive.</p><p>Si \(n\) es el número dado, su factorial se representa con la notación \(n!\) y valdrá</p><p>\(n! = 1 \times 2 \times 3 \times \cdots \times (n-2)(n-1)n\)  (1)</p><p>que, de acuerdo con la propiedad conmutativa de la multiplicación, se puede escribir como</p><p>\(n! = n(n-1)(n-2)\cdots 3 \times 2 \times 1\)  (2)</p><p>Teniendo ahora en cuenta la propiedad asociativa de la multiplicación y la misma definición de factorial, se llega a la siguiente expresión llamada la fórmula fundamental del factorial</p><p>\(n! = n(n-1)!\)  (3)</p><p>Esta fórmula fundamental del factorial carece de significado tanto en su primero como en su segundo miembros cuando el número \(n\) dado vale uno. Esto es debido a que la definición de factorial no abarca el caso en que el número considerado sea uno o cero.</p><p>Con el objeto de aplicar la expresión (3) de manera general, aun para el caso de que \(n = 1\), se ampliará el concepto de factorial con las dos definiciones siguientes</p><p>\(0! = 1\)  (4)</p><p>\(1! = 1\)  (5)</p></div><div class="page"><h2>Ejemplo 1</h2><p>Efectuar las operaciones con los factoriales siguientes:</p><p>a) \(5! = 1 \times 2 \times 3 \times 4 \times 5 = 120\)</p><p>b) </p><p>\(7! = 7 \times 6 \times 5 \times 4 \times 3 \times 2 \times 1\)</p><p>\(= 7 \times 6 \times 5!\)</p><p>\(= 7 \times 6 \times 120\)</p><p>\(= 5040\)</p><p>c) </p><p>\(\dfrac{9!}{6!} = \dfrac{9 \times 8 \times 7 \times 6!}{6!} = 9 \times 8 \times 7 = 504\)</p><p>d)</p><p>\(\dfrac{6!\,8!}{7!\,9!}\)</p><p>\(= \dfrac{6! \times 8!}{7! \times 9!}\)</p><p>\(= \dfrac{6!}{7!} \times \dfrac{8!}{9!}\)</p><p>\(= \dfrac{1}{7} \times \dfrac{1}{9}\)</p><p>\(= \dfrac{1}{63}\)</p><p>e)</p><p>\(\dfrac{4!+5!}{3!\,4!}\)</p><p>\(= \dfrac{4!(1+5)}{3!\,4!}\)</p><p>\(= \dfrac{6}{1\times 2 \times 3}\)</p><p>\(= \dfrac{6}{6}\)</p><p>\(= 1\)</p><p>f)</p><p>\(\dfrac{3!}{4!} + \dfrac{4!}{5!}\)</p><p>\(= \dfrac{5 \times 3! + 4!}{5!}\)</p><p>\(= \dfrac{3!(5+4)}{5!}\)</p><p>\(= \dfrac{5+4}{5 \times 4}\)</p><p>\(= \dfrac{9}{20}\)</p>
+      <div>
+        <button id="sim_p1799fh6zuf_btn" class="btn-sim" onclick="toggleSim_sim_p1799fh6zuf()">
+          Mostrar Factorial Paso a Paso
+        </button>
+
+        <div id="sim_p1799fh6zuf_container" class="simulador-box" style="display:none; margin-top:10px;">
+          <p id="sim_p1799fh6zuf_result"></p>
+          <div>
+            <label for="sim_p1799fh6zuf_input">Número (ej. 5): </label>
+            <input id="sim_p1799fh6zuf_input" type="number" value="5" style="margin: 5px;">
+            <button onclick="calculateFactorial_sim_p1799fh6zuf()">Aceptar</button>
+          </div>
+        </div>
+      </div>
+      <script>
+        function toggleSim_sim_p1799fh6zuf() {
+          const container = document.getElementById('sim_p1799fh6zuf_container');
+          const btn = document.getElementById('sim_p1799fh6zuf_btn');
+          const isHidden = container.style.display === 'none';
+
+          if (isHidden) {
+            container.style.display = 'block';
+            btn.textContent = 'Ocultar Factorial Paso a Paso';
+            btn.classList.add('btn-sim-rojo');
+            calculateFactorial_sim_p1799fh6zuf();
+          } else {
+            container.style.display = 'none';
+            btn.textContent = 'Mostrar Factorial Paso a Paso';
+            btn.classList.remove('btn-sim-rojo');
+          }
+        }
+
+        function calculateFactorial_sim_p1799fh6zuf() {
+          const input = document.getElementById('sim_p1799fh6zuf_input');
+          const resultElement = document.getElementById('sim_p1799fh6zuf_result');
+          const n = parseInt(input.value);
+
+          if (isNaN(n) || n < 0) {
+            resultElement.innerHTML = 'Error: El número debe ser no negativo.';
+            return;
+          }
+          if (n > 170) { // Límite para evitar Infinity en JS
+            resultElement.innerHTML = 'Error: El número es demasiado grande para calcular.';
+            return;
+          }
+
+          let steps = n + '! = ';
+          let result = 1;
+          if (n === 0) {
+            steps = '0! = 1';
+          } else {
+            for (let i = n; i > 1; i--) {
+              result *= i;
+              steps += i + ' × ';
+            }
+            steps += '1 = ' + result.toLocaleString();
+          }
+          resultElement.innerHTML = steps;
+        }
+      </script>
+    </div></body></html>

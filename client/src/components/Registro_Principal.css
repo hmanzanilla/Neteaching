@@ -1,0 +1,276 @@
+/* src/components/Registro_Principal.css */
+
+/* Fondo solo si está dentro del div con clase 'fondo-especial' */
+/* src/components/Registro_Principal.css */
+/* src/components/Registro_Principal.css */
+
+/* -----------------------------
+   Variables de diseño (branding)
+------------------------------ */
+:root {
+  --brand: #061ef9;
+  --brand-hover: #001bc2;
+  --text: #1f2937;          /* gris oscuro legible */
+  --bg: #ffffff;
+  --muted: #6b7280;         /* gris medio */
+  --error: #dc2626;
+
+  --radius-sm: 6px;
+  --radius: 12px;
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+  --shadow: 0 10px 30px rgba(0,0,0,0.12);
+
+  --bar-height: 64px;       /* altura estimada de barra fija */
+}
+
+/* Reduce animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -----------------------------
+   Layout general
+------------------------------ */
+.registro-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Fondo con imagen + overlay para legibilidad */
+.fondo-especial {
+  position: relative;
+  min-height: 100vh;
+  overflow-y: auto;
+  /* deja espacio para la barra fija */
+  padding-top: var(--bar-height);
+
+  background: url('./F_logo.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Overlay suave encima de la imagen para mejorar contraste */
+.fondo-especial::before {
+  content: "";
+  position: fixed;          /* se queda fijo al hacer scroll */
+  inset: 0;
+  background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.75) 0%,
+      rgba(255,255,255,0.65) 40%,
+      rgba(255,255,255,0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Contenido dentro del fondo especial debe ir por encima del overlay */
+.fondo-especial > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* -----------------------------
+   Enlaces tipo "landing"
+------------------------------ */
+.registro-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0;
+  padding: 0 16px;
+}
+
+.registro-links button {
+  background-color: var(--brand);
+  color: #fff;
+  border: none;
+  padding: 12px 14px;
+  font-size: 16px;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  max-width: 420px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.registro-links button:hover {
+  background-color: var(--brand-hover);
+  transform: translateY(-1px);
+}
+
+.registro-links button:focus-visible {
+  outline: 3px solid rgba(6, 30, 249, 0.35);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius-sm) + 2px);
+}
+
+/* -----------------------------
+   Contenedor de registro/login
+------------------------------ */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(24px, 4vw, 48px);
+  min-height: calc(100vh - var(--bar-height));
+}
+
+/* Card estilo glass / limpio */
+.register-form {
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+
+  padding: clamp(20px, 3vw, 28px);
+  border-radius: var(--radius);
+  max-width: 420px;
+  width: 100%;
+
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Inputs y campos */
+.register-form input,
+.register-form select,
+.register-form textarea {
+  width: 100%;
+  padding: 12px 12px;
+  margin-bottom: 12px;
+
+  border-radius: var(--radius-sm);
+  border: 1px solid #d1d5db; /* gris claro */
+  background: #fff;
+  color: var(--text);
+  outline: none;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.register-form input::placeholder,
+.register-form textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.9;
+}
+
+/* Focus accesible */
+.register-form input:focus,
+.register-form select:focus,
+.register-form textarea:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px rgba(6, 30, 249, 0.15);
+}
+
+/* Botón principal */
+.register-form button {
+  background-color: var(--brand);
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  font-size: 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+
+  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.register-form button:hover {
+  background-color: var(--brand-hover);
+  transform: translateY(-1px);
+}
+
+.register-form button:focus-visible {
+  outline: 3px solid rgba(6, 30, 249, 0.35);
+  outline-offset: 2px;
+}
+
+/* Mensajes de error / info */
+.register-form .error-message {
+  color: var(--error);
+  font-weight: 600;
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+
+/* Tipografía auxiliar dentro de formularios (opcional) */
+.register-form .help-text {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+/* -----------------------------
+   Responsivo
+------------------------------ */
+@media (max-width: 768px) {
+  :root {
+    --bar-height: 60px;
+  }
+
+  .registro-links {
+    margin: 28px 0;
+  }
+
+  .register-form {
+    max-width: 92%;
+  }
+}
+
+/* -----------------------------
+   Modo oscuro (opcional)
+   Actívalo añadiendo .dark al body
+------------------------------ */
+.dark .registro-container {
+  background: #0b1220;
+  color: #e5e7eb;
+}
+
+.dark .fondo-especial::before {
+  background: linear-gradient(
+      180deg,
+      rgba(11,18,32,0.85) 0%,
+      rgba(11,18,32,0.78) 40%,
+      rgba(11,18,32,0.72) 100%
+  );
+}
+
+.dark .register-form {
+  background: rgba(17, 24, 39, 0.75);
+  color: #e5e7eb;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.dark .register-form input,
+.dark .register-form select,
+.dark .register-form textarea {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.15);
+  color: #f3f4f6;
+}
+
+.dark .register-form input:focus,
+.dark .register-form select:focus,
+.dark .register-form textarea:focus {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.25);
+}
+
+.dark .register-form button {
+  background: #2563eb;
+}
+
+.dark .register-form button:hover {
+  background: #1d4ed8;
+}

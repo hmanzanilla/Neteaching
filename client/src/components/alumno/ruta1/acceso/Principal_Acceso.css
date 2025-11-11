@@ -1,0 +1,169 @@
+/* Vista limpia del dashboard del alumno */
+
+.acceso-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 56px;
+}
+
+.dashboard {
+  width: 100%;
+  max-width: 980px;
+}
+
+/* Header con avatar */
+.profile-card {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 1px 10px rgba(0,0,0,0.04);
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #f1f1f1;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #263238;
+  user-select: none;
+  overflow: hidden;
+}
+
+.avatar.con-foto {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.profile-info {
+  min-width: 0;
+}
+
+.profile-name {
+  margin: 0 0 2px;
+  font-size: 1.25rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.profile-mail {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-action {
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.profile-action:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,.25); }
+.profile-action:active { transform: translateY(0); }
+
+/* Grid de tiles */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .profile-card { grid-template-columns: 60px 1fr; }
+  .profile-action { grid-column: 1 / -1; width: 100%; }
+  .grid { grid-template-columns: 1fr; }
+}
+
+.grid-small .tile-title { font-size: 0.95rem; }
+
+.tile {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 18px 14px;
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  user-select: none;
+  text-align: center;
+}
+.tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.06);
+  border-color: #dfe6ef;
+}
+.tile:active { transform: translateY(0); }
+
+.tile-emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+.tile-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+/* Botón que actúa como tile (para el menú) */
+.tile-as-button {
+  all: unset;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* Popover/menú de simuladores */
+.select-tile { position: relative; }
+.chevron { font-size: 14px; opacity: .6; }
+.chevron.up { transform: rotate(180deg); }
+
+.sim-menu {
+  position: absolute;
+  top: 100%;
+  right: 12px;
+  margin-top: 8px;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.08);
+  padding: 6px;
+  z-index: 20;
+}
+
+.sim-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+}
+.sim-item:hover { background: #f3f4f6; }

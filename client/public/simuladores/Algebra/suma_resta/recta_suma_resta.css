@@ -1,0 +1,213 @@
+/* 🎯 recta_suma_resta.css (versión optimizada y profesional) */
+
+/* ==============================
+   VARIABLES GLOBALES
+   ============================== */
+:root {
+  --font-family: "Segoe UI", Arial, sans-serif;
+  --primary-color: #004080;
+  --primary-gradient: linear-gradient(135deg, #0059b3, #003366);
+  --secondary-color: #c00000;
+  --secondary-gradient: linear-gradient(135deg, #e60000, #900000);
+  --text-color: #333;
+  --background-color: #f4f4f4;
+  --page-bg: #ffffff;
+  --max-width-page: 900px;
+  --margin-page: 2rem;
+  --box-shadow: 0 0 12px rgba(0,0,0,0.15);
+}
+
+/* ==============================
+   ESTILO GLOBAL
+   ============================== */
+body {
+  font-family: var(--font-family);
+  background: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* ==============================
+   CONTENEDOR PRINCIPAL
+   ============================== */
+.rsr-container {
+  background: var(--page-bg);
+  max-width: var(--max-width-page);
+  margin: var(--margin-page) auto;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  box-sizing: border-box;
+}
+
+/* ==============================
+   ENCABEZADOS
+   ============================== */
+.rsr-container h1 {
+  color: var(--primary-color);
+  border-left: 5px solid var(--primary-color);
+  padding-left: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.rsr-container h2 {
+  color: var(--primary-color);
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.rsr-container h3 {
+  color: var(--primary-color);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ==============================
+   BLOQUES DE INFORMACIÓN DESTACADA
+   ============================== */
+.info-block {
+  background: #f9f9f9;
+  border-left: 5px solid var(--primary-color);
+  padding: 1rem;
+  margin: 1.2rem 0;
+  border-radius: 6px;
+}
+
+/* ==============================
+   BLOQUES DE OPERACIÓN
+   ============================== */
+.rsr-operacion {
+  margin-bottom: 2rem;
+}
+
+.rsr-inputs label {
+  margin: 0 0.3rem;
+}
+
+/* ==============================
+   CONTENEDOR DE RECTA Y CANVAS
+   ============================== */
+.rsr-contenedor {
+  position: relative;
+  width: 95%;
+  max-width: 860px;
+  margin: 1rem auto;
+  overflow: hidden;
+  background: transparent;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ==============================
+   RECTA Y ELEMENTOS
+   ============================== */
+.rsr-recta {
+  position: absolute;
+  left: 0;
+  border-top: 2px solid black;
+  width: 100%;
+}
+
+.rsr-marca {
+  position: absolute;
+  width: 2px;
+  height: 12px;
+  background: black;
+}
+
+.rsr-numero {
+  position: absolute;
+  top: 15px;
+  transform: translateX(-50%);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ==============================
+   BOTONES
+   ============================== */
+.btn-sim {
+  background: var(--primary-gradient);
+  color: white;
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-sim:hover {
+  background: #003366;
+  transform: scale(1.02);
+}
+
+.btn-sim:focus {
+  outline: 2px solid #80bfff;
+  outline-offset: 2px;
+}
+
+.btn-sim-rojo {
+  background: var(--secondary-gradient) !important;
+  color: white;
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-sim-rojo:hover {
+  background: #900000 !important;
+  transform: scale(1.02);
+}
+
+.btn-sim-rojo:focus {
+  outline: 2px solid #ff9999;
+  outline-offset: 2px;
+}
+
+/* ==============================
+   RESPONSIVIDAD
+   ============================== */
+@media (max-width: 1024px) {
+  .rsr-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .rsr-container {
+    padding: 1rem;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .rsr-container h1, 
+  .rsr-container h2 {
+    font-size: 1.2em;
+  }
+  .btn-sim, .btn-sim-rojo {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+}

@@ -1,0 +1,81 @@
+/* C:\Users\znava\Desktop\SERVIDOR\servidor_bcryptjs_1\client\src\components\alumno\ruta1\conocenos\Principal_Conocenos.css */
+/* Estilos generales para el contenedor principal */
+.principal-conocenos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f7fa; /* Fondo suave para diferenciar del otro componente */
+  color: #333; /* Color de texto */
+}
+
+/* Estilos para el título */
+.principal-conocenos h1 {
+  font-size: 2em;
+  margin-bottom: 15px;
+  color: #1d3557; /* Color azul oscuro */
+}
+
+/* Estilos para el artículo de bienvenida */
+.principal-conocenos article {
+  max-width: 800px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  line-height: 1.6;
+}
+
+/* Estilos para los botones */
+.botones {
+  display: flex;
+  gap: 10px;
+}
+
+.botones button {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #457b9d; /* Fondo azul */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.botones button:hover {
+  background-color: #1d3557; /* Cambio de color al hacer hover */
+}
+
+/* Barra lateral */
+.sidebar {
+  background-color: #e63946; /* Cambia el color de fondo de la barra lateral */
+  padding: 20px;
+  width: 200px;
+  color: white;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}
+
+/* Sección de contenido principal */
+.main-content {
+  margin-left: 220px; /* Asegúrate de que la barra lateral no sobreponga el contenido */
+  padding: 20px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para mensajes de error */
+.principal-conocenos p[style] {
+  margin-top: 10px;
+}

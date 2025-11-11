@@ -1,0 +1,32 @@
+/* src/components/footer/privacidad.css */
+:root{
+  --brand:#061ef9;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --shadow:0 10px 30px rgba(0,0,0,.12);
+  --radius:16px;
+}
+
+.privacidad-container{
+  color:var(--text);
+  padding: calc(64px + 24px) 20px 48px; /* despeje por la barra fija */
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.pv-hero{ text-align:center; margin-bottom:20px; }
+.pv-hero h1{ font-size: clamp(32px,5vw,46px); margin:0 0 10px; font-weight:800; }
+.pv-hero-sub{ font-size: clamp(16px,2.3vw,20px); opacity:.9; max-width:940px; margin:0 auto; }
+
+.pv-section{
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-top: 16px;
+}
+.pv-section h2{ margin:0 0 10px; font-size:1.25rem; }
+.pv-list{ margin:0; padding-left:18px; line-height:1.6; }
+.pv-note{ color:var(--muted); margin-top:8px; }

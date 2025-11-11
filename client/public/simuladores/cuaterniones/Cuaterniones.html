@@ -1,0 +1,734 @@
+<!-- client/public/simuladores/cuaterniones/Cuaterniones.html -->
+<!-- client/public/simuladores/cuaterniones/Cuaterniones.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Espacios Vectoriales (definición y axiomas)</title>
+
+  <!-- =========================
+       MathJax (CHTML + linebreaks)
+  ========================== -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)']],
+        displayMath: [['\\[','\\]']]
+      },
+      chtml: {
+        displayAlign: 'center',
+        displayIndent: '0',
+        linebreaks: { automatic: true, width: 'container' }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+  </script>
+
+  <style>
+    :root{ --maxw: 920px; }
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+      line-height:1.6; margin:0; color:#222;
+      background:#0b0f1a; /* solo de adorno */
+    }
+    .wrap{
+      max-width:var(--maxw);
+      margin:24px auto;
+      padding:0 16px 24px 16px;
+      background:#fff;
+      border-radius:10px;
+      box-shadow:0 6px 22px rgba(0,0,0,.08);
+    }
+    header{ padding:24px 16px 0 16px; }
+    h1,h2{ color:#003366; margin:0 0 12px 0; }
+    .card{
+      background:#f9f9f9; border-left:5px solid #004080;
+      padding:1rem; border-radius:6px; margin:1rem 0;
+    }
+    ol{ padding-left:1.2rem; }
+    li{ margin:.5rem 0; }
+    /* Evitar desbordes horizontales de fórmulas */
+    .mjx-container[jax="CHTML"]{ overflow-x:auto; overflow-y:hidden; max-width:100%; }
+
+    /* Figuras responsivas */
+    figure{ margin:12px 0; }
+    figure img{ width:100%; max-width:100%; height:auto; border-radius:6px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+    figcaption{ font-size:.95rem; color:#333; text-align:center; margin-top:6px; }
+    .cols{ display:grid; grid-template-columns:1fr; gap:12px; }
+    @media (min-width:720px){ .cols{ grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Barra de métricas ===== -->
+  <div id="cronometro" style="font-size:20px;color:green;margin:10px auto;text-align:center">
+    Tiempo usando el simulador: 0 min 0 seg
+  </div>
+  <div id="contador-operaciones" style="font-size:20px;color:green;margin:10px auto;text-align:center">
+    Número de operaciones realizadas: 0
+  </div>
+
+  <main class="wrap">
+    <header>
+      <h1>Espacios Vectoriales</h1>
+      <div class="card">
+        Trabajaremos con vectores en <strong>negritas</strong>, p.&nbsp;ej. \(\mathbf{v}, \mathbf{w}\),
+        y con índices \(\mathbf{v}_{1}, \mathbf{v}_{2}, \mathbf{v}_{3}\).
+        Denotaremos al espacio vectorial por \(V\) y al cuerpo (campo) de escalares por \(\mathbb{R}\).
+      </div>
+    </header>
+
+    <section style="padding:0 16px;">
+      <h2>Definición</h2>
+
+      <p>
+        Un <strong>espacio vectorial real</strong> \(V\) es un conjunto no vacío cuyos elementos se llaman
+        <em>vectores</em> \((\mathbf{v}\in V)\), provisto de dos operaciones:
+      </p>
+
+      <ul>
+        <li>
+          <em>Suma de vectores</em>:
+          \[
+            +: V\times V \to V,\qquad (\mathbf{v}_1,\mathbf{v}_2)\mapsto \mathbf{v}_1+\mathbf{v}_2 .
+          \]
+        </li>
+        <li>
+          <em>Producto por escalar</em>:
+          \[
+            \cdot: \mathbb{R}\times V \to V,\qquad (\lambda,\mathbf{v})\mapsto \lambda\,\mathbf{v}.
+          \]
+        </li>
+      </ul>
+
+      <p>que satisfacen las propiedades de <em>cerradura</em> y los ocho axiomas siguientes.</p>
+
+      <div class="card">
+        <strong>Cerradura</strong>
+        \[
+          \mathbf{v}_1+\mathbf{v}_2\in V
+          \quad\text{y}\quad
+          \lambda\,\mathbf{v}\in V,
+          \qquad (\mathbf{v}_1,\mathbf{v}_2,\mathbf{v}\in V,\ \lambda\in\mathbb{R}).
+        \]
+      </div>
+
+      <h2>Axiomas (8)</h2>
+
+      <ol>
+        <li>
+          <strong>Conmutatividad de la suma</strong>
+          \[
+            \mathbf{v}_1+\mathbf{v}_2=\mathbf{v}_2+\mathbf{v}_1.
+          \]
+        </li>
+        <li>
+          <strong>Asociatividad de la suma</strong>
+          \[
+            \mathbf{v}_1+(\mathbf{v}_2+\mathbf{v}_3)=(\mathbf{v}_1+\mathbf{v}_2)+\mathbf{v}_3.
+          \]
+        </li>
+        <li>
+          <strong>Existencia de neutro aditivo</strong>
+          \[
+            \exists\,\mathbf{0}\in V\ \text{tal que}\ \mathbf{v}+\mathbf{0}=\mathbf{v},\ \forall\,\mathbf{v}\in V.
+          \]
+        </li>
+        <li>
+          <strong>Existencia de inverso aditivo</strong>
+          \[
+            \forall\,\mathbf{v}\in V,\ \exists\,(-\mathbf{v})\in V\ \text{tal que}\ \mathbf{v}+(-\mathbf{v})=\mathbf{0}.
+          \]
+        </li>
+        <li>
+          <strong>Distributividad del producto escalar sobre la suma de vectores</strong>
+          \[
+            \lambda(\mathbf{v}_1+\mathbf{v}_2)=\lambda\mathbf{v}_1+\lambda\mathbf{v}_2.
+          \]
+        </li>
+        <li>
+          <strong>Compatibilidad del producto escalar</strong>
+          \[
+            \lambda(\alpha\,\mathbf{v})=(\lambda\alpha)\mathbf{v}.
+          \]
+        </li>
+        <li>
+          <strong>Neutro multiplicativo del escalar</strong>
+          \[
+            1\cdot \mathbf{v}=\mathbf{v}.
+          \]
+        </li>
+        <li>
+          <strong>Distributividad respecto a la suma de escalares</strong>
+          \[
+            (\lambda+\alpha)\mathbf{v}=\lambda\mathbf{v}+\alpha\mathbf{v}.
+          \]
+        </li>
+      </ol>
+
+      <p>
+        Con estas operaciones y axiomas, \(V\) es un espacio vectorial real.
+        Usaremos \(\mathbf{0}\) para el vector cero y notación en negritas con índices:
+        \(\mathbf{v}_1,\mathbf{v}_2,\mathbf{v}_3,\ldots\).
+      </p>
+    </section>
+
+    <!-- ======================================================
+         SECCIÓN: Definición de cuaterniones
+         ====================================================== -->
+    <section style="padding:0 16px;">
+      <h2>Cuaterniones: definición</h2>
+
+      <!-- Definición (enmarcada) -->
+      <div class="card">
+        <p style="margin:.2rem 0 0 0;">
+          Existe un conjunto similar al de los vectores, llamado el <strong>espacio</strong> \(\mathbb{H}\)
+          (de Hamilton), que define un conjunto de elementos llamados <em>cuaterniones</em>.
+          Un cuaternión está formado por dos partes:
+        </p>
+
+        <ul>
+          <li>Una <strong>parte escalar real</strong>, que pertenece a \(\mathbb{R}\).</li>
+          <li>Una <strong>parte vectorial</strong>, que pertenece a los vectores de \(\mathbb{R}^3\).</li>
+        </ul>
+
+        <p style="margin:.2rem 0 0 0;">Se escriben de la forma:</p>
+
+        \[
+          \mathbb{H} \;=\; \left\{\, q \;=\; \omega + x\mathbf{i} + y\mathbf{j} + z\mathbf{k}
+          \;:\; \omega,x,y,z \in \mathbb{R} \,\right\},
+        \]
+        <p style="margin:.2rem 0 0 0;">
+          donde \(\mathbf{i},\mathbf{j},\mathbf{k}\) son los vectores de la base canónica de \(\mathbb{R}^3\):
+        </p>
+
+        \[
+          \mathbf{i}=(1,0,0),\qquad
+          \mathbf{j}=(0,1,0),\qquad
+          \mathbf{k}=(0,0,1).
+        \]
+      </div>
+
+      <!-- Comentarios/propiedades fuera del recuadro -->
+      <p>
+        El conjunto \(\mathbb{H}\) posee las <em>mismas propiedades de cerradura</em> que un espacio
+        vectorial \(V\) bajo las operaciones de <strong>suma</strong> y <strong>producto por escalar</strong>,
+        y satisface los <strong>ocho axiomas</strong> anteriores. En particular,
+        \(\mathbb{H}\) es (como espacio vectorial) <em>isomorfo</em> a \(\mathbb{R}^4\). Identificando
+        \(q=\omega + x\mathbf{i}+y\mathbf{j}+z\mathbf{k}\) con el vector \((\omega,x,y,z)\), la suma y el
+        producto por escalar se definen <em>coordenada a coordenada</em>, exactamente como en \(\mathbb{R}^n\).
+      </p>
+
+      <p>
+        Recordemos que, en \(\mathbb{R}^n\), si
+        \(\mathbf{x}=(x_1,\dots,x_n)\), \(\mathbf{y}=(y_1,\dots,y_n)\) y \(\lambda\in\mathbb{R}\), entonces:
+      </p>
+
+      \[
+        \mathbf{x} + \mathbf{y} = (x_1+y_1,\; x_2+y_2,\; \dots,\; x_n+y_n),
+        \qquad
+        \lambda\,\mathbf{x} = (\lambda x_1,\; \lambda x_2,\; \dots,\; \lambda x_n).
+      \]
+
+      <p>
+        De manera <strong>análoga</strong>, para los cuaterniones
+        \(q_1=\omega_1+x_1\mathbf{i}+y_1\mathbf{j}+z_1\mathbf{k}\) y
+        \(q_2=\omega_2+x_2\mathbf{i}+y_2\mathbf{j}+z_2\mathbf{k}\), y para \(\lambda\in\mathbb{R}\),
+        se tiene:
+      </p>
+
+      \[
+        q_1 + q_2
+        \;=\;
+        (\omega_1+\omega_2)
+        + (x_1+x_2)\mathbf{i}
+        + (y_1+y_2)\mathbf{j}
+        + (z_1+z_2)\mathbf{k},
+      \]
+      \[
+        \lambda\,q_1
+        \;=\;
+        (\lambda\omega_1)
+        + (\lambda x_1)\mathbf{i}
+        + (\lambda y_1)\mathbf{j}
+        + (\lambda z_1)\mathbf{k}.
+      \]
+      <p>
+        En esta notación, \(\omega\) es la <em>parte escalar</em> y \((x,y,z)\) la <em>parte vectorial</em> del cuaternión
+        \(q=\omega + x\mathbf{i} + y\mathbf{j} + z\mathbf{k}\).
+      </p>
+    </section>
+
+    <!-- ======================================================
+         NUEVAS SECCIONES: productos, conjugado, norma, inverso,
+         y embebidos
+         ====================================================== -->
+    <section style="padding:0 16px;">
+      <h2>Recordatorio: productos en \(\\mathbb{R}^n\) y \(\\mathbb{R}^3\)</h2>
+
+      <div class="card">
+        <strong>Producto interno canónico en \(\\mathbb{R}^n\)</strong>
+        \[
+          \mathbf{x}\cdot \mathbf{y} \;=\; \sum_{k=1}^{n} x_k y_k
+          \quad\Rightarrow\quad
+          \|\mathbf{x}\| \;=\; \sqrt{\mathbf{x}\cdot\mathbf{x}} \;=\; \sqrt{\sum_{k=1}^{n} x_k^2}.
+        \]
+      </div>
+
+      <div class="card">
+        <strong>Producto vectorial en \(\\mathbb{R}^3\)</strong>
+        \[
+          \mathbf{a}\times \mathbf{b}
+          \;=\;
+          \begin{vmatrix}
+            \mathbf{i} & \mathbf{j} & \mathbf{k}\\
+            a_x & a_y & a_z\\
+            b_x & b_y & b_z
+          \end{vmatrix},
+          \qquad
+          \mathbf{b}\times\mathbf{a} \;=\; -\,(\mathbf{a}\times\mathbf{b}).
+        \]
+      </div>
+    </section>
+
+    <section style="padding:0 16px;">
+      <h2>Producto de cuaterniones</h2>
+
+      <div class="card">
+        <p>Escribiremos un cuaternión como \(q=(\omega,\mathbf{v})\) con \(\omega\in\mathbb{R}\) y \(\mathbf{v}\in\mathbb{R}^3\).
+           Para \(q_1=(\omega_1,\mathbf{v}_1)\) y \(q_2=(\omega_2,\mathbf{v}_2)\), el <strong>producto de cuaterniones</strong> se define por:</p>
+        \[
+          q_1\,q_2
+          \;=\;
+          \big(\,\omega_1\omega_2 - \mathbf{v}_1\!\cdot\!\mathbf{v}_2\,,\;
+                 \omega_1\mathbf{v}_2 + \omega_2\mathbf{v}_1 + \mathbf{v}_1\times\mathbf{v}_2\,\big).
+        \]
+      </div>
+
+      <p>
+        Esta regla usa los dos productos vectoriales clásicos: el producto interno \( \mathbf{v}_1\!\cdot\!\mathbf{v}_2 \)
+        y el producto cruz \( \mathbf{v}_1\times\mathbf{v}_2 \). Se puede demostrar que el producto de cuaterniones es
+        <strong>asociativo</strong>:
+        \[
+          q_1\,(q_2\,q_3) \;=\; (q_1\,q_2)\,q_3,
+        \]
+        pero en general <strong>no es conmutativo</strong>:
+        \[
+          q_1\,q_2 \;\neq\; q_2\,q_1.
+        \]
+      </p>
+    </section>
+
+    <section style="padding:0 16px;">
+      <h2>Conjugado, norma e inverso</h2>
+
+      <div class="card">
+        <p><strong>Conjugado.</strong> Para \(q=(\omega,\mathbf{v})\), el conjugado es</p>
+        \[
+          q^{*} \;=\; (\omega,\,-\mathbf{v}) \;=\; \omega - x\mathbf{i} - y\mathbf{j} - z\mathbf{k}.
+        \]
+
+        <p><strong>Norma.</strong> La norma de \(q\) es</p>
+        \[
+          \lvert q\rvert \;=\; \sqrt{\omega^{2}+x^{2}+y^{2}+z^{2}}
+          \;=\; \sqrt{\,q\,q^{*}\,}.
+        \]
+
+        <p><strong>Inverso.</strong> Si \(q\neq \mathbf{0}\), su inverso multiplicativo es</p>
+        \[
+          q^{-1} \;=\; \frac{q^{*}}{\lvert q\rvert^{2}}.
+        \]
+      </div>
+
+      <p>
+        Observa que \(q\,q^{*}=\lvert q\rvert^{2}\) es <em>real</em> (tiene parte vectorial nula).  
+        En particular, un cuaternión con \(\lvert q\rvert=1\) se llama <strong>unitario</strong> y satisface
+        \(q^{-1}=q^{*}\).
+      </p>
+    </section>
+
+    <section style="padding:0 16px;">
+      <h2>Escalares puros y vectores puros dentro de \(\mathbb{H}\)</h2>
+
+      <div class="card">
+        <ul style="margin:0;">
+          <li><strong>Escalares puros:</strong> \((a,0,0,0)\equiv a\in\mathbb{R}\subset \mathbb{H}\).</li>
+          <li><strong>Vectores puros:</strong> \((0,x,y,z)\equiv \mathbf{v}\in\mathbb{R}^3\subset \mathbb{H}\).</li>
+        </ul>
+      </div>
+
+      <p>
+        Así, \(\mathbb{R}\) y \(\mathbb{R}^3\) están embebidos de forma natural dentro de \(\mathbb{H}\).
+        Esta identificación será útil cuando usemos cuaterniones para rotar <em>vectores puros</em>.
+      </p>
+    </section>
+
+    <!-- ======================================================
+         NUEVA SECCIÓN: Rotaciones (con tus imágenes y texto)
+         ====================================================== -->
+    <section style="padding:0 16px;">
+      <h2>Rotaciones (matriz de rotación y formulación con cuaterniones)</h2>
+
+      <p>
+        Supongamos que deseamos hacer una rotación alrededor del eje \(Z\) en un ángulo \(\theta\),
+        en sentido contrario a las manecillas del reloj, de un sistema de coordenadas \(X\,Y\,Z\),
+        tal como se ilustra en la Figura&nbsp;1. El nuevo sistema se denota \(X'Y'Z'\) y cumple \(Z'=Z\).
+      </p>
+
+      <!-- TUS FIGURAS (guarda los archivos en la misma carpeta) -->
+      <div class="cols">
+        <figure>
+          <img src="rotacion_fig1a.jpg" alt="Sistema XYZ antes de la rotación">
+          <figcaption><strong>Figura 1(a).</strong> Sistema de coordenadas \(X\,Y\,Z\).</figcaption>
+        </figure>
+        <figure>
+          <img src="rotacion_fig1b.jpg" alt="Sistema X'Y'Z' después de rotar un ángulo theta alrededor de Z">
+          <figcaption><strong>Figura 1(b).</strong> Sistema \(X'Y'Z'\) tras una rotación de ángulo \(\theta\) alrededor de \(Z\).</figcaption>
+        </figure>
+      </div>
+
+      <div class="card">
+        <strong>Matriz de rotación alrededor del eje \(Z\)</strong>
+        <p>Si \(\vec r=(x,y,z)\) tiene coordenadas en el sistema original y \(\vec r'=(x',y',z')\) en el sistema rotado, entonces</p>
+        \[
+          \begin{bmatrix}
+            x'\\[2pt] y'\\[2pt] z'
+          \end{bmatrix}
+          =
+          \underbrace{
+          \begin{bmatrix}
+            \cos\theta & -\sin\theta & 0\\
+            \sin\theta & \phantom{-}\cos\theta & 0\\
+            0          & 0           & 1
+          \end{bmatrix}}_{\displaystyle R_z(\theta)}
+          \begin{bmatrix}
+            x\\[2pt] y\\[2pt] z
+          \end{bmatrix}.
+        \]
+        <p style="margin:.35rem 0 0 0;">En forma componente:</p>
+        \[
+          \begin{aligned}
+            x' &= x\cos\theta - y\sin\theta,\\
+            y' &= x\sin\theta + y\cos\theta,\\
+            z' &= z.
+          \end{aligned}
+        \]
+      </div>
+
+<div class="card">
+  <strong>Rotación con cuaterniones (forma general)</strong>
+  <p>
+    Identificamos un vector \(\vec r=(x,y,z)\) con el <em>cuaternión puro</em>
+    \(v=(0,x,y,z)\). Sea \(\widehat{\mathbf{u}}=(u_x,u_y,u_z)\) un eje unitario y
+    \(\theta\) el ángulo de giro. El <em>cuaternión de rotación</em> alrededor de
+    \(\widehat{\mathbf{u}}\) es
+  </p>
+
+  \[
+    q \;=\; \cos\!\frac{\theta}{2}
+      \;+\; \sin\!\frac{\theta}{2}\,\big(u_x\mathbf{i}+u_y\mathbf{j}+u_z\mathbf{k}\big),
+    \qquad
+    q^* \;=\; \cos\!\frac{\theta}{2}
+      \;-\; \sin\!\frac{\theta}{2}\,\big(u_x\mathbf{i}+u_y\mathbf{j}+u_z\mathbf{k}\big),
+    \quad \text{con } \|\widehat{\mathbf{u}}\|=1.
+  \]
+
+  <p style="margin:.35rem 0 0 0;">
+    Entonces la rotación de \(\vec r\) se expresa como
+  </p>
+
+  \[
+    v' \;=\; q\,v\,q^{*},
+  \]
+
+  donde \(v'=(0,x',y',z')\) es el cuaternión puro asociado al vector rotado
+  \(\vec r'=(x',y',z')\). De manera más explícita:
+  
+  \[
+    q\,v\,q^{*}
+    \;=\;
+    (0,\,x',\,y',\,z')
+    \;=\;
+    \bigl(\cos(\tfrac{\theta}{2}),\,\sin(\tfrac{\theta}{2})\,\widehat{\mathbf{u}}\bigr)\,
+    (0,\,x,\,y,\,z)\,
+    \bigl(\cos(\tfrac{\theta}{2}),\,-\sin(\tfrac{\theta}{2})\,\widehat{\mathbf{u}}\bigr).
+  \]
+
+</div>
+
+
+
+<div class="card">
+  <strong>Rotación con cuaterniones alrededor del eje \(Z\)</strong>
+  <p>
+    Para el caso particular cuando la rotación es alrededor del eje \(Z\),
+    entonces el eje unitario es \(\widehat{\mathbf{u}}=(0,0,1)\).
+    El cuaternión de rotación y su conjugado son:
+  </p>
+
+  \[
+    q = \cos\frac{\theta}{2} + \sin\frac{\theta}{2}\,\mathbf{k}, 
+    \qquad
+    q^* = \cos\frac{\theta}{2} - \sin\frac{\theta}{2}\,\mathbf{k}.
+  \]
+
+  <p>
+    El vector \(\vec r=(x,y,z)\) se representa como cuaternión puro:
+  </p>
+  \[
+    v = (0,x,y,z) = x\mathbf{i} + y\mathbf{j} + z\mathbf{k}.
+  \]
+
+  <p>
+    El producto de rotación se calcula como:
+  </p>
+
+  <p><em>Paso 1:</em> Multiplicamos \(qv\):
+  \[
+    qv = 
+    \bigl(\cos\tfrac{\theta}{2} + \sin\tfrac{\theta}{2}\mathbf{k}\bigr)
+    \,(x\mathbf{i}+y\mathbf{j}+z\mathbf{k}).
+  \]
+  Aplicando las reglas de multiplicación de cuaterniones
+  (\(\mathbf{i}\mathbf{j}=\mathbf{k},\ \mathbf{j}\mathbf{k}=\mathbf{i},\ \mathbf{k}\mathbf{i}=\mathbf{j}\), etc.):
+  \[
+    qv = \cos\tfrac{\theta}{2}(x\mathbf{i}+y\mathbf{j}+z\mathbf{k})
+         + \sin\tfrac{\theta}{2}(-x\mathbf{j}+y\mathbf{i}+z).
+  \]
+  </p>
+
+  <p><em>Paso 2:</em> Ahora multiplicamos el resultado por \(q^*\):
+  \[
+    v' = (qv)q^*
+       = \Bigl[\cos\tfrac{\theta}{2}(x\mathbf{i}+y\mathbf{j}+z\mathbf{k})
+         + \sin\tfrac{\theta}{2}(-x\mathbf{j}+y\mathbf{i}+z)\Bigr]
+         \bigl(\cos\tfrac{\theta}{2}-\sin\tfrac{\theta}{2}\mathbf{k}\bigr).
+  \]
+  Tras desarrollar y simplificar, los términos escalares se cancelan y queda un
+  nuevo cuaternión puro.
+  </p>
+
+  <p><em>Paso 3 (resultado):</em> el cuaternión rotado es
+  </p>
+  \[
+    v' = (0,\,x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta,\; z).
+  \]
+
+  <p>
+    Es decir, en componentes:
+    \[
+      x' = x\cos\theta - y\sin\theta,\quad
+      y' = x\sin\theta + y\cos\theta,\quad
+      z' = z.
+    \]
+  </p>
+
+
+<div class="card">
+  <strong>Fórmula de Rodrigues (derivación paso a paso)</strong>
+
+  <p>
+    Partimos de \(q=(\omega,\mathbf{u})\) con \(\omega=\cos\!\frac{\theta}{2}\) y
+    \(\mathbf{u}=\sin\!\frac{\theta}{2}\,\widehat{\mathbf{u}}\), donde \(\|\widehat{\mathbf{u}}\|=1\).
+    Identificamos \(\vec r\in\mathbb{R}^3\) con el cuaternión puro \(v=(0,\vec r)\).
+    La rotación es \(v' = q\,v\,q^{*}\).
+  </p>
+
+  <!-- Paso 1 -->
+  <p><em>Paso 1.</em> Calculamos \(p r := q\,v\) usando
+    \((\alpha,\mathbf{a})(\beta,\mathbf{b})=(\alpha\beta-\mathbf{a}\!\cdot\!\mathbf{b},\;
+    \alpha\mathbf{b}+\beta\mathbf{a}+\mathbf{a}\times\mathbf{b})\):
+  </p>
+  \[
+    q\,v
+    = (\omega,\mathbf{u})\,(0,\vec r)
+    = \bigl(-\,\mathbf{u}\!\cdot\!\vec r,\;
+            \omega\,\vec r+\mathbf{u}\times\vec r\bigr).
+  \]
+  Denotemos \(s=-\,\mathbf{u}\!\cdot\!\vec r\) y \(\,\vec v=\omega\vec r+\mathbf{u}\times\vec r\). Así,
+  \(q\,v=(s,\vec v)\).
+
+  <!-- Paso 2 -->
+  <p><em>Paso 2.</em> Multiplicamos por \(q^{*}=(\omega,-\mathbf{u})\):
+  </p>
+  \[
+    v'=(qv)q^{*}
+      =(s,\vec v)\,(\omega,-\mathbf{u})
+      =\Bigl(s\omega-\vec v\!\cdot(-\mathbf{u}),\;
+              s(-\mathbf{u})+\omega\,\vec v+\vec v\times(-\mathbf{u})\Bigr).
+  \]
+  El componente escalar vale \(s\omega+\vec v\!\cdot\mathbf{u}=0\) (se anula), por lo que \(v'\) es de nuevo
+  un cuaternión puro. Nos quedamos con la <em>parte vectorial</em>:
+  \[
+    \vec r'
+    = -s\,\mathbf{u}
+      + \omega(\omega\vec r+\mathbf{u}\times\vec r)
+      - (\omega\vec r+\mathbf{u}\times\vec r)\times\mathbf{u}.
+  \]
+
+  <!-- Paso 3: expandir y simplificar -->
+  <p><em>Paso 3.</em> Desarrollamos el producto cruz y usamos identidades vectoriales:
+  </p>
+  \[
+    \vec r'
+    = -s\,\mathbf{u}
+      + \omega^2\vec r + \omega(\mathbf{u}\times\vec r)
+      - \omega(\vec r\times\mathbf{u}) - (\mathbf{u}\times\vec r)\times\mathbf{u}.
+  \]
+  Como \(\vec r\times\mathbf{u}=-(\mathbf{u}\times\vec r)\), los términos con \(\omega\) se suman:
+  \[
+    \vec r' = -s\,\mathbf{u} + \omega^2\vec r + 2\omega\,(\mathbf{u}\times\vec r) - (\mathbf{u}\times\vec r)\times\mathbf{u}.
+  \]
+  Aplicamos la identidad de “BAC–CAB”:
+  \[
+    (\mathbf{a}\times\mathbf{b})\times\mathbf{c}
+    = \mathbf{b}\,(\mathbf{a}\!\cdot\!\mathbf{c})-\mathbf{a}\,(\mathbf{b}\!\cdot\!\mathbf{c}),
+  \]
+  con \(\mathbf{a}=\mathbf{u}\), \(\mathbf{b}=\vec r\), \(\mathbf{c}=\mathbf{u}\):
+  \[
+    (\mathbf{u}\times\vec r)\times\mathbf{u}
+    = \vec r\,(\mathbf{u}\!\cdot\!\mathbf{u})-\mathbf{u}\,(\vec r\!\cdot\!\mathbf{u}).
+  \]
+  Recordando \(s=-\,\mathbf{u}\!\cdot\!\vec r\), queda
+  \[
+    \vec r'
+    = (\mathbf{u}\!\cdot\!\vec r)\,\mathbf{u}
+      + \omega^2\vec r + 2\omega\,(\mathbf{u}\times\vec r)
+      - \Bigl[\vec r\,(\mathbf{u}\!\cdot\!\mathbf{u})-\mathbf{u}\,(\vec r\!\cdot\!\mathbf{u})\Bigr].
+  \]
+  Reorganizando:
+  \[
+    \boxed{\;
+      \vec r' \;=\; 2(\mathbf{u}\!\cdot\!\vec r)\,\mathbf{u}
+      \;+\; (\omega^2-\mathbf{u}\!\cdot\!\mathbf{u})\,\vec r
+      \;+\; 2\omega\,(\mathbf{u}\times\vec r)\; }.
+  \]
+
+  <!-- Paso 4: sustituir w,u por theta y u-hat -->
+  <p><em>Paso 4.</em> Sustituimos \(\omega=\cos\!\frac{\theta}{2}\),
+    \(\mathbf{u}=\sin\!\frac{\theta}{2}\,\widehat{\mathbf{u}}\) y \(\|\widehat{\mathbf{u}}\|=1\):
+  </p>
+  \[
+    \omega^2-\mathbf{u}\!\cdot\!\mathbf{u}
+      = \cos^2\frac{\theta}{2}-\sin^2\frac{\theta}{2}
+      = \cos\theta,
+    \qquad
+    2\omega\,\mathbf{u} = 2\cos\frac{\theta}{2}\sin\frac{\theta}{2}\,\widehat{\mathbf{u}}
+      = \sin\theta\,\widehat{\mathbf{u}},
+  \]
+  \[
+    2(\mathbf{u}\!\cdot\!\vec r)\,\mathbf{u}
+    = 2\sin^2\frac{\theta}{2}\,(\widehat{\mathbf{u}}\!\cdot\!\vec r)\,\widehat{\mathbf{u}}
+    = (1-\cos\theta)\,(\widehat{\mathbf{u}}\!\cdot\!\vec r)\,\widehat{\mathbf{u}}.
+  \]
+
+  <!-- Resultado final: Rodrigues -->
+  <p><strong>Resultado (Rodrigues):</strong></p>
+  \[
+    \boxed{\;
+    \vec r'
+      = \vec r\,\cos\theta
+        \;+\; (\widehat{\mathbf{u}}\times\vec r)\,\sin\theta
+        \;+\; \widehat{\mathbf{u}}\,(\widehat{\mathbf{u}}\!\cdot\!\vec r)\,(1-\cos\theta)\; }.
+  \]
+  Esta expresión coincide exactamente con la fórmula clásica de Rodrigues para rotar \(\vec r\)
+  un ángulo \(\theta\) alrededor del eje unitario \(\widehat{\mathbf{u}}\).
+</div>
+
+
+  
+</div>
+
+
+    </section>
+
+  </main>
+
+  <!-- =======================================================
+       API de tracking
+       ======================================================= -->
+  <script>
+    // Clave única de este contenido (puedes cambiarla si quieres distinguir páginas)
+    const SIM_KEY = "algebra_espacios_vectoriales";
+
+    let simStartAt = 0;
+    let sentTrack = false;
+    let cronId = null;
+    let operaciones = 0;
+
+    function actualizarContador() {
+      const el = document.getElementById('contador-operaciones');
+      if (el) el.textContent = `Número de operaciones realizadas: ${operaciones}`;
+    }
+
+    // Helper para registrar acciones manualmente si lo deseas.
+    window.registrarOperacion = function() {
+      operaciones++;
+      actualizarContador();
+    };
+
+    function iniciarCronometro() {
+      simStartAt = Date.now();
+      cronId = setInterval(() => {
+        const total = Math.floor((Date.now() - simStartAt) / 1000);
+        const m = Math.floor(total / 60);
+        const s = total % 60;
+        const el = document.getElementById('cronometro');
+        if (el) el.textContent = `Tiempo usando el simulador: ${m} min ${s} seg`;
+      }, 1000);
+    }
+
+    function detenerCronometro() {
+      if (cronId) clearInterval(cronId);
+    }
+
+    async function enviarTrack() {
+      if (sentTrack) return;
+      sentTrack = true;
+      detenerCronometro();
+
+      const totalSeg = Math.max(0, Math.floor((Date.now() - simStartAt) / 1000));
+
+      try {
+        await fetch("http://localhost:3001/api/simuladores/track", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            simulador: SIM_KEY,
+            duracionSegundos: totalSeg
+          })
+        });
+        console.log("✅ Track enviado:", SIM_KEY, totalSeg, "seg");
+      } catch (err) {
+        console.error("❌ Error enviando track:", err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      iniciarCronometro();
+      actualizarContador();
+
+      const h1 = document.querySelector('h1');
+      h1?.addEventListener('click', () => window.registrarOperacion());
+    });
+
+    window.addEventListener("beforeunload", enviarTrack);
+  </script>
+
+  <!-- Botón opcional para disparar una "operación" manual -->
+  <div style="max-width:920px;margin:0 auto;padding:0 16px 24px 16px;">
+    <button onclick="registrarOperacion()" class="btn-sim-rojo"
+            style="background:#c62828;color:#fff;border:none;border-radius:6px;padding:.5rem .9rem;cursor:pointer;">
+      Registrar operación manual
+    </button>
+  </div>
+
+</body>
+</html>
+
+
+

@@ -1,0 +1,45 @@
+version: "3.9"  # versión estable recomendada de Compose
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile     # asegúrate de que el Dockerfile esté en ./backend
+    container_name: backend
+    env_file:
+      - ./backend/.env           # usa tu archivo de entorno actual
+    environment:
+      UPLOADS_DIR: /app/uploads  # ruta interna del contenedor
+      NODE_ENV: development
+    volumes:
+      - ./backend/uploads:/app/uploads  # persistencia entre host y contenedor
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+      - "${PORT_ALUMNO:-3001}:${PORT_ALUMNO:-3001}"
+      - "${PORT_MAESTRO:-3002}:${PORT_MAESTRO:-3002}"
+      - "${PORT_ADMINISTRADOR:-3003}:${PORT_ADMINISTRADOR:-3003}"
+      - "${PORT_ADMIN_PRINCIPAL:-3004}:${PORT_ADMIN_PRINCIPAL:-3004}"
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile     # asegúrate de que el Dockerfile del client esté en ./client
+    container_name: client
+    env_file:
+      - ./client/.env
+    ports:
+      - "5173:80"                # asumiendo que la imagen del cliente expone el puerto 80 (nginx o vite build)
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - appnet
+
+# Red compartida entre servicios
+networks:
+  appnet:
+    driver: bridge
+
