@@ -60,7 +60,7 @@ const Login = () => {
     setErrorMessage("");
 
     try {
-      const response = await axiosPrincipal.post("/login_unificado", {
+      const response = await axiosPrincipal.post("/api/login_unificado", {
         email: email.trim(),
         password: password.trim(),
       });

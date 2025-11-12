@@ -269,4 +269,17 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`✅ Servidor escuchando en http://localhost:${PORT}`));
 
+// ===== PRUEBA DE ENVÍO DE CORREO =====
+const { sendWelcomeEmail } = require("./config/mailer");
+
+app.get("/api/test-mailer", async (req, res) => {
+  try {
+    await sendWelcomeEmail("tu_correo_personal@gmail.com", "Héctor");
+    res.json({ ok: true, message: "Correo de prueba enviado correctamente" });
+  } catch (err) {
+    console.error("❌ Error al enviar correo:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 
