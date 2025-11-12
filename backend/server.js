@@ -29,8 +29,9 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// 🌐 CORS dinámico
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173")
+// 🌐 CORS dinámico (incluye defaults seguros para prod)
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
+  "http://localhost:5173,https://neteaching.com,https://www.neteaching.com,https://neteaching.onrender.com")
   .split(",")
   .map((origin) => origin.trim());
 
@@ -52,8 +53,8 @@ app.use(cookieParser());
 // ✅ Rutas
 app.use("/logout", require("./routes/logout"));
 
-// ✅ Router de login unificado (ya existente)
-app.use("/", require("./routes/login_unificado"));
+// ✅ Router de login unificado con prefijo API
+app.use("/api/login_unificado", require("./routes/login_unificado"));
 
 // 🔍 Verifica token desde cookie (principal) — ahora acepta cookies por rol
 app.get("/verify-token", async (req, res) => {

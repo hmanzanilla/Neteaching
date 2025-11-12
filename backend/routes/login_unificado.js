@@ -35,7 +35,8 @@ function buildClearOpts() {
   return { base, withDomain };
 }
 
-router.post("/login_unificado", async (req, res) => {
+// ✅ Ruta corregida: ahora es POST /
+router.post("/", async (req, res) => {
   try {
     const { email, password } = req.body || {};
     if (!email || !password) {
@@ -52,7 +53,7 @@ router.post("/login_unificado", async (req, res) => {
     let usuarioContrasenaOK = null;
     let rolContrasenaOK = null;
 
-    // 1) Buscar en todos los roles; aceptar solo si contraseña coincide
+    // 1️⃣ Buscar en todos los roles y validar contraseña
     for (const { role, model } of roles) {
       const user = await model.findOne({ email: emailNorm });
       if (!user) continue;
@@ -62,12 +63,12 @@ router.post("/login_unificado", async (req, res) => {
       const ok = await bcrypt.compare(String(password), user.password);
       if (!ok) continue;
 
-      // Estado de cuenta permitido (mantén tu lógica)
+      // Estado de cuenta permitido
       if (user.status !== "active" && user.status !== "pending") {
         return res.status(403).json({ message: "Cuenta inactiva. Contacta al soporte." });
       }
 
-      // Sesión única por usuario
+      // Sesión única
       if (user.estado === "conectado") {
         return res.status(403).json({ message: "Este usuario ya tiene una sesión activa." });
       }
@@ -85,29 +86,24 @@ router.post("/login_unificado", async (req, res) => {
       });
     }
 
-    // 2) Generar token (usa tu helper del modelo) y marcar conectado
+    // 2️⃣ Generar token y marcar conectado
     const user = usuarioContrasenaOK;
     const role = rolContrasenaOK;
-
-    // Tu helper ya debería firmar con JWT_SECRET; si no existe, revisa tus modelos.
     const token = await user.generateAuthToken({ expiresIn: "2h" });
 
     user.estado = "conectado";
-    // (Opcional suave) marca lastLogin si tu esquema lo tiene
     if ("lastLogin" in user) user.lastLogin = new Date();
     await user.save({ validateBeforeSave: false });
 
-    // 3) Setear cookie httpOnly ESPECÍFICA por rol
+    // 3️⃣ Setear cookie httpOnly específica por rol
     const PROD = (process.env.NODE_ENV || "development") === "production";
-    const cookieName = COOKIE_NAMES[role]; // p.ej. token_maestro, token_administrador, etc.
+    const cookieName = COOKIE_NAMES[role];
     res.cookie(cookieName, token, cookieOptions({ prod: PROD }));
 
-    // Limpia cookie genérica antigua si existiese (legacy)
+    // Limpia cookies viejas o de otros roles
     const clearOpts = buildClearOpts();
     res.clearCookie("token", clearOpts.base);
     if (clearOpts.withDomain) res.clearCookie("token", clearOpts.withDomain);
-
-    // (Recomendado) limpia cookies de otros roles para no dejar residuos
     for (const [r, name] of Object.entries(COOKIE_NAMES)) {
       if (r !== role) {
         res.clearCookie(name, clearOpts.base);
@@ -115,7 +111,7 @@ router.post("/login_unificado", async (req, res) => {
       }
     }
 
-    // 4) Redirección por rol (igual que antes)
+    // 4️⃣ Redirección según rol
     let redirectUrl = "/";
     switch (role) {
       case "alumno":
@@ -136,7 +132,7 @@ router.post("/login_unificado", async (req, res) => {
       message: "Inicio de sesión exitoso",
       role,
       redirectUrl,
-      token, // si no lo usas en el front, puedes omitirlo sin afectar cookies
+      token,
       userId: user._id,
       user: {
         _id: user._id,
@@ -148,11 +144,12 @@ router.post("/login_unificado", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ [/login_unificado] Error:", err);
+    console.error("❌ [/api/login_unificado] Error:", err);
     return res.status(500).json({ message: "Error interno al iniciar sesión." });
   }
 });
 
 module.exports = router;
+
 
 
