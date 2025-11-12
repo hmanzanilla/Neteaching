@@ -1,83 +1,136 @@
-//config/mailer.js
-const nodemailer = require('nodemailer'); // Importa Nodemailer para enviar correos
-require('dotenv').config(); // Importa dotenv para manejar variables de entorno
-const winston = require('winston');
+/**
+ * 📧 mailer.js
+ * Configuración centralizada para el envío de correos desde Neteaching.
+ * Compatible con Brevo (SMTP) y Gmail (fallback en desarrollo).
+ */
 
-// ✅ Configurar el logger para registrar eventos de email
+const nodemailer = require("nodemailer");
+const winston = require("winston");
+require("dotenv").config();
+
+/* ---------------------------------------------------
+   🧠 CONFIGURACIÓN DE LOGS
+--------------------------------------------------- */
 const logger = winston.createLogger({
-  level: 'info',
+  level: "info",
   format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+    })
   ),
   transports: [
-    new winston.transports.File({ filename: 'email.log' }),
+    new winston.transports.File({ filename: "logs/email.log" }),
     new winston.transports.Console(),
   ],
 });
 
-// ✅ Verificar si las credenciales están configuradas correctamente
-if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-  logger.error("❌ Error: Variables de entorno GMAIL_USER y GMAIL_PASS no están configuradas.");
-  throw new Error("Configuración de credenciales de correo electrónico faltante");
+/* ---------------------------------------------------
+   ⚙️ DETECCIÓN AUTOMÁTICA DE TRANSPORTE
+--------------------------------------------------- */
+const hasSMTP =
+  process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+const hasGmail =
+  process.env.GMAIL_USER && process.env.GMAIL_PASS && !hasSMTP;
+
+let transporter;
+
+if (hasSMTP) {
+  // 🚀 Configuración Brevo u otro SMTP personalizado
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: process.env.SMTP_SECURE === "true" ? true : false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+    tls: { rejectUnauthorized: false }, // Evita bloqueos en Render o SSL mixto
+  });
+  logger.info(`📨 Usando transporte SMTP personalizado (${process.env.SMTP_HOST})`);
+} else if (hasGmail) {
+  // ☁️ Fallback para entorno de desarrollo
+  transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
+    },
+  });
+  logger.info("📨 Usando transporte Gmail (modo desarrollo)");
+} else {
+  logger.error("❌ No hay configuración SMTP ni Gmail disponible");
+  throw new Error("Faltan credenciales de correo electrónico (SMTP o Gmail)");
 }
 
-// ✅ Configurar el transporte SMTP de Nodemailer
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: process.env.SMTP_PORT || 587,
-  secure: process.env.SMTP_SECURE === "true", // Usa TLS si está configurado
-  auth: {
-    user: process.env.GMAIL_USER, // Usuario de correo
-    pass: process.env.GMAIL_PASS  // Contraseña o API key segura
-  },
-  tls: {
-    rejectUnauthorized: false // Evita problemas con certificados no verificados
-  }
-});
+/* ---------------------------------------------------
+   💌 CONFIGURACIÓN DEL REMITENTE
+--------------------------------------------------- */
+const MAIL_FROM_NAME = process.env.MAIL_FROM_NAME || "Equipo Neteaching";
+const MAIL_FROM_EMAIL =
+  process.env.MAIL_FROM_EMAIL ||
+  process.env.SMTP_USER ||
+  process.env.GMAIL_USER ||
+  "no-reply@neteaching.com";
 
-// ✅ Función genérica para enviar correos electrónicos
-const sendEmail = async (to, subject, text, html = '') => {
+/* ---------------------------------------------------
+   ✉️ FUNCIÓN GENERAL DE ENVÍO DE CORREOS
+--------------------------------------------------- */
+async function sendEmail(to, subject, text, html = "") {
   if (!to || !subject || !text) {
-    logger.warn('⚠ Intento de envío de correo con datos incompletos');
-    throw new Error('Faltan datos: dirección de destino, asunto o mensaje');
+    logger.warn("⚠️ Intento de envío con datos incompletos");
+    throw new Error("Faltan datos: destinatario, asunto o mensaje");
   }
 
   const mailOptions = {
-    from: `"Neteaching Support Team" <${process.env.GMAIL_USER}>`,
+    from: `"${MAIL_FROM_NAME}" <${MAIL_FROM_EMAIL}>`,
     to,
     subject,
     text,
-    html
+    html,
   };
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    logger.info(`✅ Correo enviado con éxito a ${to}: ${info.response}`);
+    logger.info(`✅ Correo enviado a ${to} (${subject})`);
     return info;
   } catch (error) {
     logger.error(`❌ Error al enviar correo a ${to}: ${error.message}`);
     throw new Error("Error al enviar correo");
   }
-};
+}
 
-// ✅ Función específica para enviar correos de bienvenida
-const sendWelcomeEmail = async (to) => {
+/* ---------------------------------------------------
+   🤝 CORREO DE BIENVENIDA AUTOMÁTICO
+--------------------------------------------------- */
+async function sendWelcomeEmail(to, name = "") {
   if (!to) {
-    logger.warn("⚠ Intento de enviar correo de bienvenida sin dirección");
+    logger.warn("⚠️ Intento de enviar correo de bienvenida sin dirección");
     return;
   }
 
-  const subject = 'Bienvenido a Neteaching';
-  const text = 'Hola, bienvenido a Neteaching. Estamos encantados de que te unas a nuestra comunidad. Para más información, visita nuestro sitio web: https://neteaching.com';
+  const subject = "Bienvenido a Neteaching";
+  const text = `Hola ${name || ""}, bienvenido a Neteaching. Estamos encantados de que te unas a nuestra comunidad.`;
   const html = `
-    <h1>Bienvenido a Neteaching</h1>
-    <p>Hola, estamos encantados de que te unas a nuestra comunidad.</p>
-    <p>Para más información, visita nuestro sitio web: <a href="https://neteaching.com">Neteaching</a></p>
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2 style="color: #004aad;">¡Bienvenido a Neteaching!</h2>
+      <p>Hola ${name || "usuario"},</p>
+      <p>Estamos encantados de darte la bienvenida a nuestra comunidad educativa.</p>
+      <p>Explora, aprende y enseña con nosotros en 
+        <a href="https://neteaching.com" style="color:#004aad; text-decoration:none;">neteaching.com</a>.
+      </p>
+      <br>
+      <p>Atentamente,</p>
+      <strong>${MAIL_FROM_NAME}</strong>
+    </div>
   `;
 
   return await sendEmail(to, subject, text, html);
-};
+}
 
-// ✅ Exportar funciones para usarlas en otros archivos
+/* ---------------------------------------------------
+   🧩 EXPORTACIÓN
+--------------------------------------------------- */
 module.exports = { sendEmail, sendWelcomeEmail };
+
+

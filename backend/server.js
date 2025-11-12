@@ -1,5 +1,6 @@
 // backend/server.js
-const { fork } = require("child_process");
+// 🌐 Servidor principal unificado (alumno, maestro, administrador, admin_principal)
+
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -8,32 +9,30 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv-flow");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const cookie = require("cookie"); // para leer cookie del handshake WS
-const { COOKIE_NAMES, getTokenFromReq } = require("./utils/authCookies"); // ⬅️ NUEVO
+const cookie = require("cookie");
+const { COOKIE_NAMES, getTokenFromReq } = require("./utils/authCookies");
+const connectDB = require("./config/db");
 
 dotenv.config();
+
 console.log("🚀 Iniciando servidor principal...");
 console.log("🌍 Ambiente:", process.env.NODE_ENV || "development");
 
-// Ayuda a detectar errores que tumben respuestas
-process.on("unhandledRejection", (reason) => {
-  console.error("UNHANDLED REJECTION:", reason);
-});
-process.on("uncaughtException", (err) => {
-  console.error("UNCAUGHT EXCEPTION:", err);
-});
+// ⚠️ Manejo global de errores
+process.on("unhandledRejection", (reason) => console.error("UNHANDLED REJECTION:", reason));
+process.on("uncaughtException", (err) => console.error("UNCAUGHT EXCEPTION:", err));
 
-const connectDB = require("./config/db");
+// ✅ Conexión a la base de datos
 connectDB();
 
 const app = express();
 const server = http.createServer(app);
 
-// 🌐 CORS dinámico (incluye defaults seguros para prod)
+// 🌐 Configuración CORS dinámica
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
   "http://localhost:5173,https://neteaching.com,https://www.neteaching.com,https://neteaching.onrender.com")
   .split(",")
-  .map((origin) => origin.trim());
+  .map((o) => o.trim());
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
@@ -50,15 +49,24 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Rutas
+// ✅ Rutas generales
 app.use("/logout", require("./routes/logout"));
-
-// ✅ Router de login unificado con prefijo API
 app.use("/api/login_unificado", require("./routes/login_unificado"));
 
-// 🔍 Verifica token desde cookie (principal) — ahora acepta cookies por rol
+// ✅ Montaje de los routers por rol
+try {
+  app.use("/api/alumno", require("./routes/routers/router_alumno"));
+  app.use("/api/maestro", require("./routes/routers/router_maestro"));
+  app.use("/api/administrador", require("./routes/routers/router_administrador"));
+  app.use("/api/admin_principal", require("./routes/routers/router_admin_principal"));
+  console.log("✅ Routers de roles montados correctamente.");
+} catch (e) {
+  console.error("❌ Error al montar routers:", e.message);
+}
+
+// 🔍 Verificación unificada de token
 app.get("/verify-token", async (req, res) => {
-  const { token } = getTokenFromReq(req); // ⬅️ toma token de cualquiera de las cookies de rol
+  const { token } = getTokenFromReq(req);
   if (!token) return res.status(401).json({ message: "No token" });
 
   try {
@@ -92,25 +100,11 @@ app.get("/verify-token", async (req, res) => {
   }
 });
 
-// 🚀 Subservidores
-const subServers = [
-  { path: "server_alumno.js", port: process.env.PORT_ALUMNO || 3001 },
-  { path: "server_maestro.js", port: process.env.PORT_MAESTRO || 3002 },
-  { path: "server_administrador.js", port: process.env.PORT_ADMINISTRADOR || 3003 },
-  { path: "server_admin_principal.js", port: process.env.PORT_ADMIN_PRINCIPAL || 3004 },
-];
-
-subServers.forEach(({ path, port }) => {
-  console.log(`⚡ Iniciando ${path} en puerto ${port}`);
-  fork(path, [port]);
-});
-
-// 🧠 WebSockets
+// 🧠 WebSockets — control de sesiones y presencia
 const io = new Server(server, {
   cors: { origin: allowedOrigins, credentials: true },
 });
 
-// -------- Helpers para presencia / sesión única --------
 const SINGLE_SESSION = (process.env.SINGLE_SESSION || "true").toLowerCase() === "true";
 const GRACE_MS = Number(process.env.PRESENCE_GRACE_MS || 8000);
 
@@ -132,51 +126,39 @@ async function marcarEstado(role, userId, estado) {
       { new: true }
     );
   } catch (e) {
-    console.warn(
-      `⚠️ No se pudo marcar estado (${role}:${userId} -> ${estado}):`,
-      e?.message || e
-    );
+    console.warn(`⚠️ No se pudo marcar estado (${role}:${userId} -> ${estado}):`, e?.message || e);
   }
 }
 
-const socketsByUserRole = new Map(); // key: `${role}:${userId}` => Set(socketIds)
-const disconnectTimers = new Map(); // key => timeoutId
+const socketsByUserRole = new Map();
+const disconnectTimers = new Map();
 const makeKey = (role, userId) => `${role}:${userId}`;
 const presenceRoom = (role, userId) => `presence:${role}:${userId}`;
 
-// ⬇️ Preferir cookie del rol indicado por el cliente (socket.handshake.auth.role)
 function getWsTokenFromCookieHeader(rawCookieHeader, preferRole) {
   const cookies = cookie.parse(rawCookieHeader || "");
-  // si el cliente envía el rol, intenta usar primero la cookie de ese rol
   if (preferRole && COOKIE_NAMES[preferRole] && cookies[COOKIE_NAMES[preferRole]]) {
     return cookies[COOKIE_NAMES[preferRole]];
   }
-  // fallback: cualquiera de las cookies conocidas (compatibilidad)
   for (const name of Object.values(COOKIE_NAMES)) {
     if (cookies[name]) return cookies[name];
   }
   return null;
 }
 
-// 🔒 Autenticar sockets con cookies por rol (evita pateos cruzados entre roles)
 io.use((socket, next) => {
   try {
     const rawCookie = socket.request.headers?.cookie || "";
     const preferRole =
-      socket.handshake?.auth?.role && ["alumno", "maestro", "administrador", "admin_principal"].includes(socket.handshake.auth.role)
+      socket.handshake?.auth?.role &&
+      ["alumno", "maestro", "administrador", "admin_principal"].includes(socket.handshake.auth.role)
         ? socket.handshake.auth.role
         : null;
 
     const token = getWsTokenFromCookieHeader(rawCookie, preferRole);
     if (!token) return next(new Error("No token in cookie"));
 
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (e) {
-      return next(new Error("Invalid token"));
-    }
-
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId || decoded._id || decoded.id || decoded.sub;
     const role = decoded.role;
     if (!userId || !role) return next(new Error("Token missing id/role"));
@@ -188,13 +170,10 @@ io.use((socket, next) => {
   }
 });
 
-// 📡 Handlers WS
 io.on("connection", async (socket) => {
   console.log("🔌 Cliente WebSocket conectado");
 
-  // -------- Presencia por usuario+rol --------
-  const u = socket.user || {};
-  const { userId, role } = u;
+  const { userId, role } = socket.user || {};
   if (!userId || !role) return socket.disconnect(true);
 
   const key = makeKey(role, userId);
@@ -206,15 +185,14 @@ io.on("connection", async (socket) => {
 
   if (!socketsByUserRole.has(key)) socketsByUserRole.set(key, new Set());
   const set = socketsByUserRole.get(key);
-  const existingIds = [...set]; // para sesión única
+  const existingIds = [...set];
   set.add(socket.id);
 
-  // Sesión única: si hay sockets previos, los cerramos
   if (SINGLE_SESSION && existingIds.length > 0) {
     for (const sid of existingIds) {
       const s = io.sockets.sockets.get(sid);
       if (s) {
-        s.emit("force-logout"); // el cliente puede limpiar UI si lo desea
+        s.emit("force-logout");
         s.disconnect(true);
       }
       set.delete(sid);
@@ -222,20 +200,10 @@ io.on("connection", async (socket) => {
   }
 
   socket.join(presenceRoom(role, userId));
-
-  // Si es el primer socket (o tras cerrar previos), marca conectado
   await marcarEstado(role, userId, "conectado");
 
-  // Latidos opcionales
-  socket.on("heartbeat", async () => {
-    await marcarEstado(role, userId, "conectado");
-  });
-
-  // Eventos que ya tenías (sin romper compatibilidad)
-  socket.on("ping", (mensaje) => {
-    console.log("📡 Ping recibido:", mensaje);
-    socket.emit("pong", "pong ✔");
-  });
+  socket.on("heartbeat", async () => await marcarEstado(role, userId, "conectado"));
+  socket.on("ping", (msg) => socket.emit("pong", "pong ✔"));
 
   socket.on("joinRoom", ({ room, user }) => {
     socket.join(room);
@@ -250,25 +218,6 @@ io.on("connection", async (socket) => {
     io.to(room).emit("draw", data);
   });
 
-  // (solo logging) compara 'estado' en BD vs estado recibido (si el cliente lo manda)
-  socket.on("estado_actualizado", async ({ userId: uid, role: r, statusDesdeSocket }) => {
-    try {
-      if (!uid || !r) return;
-      const M = getUserModelByRole(r);
-      const user = await M?.findById(uid);
-      if (!user) return;
-
-      const estadoMongo = user.estado; // comparamos campo 'estado'
-      if (estadoMongo !== statusDesdeSocket) {
-        console.log(`⚠ Estado no coincide → Mongo: ${estadoMongo}, Socket: ${statusDesdeSocket}`);
-      } else {
-        console.log(`✅ Estado coherente: ${estadoMongo}`);
-      }
-    } catch (err) {
-      console.error("❌ Error al verificar estado:", err.message);
-    }
-  });
-
   socket.on("disconnect", () => {
     console.log("❌ Cliente WebSocket desconectado");
     const set = socketsByUserRole.get(key);
@@ -276,7 +225,6 @@ io.on("connection", async (socket) => {
     set.delete(socket.id);
 
     if (set.size === 0) {
-      // Programar desconexión con grace (recargas rápidas no marcarán desconectado)
       const timeoutId = setTimeout(async () => {
         const still = socketsByUserRole.get(key);
         if (!still || still.size === 0) {
@@ -290,37 +238,26 @@ io.on("connection", async (socket) => {
   });
 });
 
-// ---- Barrido periódico de presencia (TTL de latido) ----
-const PRESENCE_STALE_MS = Number(process.env.PRESENCE_STALE_MS || 5 * 60 * 1000); // 5 min
-const SWEEP_EVERY_MS = Number(process.env.PRESENCE_SWEEP_MS || 60 * 1000);        // 1 min
-const PRESENCE_SWEEP_ENABLED = (process.env.PRESENCE_SWEEP_ENABLED || "true")
-  .toLowerCase() === "true";
+// 🧹 Limpieza de presencia inactiva
+const PRESENCE_STALE_MS = Number(process.env.PRESENCE_STALE_MS || 5 * 60 * 1000);
+const SWEEP_EVERY_MS = Number(process.env.PRESENCE_SWEEP_MS || 60 * 1000);
 
-async function sweepStalePresence() {
-  try {
-    const cutoff = new Date(Date.now() - PRESENCE_STALE_MS);
-    const roles = ["alumno", "maestro", "administrador", "admin_principal"];
+setInterval(async () => {
+  const cutoff = new Date(Date.now() - PRESENCE_STALE_MS);
+  const roles = ["alumno", "maestro", "administrador", "admin_principal"];
 
-    for (const role of roles) {
-      const M = getUserModelByRole(role);
-      if (!M) continue;
-
-      const res = await M.updateMany(
-        { estado: "conectado", lastSeenAt: { $lt: cutoff } },
-        { $set: { estado: "desconectado" } }
-      );
-      if (res.modifiedCount) {
-        console.log(`🧹 Presence sweep → ${role}: ${res.modifiedCount} marcados como desconectados`);
-      }
+  for (const role of roles) {
+    const M = getUserModelByRole(role);
+    if (!M) continue;
+    const res = await M.updateMany(
+      { estado: "conectado", lastSeenAt: { $lt: cutoff } },
+      { $set: { estado: "desconectado" } }
+    );
+    if (res.modifiedCount) {
+      console.log(`🧹 Presence sweep → ${role}: ${res.modifiedCount} desconectados`);
     }
-  } catch (e) {
-    console.warn("⚠️ Presence sweep error:", e?.message || e);
   }
-}
-
-if (PRESENCE_SWEEP_ENABLED) {
-  setInterval(sweepStalePresence, SWEEP_EVERY_MS);
-}
+}, SWEEP_EVERY_MS);
 
 // 🛠 Error global
 app.use((err, req, res, next) => {
@@ -330,6 +267,6 @@ app.use((err, req, res, next) => {
 
 // 🚀 Inicio
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`✅ Servidor principal escuchando en http://localhost:${PORT}`);
-});
+server.listen(PORT, () => console.log(`✅ Servidor escuchando en http://localhost:${PORT}`));
+
+

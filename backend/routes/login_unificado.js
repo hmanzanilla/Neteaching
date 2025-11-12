@@ -17,15 +17,13 @@ const { COOKIE_NAMES, cookieOptions } = require("../utils/authCookies");
 /**
  * Opciones para "limpiar" cookies con los mismos flags con que se setean,
  * evitando que alguna quede pegada al cambiar sameSite/secure/domain.
- * (Si defines COOKIE_DOMAIN / COOKIE_SAMESITE / COOKIE_SECURE en .env,
- *  esto las respeta igual que cookieOptions).
  */
 function buildClearOpts() {
   const prod = String(process.env.NODE_ENV || "").toLowerCase() === "production";
-  const opts = cookieOptions({ prod }); // usa la misma base que al setear
+  const opts = cookieOptions({ prod });
   const base = {
     path: opts.path ?? "/",
-    sameSite: opts.sameSite,
+    sameSite: opts.sameSite ?? "Lax",
     secure: opts.secure,
     httpOnly: true,
   };
@@ -35,7 +33,7 @@ function buildClearOpts() {
   return { base, withDomain };
 }
 
-// ✅ Ruta corregida: ahora es POST /
+// ✅ Ruta principal unificada de login
 router.post("/", async (req, res) => {
   try {
     const { email, password } = req.body || {};
@@ -44,7 +42,9 @@ router.post("/", async (req, res) => {
     }
     if (!process.env.JWT_SECRET) {
       console.error("⚠ JWT_SECRET no definido");
-      return res.status(500).json({ message: "Configuración faltante del servidor (JWT_SECRET)." });
+      return res.status(500).json({
+        message: "Configuración del servidor incompleta. Contacta al administrador del sistema.",
+      });
     }
 
     const emailNorm = String(email).trim().toLowerCase();
@@ -59,7 +59,6 @@ router.post("/", async (req, res) => {
       if (!user) continue;
 
       algunUsuarioEncontrado = true;
-
       const ok = await bcrypt.compare(String(password), user.password);
       if (!ok) continue;
 
@@ -68,9 +67,11 @@ router.post("/", async (req, res) => {
         return res.status(403).json({ message: "Cuenta inactiva. Contacta al soporte." });
       }
 
-      // Sesión única
+      // Si estaba colgado como conectado, lo desconectamos antes de nuevo login
       if (user.estado === "conectado") {
-        return res.status(403).json({ message: "Este usuario ya tiene una sesión activa." });
+        console.warn(`⚠ Usuario ${user.email} (${role}) tenía sesión colgada. Reiniciando estado.`);
+        user.estado = "desconectado";
+        await user.save({ validateBeforeSave: false });
       }
 
       usuarioContrasenaOK = user;
@@ -102,29 +103,30 @@ router.post("/", async (req, res) => {
 
     // Limpia cookies viejas o de otros roles
     const clearOpts = buildClearOpts();
-    res.clearCookie("token", clearOpts.base);
+    res.clearCookie("token", { ...clearOpts.base, sameSite: "Lax" });
     if (clearOpts.withDomain) res.clearCookie("token", clearOpts.withDomain);
+
     for (const [r, name] of Object.entries(COOKIE_NAMES)) {
       if (r !== role) {
-        res.clearCookie(name, clearOpts.base);
+        res.clearCookie(name, { ...clearOpts.base, sameSite: "Lax" });
         if (clearOpts.withDomain) res.clearCookie(name, clearOpts.withDomain);
       }
     }
 
-    // 4️⃣ Redirección según rol
+    // 4️⃣ Redirección según rol (coherente con routers Express)
     let redirectUrl = "/";
     switch (role) {
       case "alumno":
         redirectUrl = user.status === "pending" ? "/alumno" : "/alumno/acceso";
         break;
       case "maestro":
-        redirectUrl = "/maestro/ruta2";
+        redirectUrl = "/maestro/acceso";
         break;
       case "administrador":
-        redirectUrl = "/administrador/ruta3";
+        redirectUrl = "/administrador/acceso";
         break;
       case "admin_principal":
-        redirectUrl = "/adminprincipal/ruta4";
+        redirectUrl = "/admin_principal/acceso";
         break;
     }
 
