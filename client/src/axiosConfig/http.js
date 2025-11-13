@@ -1,23 +1,37 @@
 // client/src/axiosConfig/http.js
-// client/src/axiosConfig/http.js
 import axios from "axios";
 
-/** Selecciona baseURL según env (Vite/CRA), prod (mismo dominio) o dev (localhost) */
+/**
+ * Selecciona baseURL según:
+ * - Variables de entorno (Vite/CRA)
+ * - Producción (Render → backend real)
+ * - Desarrollo local (localhost)
+ */
 function pickBaseURL({ viteKey, craKey, localhostFallback }) {
+  // 1) Vite: import.meta.env
   const vite = typeof import.meta !== "undefined" ? import.meta.env?.[viteKey] : "";
   if (vite) return vite.replace(/\/+$/, "");
 
+  // 2) CRA: process.env
   const cra = typeof process !== "undefined" ? process.env?.[craKey] : "";
   if (cra) return cra.replace(/\/+$/, "");
 
+  // 3) Producción → frontend NO está en localhost
+  //    Usar URL REAL del backend Render
   if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
-    // prod con reverse proxy: usa rutas relativas (/api/...)
-    return "";
+    return "https://neteaching.onrender.com";
   }
+
+  // 4) Desarrollo local
   return localhostFallback.replace(/\/+$/, "");
 }
 
-/** Crea instancia Axios robusta (JSON/FormData + credenciales + timeout) */
+/**
+ * Crea instancia Axios robusta con:
+ * - BaseURL dinámica
+ * - Cookies habilitadas
+ * - Manejo correcto de JSON/FormData
+ */
 export function createHttp(baseURL) {
   const http = axios.create({
     baseURL,
@@ -26,29 +40,37 @@ export function createHttp(baseURL) {
     headers: { Accept: "application/json" },
   });
 
-  // Manejo correcto de JSON/FormData
+  // Detecta si el payload es FormData
   http.interceptors.request.use((config) => {
-    const isForm = typeof FormData !== "undefined" && config.data instanceof FormData;
+    const isForm =
+      typeof FormData !== "undefined" && config.data instanceof FormData;
+
     if (isForm) {
       delete config.headers["Content-Type"];
       delete config.headers["content-type"];
     } else if (!config.headers["Content-Type"] && !config.headers["content-type"]) {
       config.headers["Content-Type"] = "application/json";
     }
+
     return config;
   });
 
   return http;
 }
 
-/** Construye base para subrutas respetando baseURL relativo/vacío */
+/** 
+ * Construye subrutas internas pero permitiendo baseURL vacío en producción 
+ * (para usar reverse proxy si se requiere)
+ */
 function subBase(httpInstance, subpath) {
   const root = (httpInstance?.defaults?.baseURL || "").replace(/\/+$/, "");
-  // Si baseURL está vacío (proxy en prod), devuelve ruta relativa
   return root ? `${root}${subpath}` : subpath;
 }
 
-/* ===== Instancias por subservidor ===== */
+/* ========================================================
+   █████  INSTANCIAS HTTP (PRINCIPAL + SUBSERVICIOS)  █████
+   ======================================================== */
+
 export const httpPrincipal = createHttp(
   pickBaseURL({
     viteKey: "VITE_API_URL_PRINCIPAL",
@@ -89,12 +111,26 @@ export const httpAdminPrincipal = createHttp(
   })
 );
 
-/* ===== Instancias específicas (AUTH por rol) ===== */
-export const httpAlumnoAuth         = createHttp(subBase(httpAlumno,          "/api/alumno/auth"));
-export const httpMaestroAuth        = createHttp(subBase(httpMaestro,         "/api/maestro/auth"));
-export const httpAdministradorAuth  = createHttp(subBase(httpAdministrador,   "/api/administrador/auth"));
-export const httpAdminPrincipalAuth = createHttp(subBase(httpAdminPrincipal,  "/api/admin_principal/auth"));
+/* ========================================================
+   █████  INSTANCIAS AUTH POR ROL (API /auth)  █████
+   ======================================================== */
 
-/* ===== Aliases de compatibilidad (evitan tocar muchos imports existentes) ===== */
-// Algunos componentes están importando httpAdminAuth: exponlo como alias del admin común.
+export const httpAlumnoAuth = createHttp(
+  subBase(httpAlumno, "/api/alumno/auth")
+);
+
+export const httpMaestroAuth = createHttp(
+  subBase(httpMaestro, "/api/maestro/auth")
+);
+
+export const httpAdministradorAuth = createHttp(
+  subBase(httpAdministrador, "/api/administrador/auth")
+);
+
+export const httpAdminPrincipalAuth = createHttp(
+  subBase(httpAdminPrincipal, "/api/admin_principal/auth")
+);
+
+/** Alias legacy para no romper código viejo */
 export const httpAdminAuth = httpAdministradorAuth;
+

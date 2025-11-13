@@ -19,8 +19,12 @@ console.log("🚀 Iniciando servidor principal...");
 console.log("🌍 Ambiente:", process.env.NODE_ENV || "development");
 
 // ⚠️ Manejo global de errores
-process.on("unhandledRejection", (reason) => console.error("UNHANDLED REJECTION:", reason));
-process.on("uncaughtException", (err) => console.error("UNCAUGHT EXCEPTION:", err));
+process.on("unhandledRejection", (reason) =>
+  console.error("UNHANDLED REJECTION:", reason)
+);
+process.on("uncaughtException", (err) =>
+  console.error("UNCAUGHT EXCEPTION:", err)
+);
 
 // ✅ Conexión a la base de datos
 connectDB();
@@ -29,8 +33,10 @@ const app = express();
 const server = http.createServer(app);
 
 // 🌐 Configuración CORS dinámica
-const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
-  "http://localhost:5173,https://neteaching.com,https://www.neteaching.com,https://neteaching.onrender.com")
+const allowedOrigins = (
+  process.env.ALLOWED_ORIGINS ||
+  "http://localhost:5173,https://neteaching.com,https://www.neteaching.com,https://neteaching.onrender.com"
+)
   .split(",")
   .map((o) => o.trim());
 
@@ -41,7 +47,10 @@ app.use((req, res, next) => {
   }
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
   if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
 });
@@ -53,7 +62,7 @@ app.use(cookieParser());
 app.use("/logout", require("./routes/logout"));
 app.use("/api/login_unificado", require("./routes/login_unificado"));
 
-// ✅ Montaje de los routers por rol
+// ✅ Routers por rol
 try {
   app.use("/api/alumno", require("./routes/routers/router_alumno"));
   app.use("/api/maestro", require("./routes/routers/router_maestro"));
@@ -82,7 +91,9 @@ app.get("/verify-token", async (req, res) => {
 
     const UserModel = modelMap[role];
     if (!UserModel)
-      return res.status(400).json({ message: `Modelo no encontrado para rol: ${role}` });
+      return res
+        .status(400)
+        .json({ message: `Modelo no encontrado para rol: ${role}` });
 
     const user = await UserModel.findOne({ email });
     if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
@@ -96,7 +107,9 @@ app.get("/verify-token", async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(401).json({ message: "Token inválido", error: error.message });
+    return res
+      .status(401)
+      .json({ message: "Token inválido", error: error.message });
   }
 });
 
@@ -105,7 +118,8 @@ const io = new Server(server, {
   cors: { origin: allowedOrigins, credentials: true },
 });
 
-const SINGLE_SESSION = (process.env.SINGLE_SESSION || "true").toLowerCase() === "true";
+const SINGLE_SESSION =
+  (process.env.SINGLE_SESSION || "true").toLowerCase() === "true";
 const GRACE_MS = Number(process.env.PRESENCE_GRACE_MS || 8000);
 
 const getUserModelByRole = (role) =>
@@ -126,7 +140,10 @@ async function marcarEstado(role, userId, estado) {
       { new: true }
     );
   } catch (e) {
-    console.warn(`⚠️ No se pudo marcar estado (${role}:${userId} -> ${estado}):`, e?.message || e);
+    console.warn(
+      `⚠️ No se pudo marcar estado (${role}:${userId} -> ${estado}):`,
+      e?.message || e
+    );
   }
 }
 
@@ -151,7 +168,9 @@ io.use((socket, next) => {
     const rawCookie = socket.request.headers?.cookie || "";
     const preferRole =
       socket.handshake?.auth?.role &&
-      ["alumno", "maestro", "administrador", "admin_principal"].includes(socket.handshake.auth.role)
+      ["alumno", "maestro", "administrador", "admin_principal"].includes(
+        socket.handshake.auth.role
+      )
         ? socket.handshake.auth.role
         : null;
 
@@ -202,7 +221,9 @@ io.on("connection", async (socket) => {
   socket.join(presenceRoom(role, userId));
   await marcarEstado(role, userId, "conectado");
 
-  socket.on("heartbeat", async () => await marcarEstado(role, userId, "conectado"));
+  socket.on("heartbeat", async () =>
+    marcarEstado(role, userId, "conectado")
+  );
   socket.on("ping", (msg) => socket.emit("pong", "pong ✔"));
 
   socket.on("joinRoom", ({ room, user }) => {
@@ -239,8 +260,12 @@ io.on("connection", async (socket) => {
 });
 
 // 🧹 Limpieza de presencia inactiva
-const PRESENCE_STALE_MS = Number(process.env.PRESENCE_STALE_MS || 5 * 60 * 1000);
-const SWEEP_EVERY_MS = Number(process.env.PRESENCE_SWEEP_MS || 60 * 1000);
+const PRESENCE_STALE_MS = Number(
+  process.env.PRESENCE_STALE_MS || 5 * 60 * 1000
+);
+const SWEEP_EVERY_MS = Number(
+  process.env.PRESENCE_SWEEP_MS || 60 * 1000
+);
 
 setInterval(async () => {
   const cutoff = new Date(Date.now() - PRESENCE_STALE_MS);
@@ -254,7 +279,9 @@ setInterval(async () => {
       { $set: { estado: "desconectado" } }
     );
     if (res.modifiedCount) {
-      console.log(`🧹 Presence sweep → ${role}: ${res.modifiedCount} desconectados`);
+      console.log(
+        `🧹 Presence sweep → ${role}: ${res.modifiedCount} desconectados`
+      );
     }
   }
 }, SWEEP_EVERY_MS);
@@ -265,9 +292,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Error interno del servidor" });
 });
 
-// 🚀 Inicio
+// 🚀 Inicio: **FIX PARA RENDER**
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`✅ Servidor escuchando en http://localhost:${PORT}`));
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Servidor escuchando en 0.0.0.0:${PORT}`);
+});
 
 // ===== PRUEBA DE ENVÍO DE CORREO =====
 const { sendWelcomeEmail } = require("./config/mailer");
@@ -281,5 +310,6 @@ app.get("/api/test-mailer", async (req, res) => {
     res.status(500).json({ ok: false, error: err.message });
   }
 });
+
 
 
