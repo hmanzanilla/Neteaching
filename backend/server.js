@@ -7,7 +7,6 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv-flow");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const cookie = require("cookie");
 const { COOKIE_NAMES, getTokenFromReq } = require("./utils/authCookies");
 const connectDB = require("./config/db");
@@ -17,7 +16,9 @@ dotenv.config();
 console.log("🚀 Iniciando servidor principal...");
 console.log("🌍 Ambiente:", process.env.NODE_ENV || "development");
 
-// ⚠️ Manejo global de errores
+// ===========================
+// 🧨 Manejo global de errores
+// ===========================
 process.on("unhandledRejection", (reason) =>
   console.error("UNHANDLED REJECTION:", reason)
 );
@@ -34,7 +35,7 @@ const app = express();
 const server = http.createServer(app);
 
 // =====================================
-// 🌐 Configuración CORS dinámica unificada
+// 🌐 Configuración CORS dinámica
 // =====================================
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS ||
@@ -65,11 +66,8 @@ app.use(cookieParser());
 // 🔐 Rutas principales
 // ===========================
 
-// ✔ logout general
-app.use("/auth/logout", require("./routes/logout"));
-
-// ✔ login unificado
-app.use("/api/login_unificado", require("./routes/login_unificado"));
+app.use("/auth/logout", require("./routes/logout")); // ✔ Logout
+app.use("/api/login_unificado", require("./routes/login_unificado")); // ✔ Login unificado
 
 // ===========================
 // 👤 Routers de cada rol
@@ -86,8 +84,17 @@ try {
 }
 
 // ===========================
+// 🔵 Marcar conectado (NUEVO)
+// ===========================
+const marcarConectadoRouter = require("./routes/marcarConectado");
+
+app.use("/api/alumno", marcarConectadoRouter);
+app.use("/api/maestro", marcarConectadoRouter);
+app.use("/api/administrador", marcarConectadoRouter);
+app.use("/api/admin_principal", marcarConectadoRouter);
+
+// ===========================
 // 🔍 Verificación global de token
-// (soporta cookies por rol + cookie token fallback)
 // ===========================
 app.get("/auth/verify-token", async (req, res) => {
   const { token } = getTokenFromReq(req);
@@ -132,7 +139,6 @@ const SINGLE_SESSION =
   (process.env.SINGLE_SESSION || "true").toLowerCase() === "true";
 const GRACE_MS = Number(process.env.PRESENCE_GRACE_MS || 8000);
 
-// Map para controlar quién está conectado
 const socketsByUserRole = new Map();
 const disconnectTimers = new Map();
 
@@ -157,7 +163,7 @@ async function marcarEstado(role, userId, estado) {
       { new: true }
     );
   } catch (e) {
-    console.warn(`⚠️ No se pudo marcar estado (${role}:${userId} -> ${estado}):`, e.message);
+    console.warn(`⚠️ No se pudo marcar estado (${role}:${userId} → ${estado}):`, e.message);
   }
 }
 
@@ -209,20 +215,17 @@ io.on("connection", async (socket) => {
 
   const key = makeKey(role, userId);
 
-  // Cancelar timers antiguos
   const prevTimer = disconnectTimers.get(key);
   if (prevTimer) {
     clearTimeout(prevTimer);
     disconnectTimers.delete(key);
   }
 
-  // Si no existe set, lo creamos
   if (!socketsByUserRole.has(key)) socketsByUserRole.set(key, new Set());
   const set = socketsByUserRole.get(key);
   const existingIds = [...set];
   set.add(socket.id);
 
-  // SINGLE SESSION → expulsar sesiones previas
   if (SINGLE_SESSION && existingIds.length > 0) {
     for (const sid of existingIds) {
       const s = io.sockets.sockets.get(sid);
@@ -245,7 +248,6 @@ io.on("connection", async (socket) => {
     io.to(room).emit("message", { user, text })
   );
 
-  // -------- Cliente desconectado --------
   socket.on("disconnect", () => {
     console.log("❌ Cliente WebSocket desconectado");
     const set = socketsByUserRole.get(key);
