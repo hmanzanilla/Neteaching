@@ -1,4 +1,3 @@
-// backend/server.js
 // 🌐 Servidor principal unificado (alumno, maestro, administrador, admin_principal)
 
 const express = require("express");
@@ -26,13 +25,17 @@ process.on("uncaughtException", (err) =>
   console.error("UNCAUGHT EXCEPTION:", err)
 );
 
-// ✅ Conexión a la base de datos
+// ===========================
+// 🔌 Conexión a base de datos
+// ===========================
 connectDB();
 
 const app = express();
 const server = http.createServer(app);
 
-// 🌐 Configuración CORS dinámica
+// =====================================
+// 🌐 Configuración CORS dinámica unificada
+// =====================================
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS ||
   "http://localhost:5173,https://neteaching.com,https://www.neteaching.com,https://neteaching.onrender.com"
@@ -58,25 +61,38 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Rutas generales
-app.use("/logout", require("./routes/logout"));
+// ===========================
+// 🔐 Rutas principales
+// ===========================
+
+// ✔ logout general
+app.use("/auth/logout", require("./routes/logout"));
+
+// ✔ login unificado
 app.use("/api/login_unificado", require("./routes/login_unificado"));
 
-// ✅ Routers por rol
+// ===========================
+// 👤 Routers de cada rol
+// ===========================
 try {
   app.use("/api/alumno", require("./routes/routers/router_alumno"));
   app.use("/api/maestro", require("./routes/routers/router_maestro"));
   app.use("/api/administrador", require("./routes/routers/router_administrador"));
   app.use("/api/admin_principal", require("./routes/routers/router_admin_principal"));
+
   console.log("✅ Routers de roles montados correctamente.");
 } catch (e) {
   console.error("❌ Error al montar routers:", e.message);
 }
 
-// 🔍 Verificación unificada de token
-app.get("/verify-token", async (req, res) => {
+// ===========================
+// 🔍 Verificación global de token
+// (soporta cookies por rol + cookie token fallback)
+// ===========================
+app.get("/auth/verify-token", async (req, res) => {
   const { token } = getTokenFromReq(req);
-  if (!token) return res.status(401).json({ message: "No token" });
+
+  if (!token) return res.status(404).json({ message: "No token" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -91,29 +107,23 @@ app.get("/verify-token", async (req, res) => {
 
     const UserModel = modelMap[role];
     if (!UserModel)
-      return res
-        .status(400)
-        .json({ message: `Modelo no encontrado para rol: ${role}` });
+      return res.status(400).json({ message: `Modelo no encontrado para rol: ${role}` });
 
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email }).select("-password");
     if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
 
     return res.status(200).json({
       message: "Token válido",
-      user: {
-        email: user.email,
-        role: user.role,
-        estado: user.estado || "desconectado",
-      },
+      user,
     });
   } catch (error) {
-    return res
-      .status(401)
-      .json({ message: "Token inválido", error: error.message });
+    return res.status(401).json({ message: "Token inválido", error: error.message });
   }
 });
 
-// 🧠 WebSockets — control de sesiones y presencia
+// ===========================
+// 🧠 WebSockets (presencia)
+// ===========================
 const io = new Server(server, {
   cors: { origin: allowedOrigins, credentials: true },
 });
@@ -121,6 +131,13 @@ const io = new Server(server, {
 const SINGLE_SESSION =
   (process.env.SINGLE_SESSION || "true").toLowerCase() === "true";
 const GRACE_MS = Number(process.env.PRESENCE_GRACE_MS || 8000);
+
+// Map para controlar quién está conectado
+const socketsByUserRole = new Map();
+const disconnectTimers = new Map();
+
+const makeKey = (role, userId) => `${role}:${userId}`;
+const presenceRoom = (role, userId) => `presence:${role}:${userId}`;
 
 const getUserModelByRole = (role) =>
   ({
@@ -140,17 +157,9 @@ async function marcarEstado(role, userId, estado) {
       { new: true }
     );
   } catch (e) {
-    console.warn(
-      `⚠️ No se pudo marcar estado (${role}:${userId} -> ${estado}):`,
-      e?.message || e
-    );
+    console.warn(`⚠️ No se pudo marcar estado (${role}:${userId} -> ${estado}):`, e.message);
   }
 }
-
-const socketsByUserRole = new Map();
-const disconnectTimers = new Map();
-const makeKey = (role, userId) => `${role}:${userId}`;
-const presenceRoom = (role, userId) => `presence:${role}:${userId}`;
 
 function getWsTokenFromCookieHeader(rawCookieHeader, preferRole) {
   const cookies = cookie.parse(rawCookieHeader || "");
@@ -163,9 +172,11 @@ function getWsTokenFromCookieHeader(rawCookieHeader, preferRole) {
   return null;
 }
 
+// -------- WebSocket Auth --------
 io.use((socket, next) => {
   try {
     const rawCookie = socket.request.headers?.cookie || "";
+
     const preferRole =
       socket.handshake?.auth?.role &&
       ["alumno", "maestro", "administrador", "admin_principal"].includes(
@@ -189,6 +200,7 @@ io.use((socket, next) => {
   }
 });
 
+// -------- Cliente conectado --------
 io.on("connection", async (socket) => {
   console.log("🔌 Cliente WebSocket conectado");
 
@@ -196,17 +208,21 @@ io.on("connection", async (socket) => {
   if (!userId || !role) return socket.disconnect(true);
 
   const key = makeKey(role, userId);
+
+  // Cancelar timers antiguos
   const prevTimer = disconnectTimers.get(key);
   if (prevTimer) {
     clearTimeout(prevTimer);
     disconnectTimers.delete(key);
   }
 
+  // Si no existe set, lo creamos
   if (!socketsByUserRole.has(key)) socketsByUserRole.set(key, new Set());
   const set = socketsByUserRole.get(key);
   const existingIds = [...set];
   set.add(socket.id);
 
+  // SINGLE SESSION → expulsar sesiones previas
   if (SINGLE_SESSION && existingIds.length > 0) {
     for (const sid of existingIds) {
       const s = io.sockets.sockets.get(sid);
@@ -221,24 +237,15 @@ io.on("connection", async (socket) => {
   socket.join(presenceRoom(role, userId));
   await marcarEstado(role, userId, "conectado");
 
-  socket.on("heartbeat", async () =>
-    marcarEstado(role, userId, "conectado")
+  socket.on("heartbeat", async () => marcarEstado(role, userId, "conectado"));
+  socket.on("ping", () => socket.emit("pong", "pong ✔"));
+
+  socket.on("draw", ({ room, data }) => io.to(room).emit("draw", data));
+  socket.on("message", ({ room, user, text }) =>
+    io.to(room).emit("message", { user, text })
   );
-  socket.on("ping", (msg) => socket.emit("pong", "pong ✔"));
 
-  socket.on("joinRoom", ({ room, user }) => {
-    socket.join(room);
-    io.to(room).emit("userJoined", { user });
-  });
-
-  socket.on("message", ({ room, user, text }) => {
-    io.to(room).emit("message", { user, text });
-  });
-
-  socket.on("draw", ({ room, data }) => {
-    io.to(room).emit("draw", data);
-  });
-
+  // -------- Cliente desconectado --------
   socket.on("disconnect", () => {
     console.log("❌ Cliente WebSocket desconectado");
     const set = socketsByUserRole.get(key);
@@ -259,7 +266,9 @@ io.on("connection", async (socket) => {
   });
 });
 
-// 🧹 Limpieza de presencia inactiva
+// ===============================
+// 🧹 Limpieza de sesiones inactivas
+// ===============================
 const PRESENCE_STALE_MS = Number(
   process.env.PRESENCE_STALE_MS || 5 * 60 * 1000
 );
@@ -279,32 +288,36 @@ setInterval(async () => {
       { $set: { estado: "desconectado" } }
     );
     if (res.modifiedCount) {
-      console.log(
-        `🧹 Presence sweep → ${role}: ${res.modifiedCount} desconectados`
-      );
+      console.log(`🧹 Sweep → ${role}: ${res.modifiedCount} desconectados`);
     }
   }
 }, SWEEP_EVERY_MS);
 
+// ===========================
 // 🛠 Error global
+// ===========================
 app.use((err, req, res, next) => {
   console.error(`❌ Error del servidor: ${err.message}`);
   res.status(500).json({ message: "Error interno del servidor" });
 });
 
-// 🚀 Inicio: **FIX PARA RENDER**
+// ===========================
+// 🚀 Inicio del servidor (Render FIX)
+// ===========================
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Servidor escuchando en 0.0.0.0:${PORT}`);
 });
 
-// ===== PRUEBA DE ENVÍO DE CORREO =====
+// ===========================
+// 🔔 Test mailer
+// ===========================
 const { sendWelcomeEmail } = require("./config/mailer");
 
 app.get("/api/test-mailer", async (req, res) => {
   try {
     await sendWelcomeEmail("tu_correo_personal@gmail.com", "Héctor");
-    res.json({ ok: true, message: "Correo de prueba enviado correctamente" });
+    res.json({ ok: true, message: "Correo enviado correctamente" });
   } catch (err) {
     console.error("❌ Error al enviar correo:", err.message);
     res.status(500).json({ ok: false, error: err.message });

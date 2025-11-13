@@ -5,10 +5,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axiosAlumno from "../axiosConfig/axiosAlumno";
 import axiosMaestro from "../axiosConfig/axiosMaestros";
 import axiosAdministrador from "../axiosConfig/axiosAdministrador";
-import axiosAdmin from "../axiosConfig/axiosAdmin";
-import axiosPrincipal from "../axiosConfig/axiosPrincipal";
+import axiosAdmin from "../axiosConfig/axiosAdmin";              // admin_principal
+import axiosPrincipal from "../axiosConfig/axiosPrincipal";      // servidor principal
 
-console.log(" UserContext cargado correctamente");
+console.log("UserContext cargado correctamente");
 
 export const UserContext = createContext();
 
@@ -20,8 +20,11 @@ export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  /* ---------- helpers ---------- */
+  /* ============================================================
+     HELPERS
+     ============================================================ */
 
+  // Detecta el rol a partir de la ruta
   const roleFromPath = (pathname) => {
     if (!pathname) return null;
     if (pathname.startsWith("/alumno")) return "alumno";
@@ -31,6 +34,19 @@ export const UserProvider = ({ children }) => {
     return null;
   };
 
+  // Detecta el rol a partir de cookies
+  const roleFromCookie = () => {
+    const cookie = document.cookie;
+
+    if (cookie.includes("token_alumno")) return "alumno";
+    if (cookie.includes("token_maestro")) return "maestro";
+    if (cookie.includes("token_administrador")) return "administrador";
+    if (cookie.includes("token_admin_principal")) return "admin_principal";
+
+    return null;
+  };
+
+  // Devuelve el axios adecuado
   const getAxiosByRole = (role) => {
     switch (role) {
       case "alumno":
@@ -42,37 +58,36 @@ export const UserProvider = ({ children }) => {
       case "admin_principal":
         return axiosAdmin;
       default:
-        console.error("❌ Rol no reconocido o no definido:", role);
+        console.error("❌ getAxiosByRole: rol desconocido:", role);
         return null;
     }
   };
 
-  /* ---------- marcar conectado ---------- */
+  /* ============================================================
+     MARCAR ESTADO CONECTADO
+     ============================================================ */
 
   const marcarEstadoConectado = async (role) => {
     if (!role) return;
 
-    const axiosInstance = getAxiosByRole(role);
-    if (!axiosInstance) return;
+    const ax = getAxiosByRole(role);
+    if (!ax) return;
 
-    const rolePrefix = role === "admin_principal" ? "admin_principal" : role;
-    const endpoint = `/api/${rolePrefix}/marcar-conectado`;
+    const prefix = role === "admin_principal" ? "admin_principal" : role;
+    const endpoint = `/api/${prefix}/marcar-conectado`;
 
     try {
-      const base = axiosInstance.defaults.baseURL || "";
-      console.log(`📡 Marcar conectado → ${base}${endpoint}`);
-      await axiosInstance.post(endpoint, {}, { withCredentials: true });
-      console.log("🟢 Estado actualizado correctamente");
+      console.log(`📡 Marcar conectado → ${ax.defaults.baseURL}${endpoint}`);
+      await ax.post(endpoint, {}, { withCredentials: true });
+      console.log("🟢 Estado de conexión actualizado.");
     } catch (err) {
-      console.error(
-        `❌ Falló marcar conectado (${role}):`,
-        err.response?.status,
-        err.response?.data || err.message
-      );
+      console.error("❌ Error marcando conectado:", err.response?.data || err.message);
     }
   };
 
-  /* ---------- verificación de sesión ---------- */
+  /* ============================================================
+     VERIFICACIÓN GLOBAL DE SESIÓN (solo en páginas públicas)
+     ============================================================ */
 
   const checkSessionPrincipal = async () => {
     try {
@@ -80,10 +95,11 @@ export const UserProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      const payload = res?.data?.user || null;
+      const payload = res.data?.user || null;
 
       if (payload?.role) {
-        console.log("✅ Sesión activa detectada:", payload);
+        console.log("✅ Sesión activa encontrada:", payload);
+
         setUserData(payload);
         setIsAuthenticated(true);
 
@@ -91,23 +107,21 @@ export const UserProvider = ({ children }) => {
       } else {
         resetUserState();
       }
-    } catch (error) {
-      console.warn(
-        "❌ No hay sesión activa:",
-        error?.response?.data?.message || error?.message
-      );
+    } catch (err) {
+      console.warn("❌ Sesión no activa:", err.response?.data || err.message);
       resetUserState();
     } finally {
       setLoading(false);
     }
   };
 
-  /* ---------- login ---------- */
+  /* ============================================================
+     LOGIN
+     ============================================================ */
 
   const loginUser = async (userObject, role) => {
     if (!userObject || !role) return;
 
-    console.log(`🔑 Login como ${role}, sesión iniciada`);
     setUserData({ ...userObject, role });
     setIsAuthenticated(true);
 
@@ -116,25 +130,28 @@ export const UserProvider = ({ children }) => {
     await marcarEstadoConectado(role);
   };
 
+  /* ============================================================
+     LOGOUT
+     ============================================================ */
+
   const resetUserState = () => {
     setUserData(null);
     setIsAuthenticated(false);
     localStorage.removeItem("rol_backup");
   };
 
-  /* ---------- logout ---------- */
-
   const logoutUser = async () => {
-    const role = userData?.role || localStorage.getItem("rol_backup");
+    const role =
+      userData?.role || localStorage.getItem("rol_backup") || roleFromCookie();
 
-    // principal
+    /* ---- 1) Cerrar sesión en el servidor principal ---- */
     try {
       await axiosPrincipal.post("/auth/logout", {}, { withCredentials: true });
-    } catch (e) {
-      console.error("❌ Error al cerrar sesión en principal:", e.message);
+    } catch (err) {
+      console.error("❌ Error al cerrar sesión en principal:", err.message);
     }
 
-    // subservidor (best effort)
+    /* ---- 2) Cerrar sesión en el subservidor específico ---- */
     try {
       const ax = getAxiosByRole(role);
       if (ax) {
@@ -147,15 +164,19 @@ export const UserProvider = ({ children }) => {
     window.location.replace("/login");
   };
 
-  /* ---------- efectos ---------- */
+  /* ============================================================
+     USE EFFECTS
+     ============================================================ */
 
   useEffect(() => {
     const r = roleFromPath(location.pathname);
+
     if (r) {
-      console.log(`⏭ Omitiendo verificación global en ruta de rol: ${r}`);
+      console.log(`⏭ Ruta de rol detectada (${r}), el módulo maneja su sesión.`);
       setLoading(false);
       return;
     }
+
     checkSessionPrincipal();
   }, []);
 
@@ -163,30 +184,38 @@ export const UserProvider = ({ children }) => {
     console.log("📍 Cambio de ruta:", location.pathname);
   }, [location.pathname]);
 
-  /* ---------- beforeunload ---------- */
+  /* ============================================================
+     BEFOREUNLOAD — logout automático
+     ============================================================ */
 
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (!isAuthenticated) return;
 
-      const role = userData?.role || localStorage.getItem("rol_backup") || "";
-      const principalURL = `${axiosPrincipal.defaults.baseURL}/auth/logout`;
+      const role =
+        userData?.role ||
+        localStorage.getItem("rol_backup") ||
+        roleFromCookie() ||
+        "";
 
-      const body = JSON.stringify({ via: "beforeunload" });
+      const prefix = role === "admin_principal" ? "admin_principal" : role;
 
+      /* --- principal --- */
       try {
         if (navigator.sendBeacon) {
           navigator.sendBeacon(
-            principalURL,
-            new Blob([body], { type: "application/json" })
+            `${axiosPrincipal.defaults.baseURL}/auth/logout`,
+            new Blob([JSON.stringify({ via: "beforeunload" })], {
+              type: "application/json",
+            })
           );
         }
       } catch {}
 
+      /* --- subservidor --- */
       try {
         const ax = getAxiosByRole(role);
         if (ax) {
-          const prefix = role === "admin_principal" ? "admin_principal" : role;
           fetch(`${ax.defaults.baseURL}/api/${prefix}/auth/logout`, {
             method: "POST",
             credentials: "include",
@@ -199,6 +228,10 @@ export const UserProvider = ({ children }) => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isAuthenticated, userData?.role]);
+
+  /* ============================================================
+     RETURN
+     ============================================================ */
 
   return (
     <UserContext.Provider
@@ -218,4 +251,5 @@ export const UserProvider = ({ children }) => {
 };
 
 export default UserProvider;
+
 
