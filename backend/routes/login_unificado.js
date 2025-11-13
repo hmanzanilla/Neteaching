@@ -21,15 +21,18 @@ const { COOKIE_NAMES, cookieOptions } = require("../utils/authCookies");
 function buildClearOpts() {
   const prod = String(process.env.NODE_ENV || "").toLowerCase() === "production";
   const opts = cookieOptions({ prod });
+
   const base = {
     path: opts.path ?? "/",
     sameSite: opts.sameSite ?? "Lax",
     secure: opts.secure,
     httpOnly: true,
   };
+
   const withDomain = process.env.COOKIE_DOMAIN
     ? { ...base, domain: process.env.COOKIE_DOMAIN }
     : null;
+
   return { base, withDomain };
 }
 
@@ -37,9 +40,14 @@ function buildClearOpts() {
 router.post("/", async (req, res) => {
   try {
     const { email, password } = req.body || {};
+
+    // -------------------------
+    // 1) Validaciones básicas
+    // -------------------------
     if (!email || !password) {
       return res.status(400).json({ message: "Email y contraseña son obligatorios." });
     }
+
     if (!process.env.JWT_SECRET) {
       console.error("⚠ JWT_SECRET no definido");
       return res.status(500).json({
@@ -53,7 +61,9 @@ router.post("/", async (req, res) => {
     let usuarioContrasenaOK = null;
     let rolContrasenaOK = null;
 
-    // 1️⃣ Buscar en todos los roles y validar contraseña
+    // -------------------------
+    // 2) Buscar en todos los roles y validar contraseña
+    // -------------------------
     for (const { role, model } of roles) {
       const user = await model.findOne({ email: emailNorm });
       if (!user) continue;
@@ -69,7 +79,9 @@ router.post("/", async (req, res) => {
 
       // Si estaba colgado como conectado, lo desconectamos antes de nuevo login
       if (user.estado === "conectado") {
-        console.warn(`⚠ Usuario ${user.email} (${role}) tenía sesión colgada. Reiniciando estado.`);
+        console.warn(
+          `⚠ Usuario ${user.email} (${role}) tenía sesión colgada. Reiniciando estado.`
+        );
         user.estado = "desconectado";
         await user.save({ validateBeforeSave: false });
       }
@@ -87,25 +99,46 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // 2️⃣ Generar token y marcar conectado
+    // -------------------------
+    // 3) Generar token y marcar conectado
+    // -------------------------
     const user = usuarioContrasenaOK;
     const role = rolContrasenaOK;
+
     const token = await user.generateAuthToken({ expiresIn: "2h" });
 
     user.estado = "conectado";
     if ("lastLogin" in user) user.lastLogin = new Date();
     await user.save({ validateBeforeSave: false });
 
-    // 3️⃣ Setear cookie httpOnly específica por rol
-    const PROD = (process.env.NODE_ENV || "development") === "production";
+    // -------------------------
+    // 4) Setear cookie httpOnly específica por rol
+    //    (ajustada para dominio cruzado: neteaching.com → neteaching.onrender.com)
+    // -------------------------
+    const PROD = (process.env.NODE_ENV || "development").toLowerCase() === "production";
     const cookieName = COOKIE_NAMES[role];
-    res.cookie(cookieName, token, cookieOptions({ prod: PROD }));
 
-    // Limpia cookies viejas o de otros roles
+    const baseCookieOpts = cookieOptions({ prod: PROD });
+
+    // 🔴 AQUÍ forzamos SameSite=None + secure en producción
+    const finalCookieOpts = {
+      ...baseCookieOpts,
+      secure: true,                                      // siempre true en HTTPS (Render)
+      sameSite: PROD ? "none" : baseCookieOpts.sameSite || "Lax",
+    };
+
+    res.cookie(cookieName, token, finalCookieOpts);
+
+    // -------------------------
+    // 5) Limpiar cookies viejas o de otros roles
+    // -------------------------
     const clearOpts = buildClearOpts();
+
+    // Cookie genérica "token" (versiones antiguas)
     res.clearCookie("token", { ...clearOpts.base, sameSite: "Lax" });
     if (clearOpts.withDomain) res.clearCookie("token", clearOpts.withDomain);
 
+    // Cookies de otros roles
     for (const [r, name] of Object.entries(COOKIE_NAMES)) {
       if (r !== role) {
         res.clearCookie(name, { ...clearOpts.base, sameSite: "Lax" });
@@ -113,8 +146,11 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // 4️⃣ Redirección según rol (coherente con routers Express)
+    // -------------------------
+    // 6) Redirección según rol (coherente con routers Express)
+    // -------------------------
     let redirectUrl = "/";
+
     switch (role) {
       case "alumno":
         redirectUrl = user.status === "pending" ? "/alumno" : "/alumno/acceso";
@@ -152,6 +188,7 @@ router.post("/", async (req, res) => {
 });
 
 module.exports = router;
+
 
 
 
